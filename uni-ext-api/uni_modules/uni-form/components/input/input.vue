@@ -508,7 +508,7 @@
 	})
 	// #endif
 
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -518,7 +518,7 @@
 		return typeof value == 'string' ? value : ''
 	})
 	// #endif
-	// #ifdef APP-IOS
+	// #ifdef APP-ANDROID || APP-IOS
 	watch(selectionColor, (value: string) => {
 		inputView?.updateSelectionColor(value)
 	})
@@ -539,6 +539,7 @@
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
 		inputView?.updateColor(valueColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))

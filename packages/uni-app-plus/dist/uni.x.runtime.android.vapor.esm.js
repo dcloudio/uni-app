@@ -4069,7 +4069,9 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
     }
     style.set("midButton", midButton);
   }
-  fixBorderStyle(style);
+  if (options.borderStyle != null || options.borderColor != null) {
+    fixBorderStyle(style);
+  }
   tabBar.setTabBarStyle(style);
   resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);

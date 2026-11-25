@@ -509,7 +509,7 @@
 	})
 	// #endif
 
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -540,6 +540,7 @@
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
 		textareaView?.updateColor(valueColor.value)
 		textareaView?.updateCursorColor(resolvedCursorColor.value)
+		textareaView?.updateSelectionColor(selectionColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))

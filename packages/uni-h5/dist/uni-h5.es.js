@@ -27099,7 +27099,8 @@ function useTabBarStyle(tabBar) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
+      // 主题解析后的 rgba 可直接使用，未解析的变量仍按原有规则回退。
+      backgroundColor: BORDER_COLORS[borderStyle2] || (isString(borderStyle2) && borderStyle2.startsWith("rgba(") ? borderStyle2 : BORDER_COLORS["black"])
     };
   });
   const placeholderStyle = computed(() => {

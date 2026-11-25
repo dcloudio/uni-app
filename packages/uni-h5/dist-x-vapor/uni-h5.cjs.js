@@ -2008,10 +2008,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       Vue.applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
       const _x0 = Vue.txt(_n0);
       setNodes(_x0, () => props2.placeholder);
-      Vue.renderEffect(() => Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-input-placeholder", props2.placeholderClass]
-      }]));
+      Vue.renderEffect(() => {
+        Vue.setAttr(_n7, "uni-disabled", props2.disabled ? "" : void 0);
+        Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
+          style: props2.placeholderStyle,
+          class: ["uni-input-placeholder", props2.placeholderClass]
+        }]);
+      });
       Vue.setInsertionState(_n6, 1);
       Vue.createIf(() => props2.confirmType === "search", () => {
         const _n3 = _t2$5();
@@ -2318,6 +2321,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
         return _n52;
       })()));
       Vue.renderEffect(() => {
+        Vue.setAttr(_n11, "uni-disabled", props2.disabled ? "" : void 0);
         Vue.setAttr(_n11, "auto-height", props2.autoHeight);
         Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
           style: props2.placeholderStyle,
@@ -3910,7 +3914,10 @@ function useTabBarStyle(tabBar) {
     if (borderColor && shared.isString(borderColor)) {
       return { backgroundColor: borderColor };
     }
-    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
+    return {
+      // 主题解析后的 rgba 可直接使用，未解析的变量仍按原有规则回退。
+      backgroundColor: BORDER_COLORS[borderStyle2] || (shared.isString(borderStyle2) && borderStyle2.startsWith("rgba(") ? borderStyle2 : BORDER_COLORS["black"])
+    };
   });
   const placeholderStyle = Vue.computed(() => {
     return { height: tabBar.height };

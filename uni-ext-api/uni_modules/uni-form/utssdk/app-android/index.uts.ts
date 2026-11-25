@@ -1514,6 +1514,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	private defaultCursorColor: string = '#3393E2'
 	/** 光标颜色 */
 	private cursorColorValue: string = ''
+	private defaultSelectionColor: Int = 0
 	/** 光标 drawable */
 	private cursorDrawable: GradientDrawable | null = null
 	/** 页面偏移辅助 */
@@ -1731,6 +1732,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		if (activity == null) return
 
 		this.editText = new EditText(activity)
+		this.defaultSelectionColor = this.editText!.getHighlightColor()
 		this.editText!.setBackgroundColor(Color.TRANSPARENT)
 		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
 		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
@@ -2370,6 +2372,10 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.cursorColorValue = value
 		if (this.editText == null) return
 		this.applyCursorColorIfNeeded()
+	}
+
+	updateSelectionColor(value: string) {
+		this.editText?.setHighlightColor(parseAndroidColorValue(value) ?? this.defaultSelectionColor)
 	}
 
 	/**
@@ -3039,6 +3045,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private directionValue: string = 'ltr'
 	private defaultCursorColor: string = '#3393E2'
 	private cursorColorValue: string = ''
+	private defaultSelectionColor: Int = 0
 	private cursorDrawable: GradientDrawable | null = null
 	private adjustPositionHelper: UniAndroidAdjustPositionHelper | null = null
 	private keyboardManager: UniAndroidKeyboardManager | null = null
@@ -3184,6 +3191,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		if (activity == null) return
 
 		this.editText = new UniAndroidTextareaEditText(activity)
+		this.defaultSelectionColor = this.editText!.getHighlightColor()
 		this.editText!.setBackgroundColor(Color.TRANSPARENT)
 		this.cursorDrawable = createAndroidCursorDrawable(this.editText!, Color.parseColor(this.defaultCursorColor))
 		applyAndroidCursorDrawable(this.editText!, this.cursorDrawable!, Color.parseColor(this.defaultCursorColor))
@@ -3551,6 +3559,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.applyCursorColorIfNeeded()
 	}
 
+	updateSelectionColor(value: string) {
+		this.editText?.setHighlightColor(parseAndroidColorValue(value) ?? this.defaultSelectionColor)
+	}
 
 	updateAutoFocus(value: any) {
 		if (toBoolean(value) && this.editText != null) {

@@ -1764,6 +1764,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     const root = (openBlock(), createBlock("div", {
       "uni-input": "",
       "uni-view": "",
+      "uni-disabled": props2.disabled ? "" : void 0,
       ref: rootRef
     }, [createVNode("div", _hoisted_1$6, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
       style: props2.placeholderStyle,
@@ -2042,6 +2043,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
     const root = (openBlock(), createBlock("div", {
       "uni-textarea": "",
       "uni-view": "",
+      "uni-disabled": props2.disabled ? "" : void 0,
       ref: rootRef,
       "auto-height": props2.autoHeight
     }, [createVNode("div", {
@@ -3853,7 +3855,10 @@ function useTabBarStyle(tabBar) {
     if (borderColor && isString(borderColor)) {
       return { backgroundColor: borderColor };
     }
-    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
+    return {
+      // 主题解析后的 rgba 可直接使用，未解析的变量仍按原有规则回退。
+      backgroundColor: BORDER_COLORS[borderStyle2] || (isString(borderStyle2) && borderStyle2.startsWith("rgba(") ? borderStyle2 : BORDER_COLORS["black"])
+    };
   });
   const placeholderStyle = computed(() => {
     return { height: tabBar.height };

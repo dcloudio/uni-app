@@ -3001,10 +3001,13 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
       const _x0 = txt(_n0);
       setNodes(_x0, () => props2.placeholder);
-      renderEffect(() => setDynamicProps(_n0, [scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-input-placeholder", props2.placeholderClass]
-      }]));
+      renderEffect(() => {
+        setAttr(_n7, "uni-disabled", props2.disabled ? "" : void 0);
+        setDynamicProps(_n0, [scopedAttrsState.attrs, {
+          style: props2.placeholderStyle,
+          class: ["uni-input-placeholder", props2.placeholderClass]
+        }]);
+      });
       setInsertionState(_n6, 1);
       createIf(() => props2.confirmType === "search", () => {
         const _n3 = _t2$6();
@@ -3336,6 +3339,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         return _n52;
       })()));
       renderEffect(() => {
+        setAttr(_n11, "uni-disabled", props2.disabled ? "" : void 0);
         setAttr(_n11, "auto-height", props2.autoHeight);
         setDynamicProps(_n0, [scopedAttrsState.attrs, {
           style: props2.placeholderStyle,
@@ -10639,7 +10643,10 @@ function useTabBarStyle(tabBar) {
     if (borderColor && isString(borderColor)) {
       return { backgroundColor: borderColor };
     }
-    return { backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"] };
+    return {
+      // 主题解析后的 rgba 可直接使用，未解析的变量仍按原有规则回退。
+      backgroundColor: BORDER_COLORS[borderStyle2] || (isString(borderStyle2) && borderStyle2.startsWith("rgba(") ? borderStyle2 : BORDER_COLORS["black"])
+    };
   });
   const placeholderStyle = computed(() => {
     return { height: tabBar.height };
