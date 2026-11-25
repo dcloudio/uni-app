@@ -81,6 +81,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
             isFirstStart = false
             return
           }
+          // 启动首轮保留清理标记，第二轮开始在加载 UTS 插件前恢复缓存判断。
+          // 首轮失败后的重试也走这里，允许复用有效的云端缓存。
+          if (process.env.HX_IS_CLEAN_CACHE === 'true') {
+            process.env.HX_IS_CLEAN_CACHE = 'false'
+          }
           output('log', M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()

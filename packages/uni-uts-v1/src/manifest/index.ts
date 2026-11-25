@@ -83,6 +83,7 @@ async function checkWithPlayground(
 ): Promise<CheckResult> {
   // 第一步：获取所有文件列表
   const files = await resolvePluginFiles(platform, pluginDir, is_uni_modules)
+  const forceCompile = process.env.HX_IS_CLEAN_CACHE === 'true'
   let tips = ''
   // 标准基座检查是否包含原生资源/配置
   if (type === 'standard') {
@@ -100,13 +101,16 @@ async function checkWithPlayground(
         }
       }
     }
+    if (forceCompile) {
+      return { expired: true, tips, files }
+    }
   }
   // 第二步：获取当前插件缓存文件信息
   const manifest = resolveManifestJson(platform, pluginRelativeDir, cacheDir)
   if (!manifest) {
     return { expired: true, tips, files }
   }
-  // 自定义基座需要额外比较原生依赖，依赖变化时不复用旧缓存，避免编译使用旧依赖报错。
+  // 自定义基座即使强制编译，也需检查原生依赖及后续文件变更，保留重新打包提示。
   const dependenciesMatched =
     type !== 'custom' ||
     checkDependenciesCache(
@@ -128,7 +132,7 @@ async function checkWithPlayground(
     }
   }
   return {
-    expired: !dependenciesMatched || res !== true,
+    expired: forceCompile || !dependenciesMatched || res !== true,
     tips,
     files,
   }

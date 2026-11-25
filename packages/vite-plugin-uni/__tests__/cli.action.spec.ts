@@ -16,7 +16,11 @@ test.each([false, true])(
   '字节码模式只在首轮产物生成时补充编译提示（首轮失败=%s）',
   async (firstBuildFailed) => {
     const originalEnv = process.env
-    process.env = { ...originalEnv, UNI_APP_X_DOM2_DYNAMIC: 'true' }
+    process.env = {
+      ...originalEnv,
+      UNI_APP_X_DOM2_DYNAMIC: 'true',
+      HX_IS_CLEAN_CACHE: 'true',
+    }
     delete process.env.UNI_COMPILE_TARGET
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     try {
@@ -29,6 +33,7 @@ test.each([false, true])(
       } as const
 
       await onBuildEvent!(start)
+      expect(process.env.HX_IS_CLEAN_CACHE).toBe('true')
       if (!firstBuildFailed) {
         onRenderStart!()
         onRenderStart!()
@@ -40,6 +45,7 @@ test.each([false, true])(
       await onBuildEvent!(start)
       onRenderStart!()
 
+      expect(process.env.HX_IS_CLEAN_CACHE).toBe('false')
       expect(output).toHaveBeenCalledWith('log', M['dev.watching.start'])
       expect(log).not.toHaveBeenCalled()
     } finally {

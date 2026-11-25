@@ -1,3 +1,5 @@
+import { EventEmitter } from 'node:events'
+
 jest.mock('@dcloudio/uni-cli-shared', () => ({
   M: {},
   isUniAppXAndroidVapor: () =>
@@ -31,6 +33,7 @@ jest.mock('../src/cli/action', () => ({
 
 describe('cli uvue init', () => {
   const originalEnv = {
+    HX_IS_CLEAN_CACHE: process.env.HX_IS_CLEAN_CACHE,
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
     UNI_APP_X_SINGLE_THREAD: process.env.UNI_APP_X_SINGLE_THREAD,
@@ -144,5 +147,20 @@ describe('cli uvue init', () => {
     initUVueEnv()
 
     expect(process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE).toBe('js')
+  })
+
+  test('Android 原生开发第二轮起恢复缓存判断，无需等待首轮成功', async () => {
+    process.env.HX_IS_CLEAN_CACHE = 'true'
+    const watcher = new EventEmitter()
+    const { buildByVite } = jest.requireMock('../src/cli/build')
+    buildByVite.mockResolvedValue(watcher)
+    const { runUVueAndroidDev } = require('../src/cli/uvue')
+    await runUVueAndroidDev({ platform: 'app' })
+
+    watcher.emit('event', { code: 'BUNDLE_START' })
+    expect(process.env.HX_IS_CLEAN_CACHE).toBe('true')
+    watcher.emit('event', { code: 'ERROR', error: new Error('编译环境缺失') })
+    watcher.emit('event', { code: 'BUNDLE_START' })
+    expect(process.env.HX_IS_CLEAN_CACHE).toBe('false')
   })
 })

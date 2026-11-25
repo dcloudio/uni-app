@@ -64,6 +64,11 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         isFirstStart = false
         return
       }
+      // 启动首轮保留清理标记，第二轮开始在加载 UTS 插件前恢复缓存判断。
+      // 首轮失败后的重试也走这里，允许复用有效的云端缓存。
+      if (process.env.HX_IS_CLEAN_CACHE === 'true') {
+        process.env.HX_IS_CLEAN_CACHE = 'false'
+      }
       output('log', M['dev.watching.start'])
       // 重置一下，uts编译报错会导致下一次开始差量编译紧接着上一次的差量编译，导致无法正常输出
       resetOutput('log')

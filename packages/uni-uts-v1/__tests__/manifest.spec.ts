@@ -7,7 +7,11 @@ import {
   resolveManifestJson,
   resolvePluginFiles,
 } from '../src/manifest/manifest'
-import { checkKotlinCompile, checkSwiftCompile } from '../src/manifest/index'
+import {
+  checkCompile,
+  checkKotlinCompile,
+  checkSwiftCompile,
+} from '../src/manifest/index'
 import {
   resolveSourceMapCacheFilename,
   resolveSourceMapFilename,
@@ -41,6 +45,51 @@ const pluginOptions = {
 }
 
 describe('manifest', () => {
+  test.each([
+    ['app-android', 'standard'],
+    ['app-android', 'custom'],
+    ['app-ios', 'standard'],
+    ['app-ios', 'custom'],
+  ] as const)('%s %s 仅根据清理标记强制编译', async (platform, base) => {
+    const tempCacheDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'uts-clean-cache-')
+    )
+    const options = { ...pluginModuleOptions, cacheDir: tempCacheDir }
+    const originalEnv = process.env
+    try {
+      process.env = { ...originalEnv }
+      delete process.env.HX_IS_CLEAN_CACHE
+      await genManifestFile(platform, options)
+      const cached = await checkCompile(platform, base, options)
+      expect(cached.expired).toBe(false)
+
+      process.env.HX_IS_CLEAN_CACHE = 'true'
+      await expect(checkCompile(platform, base, options)).resolves.toEqual({
+        ...cached,
+        expired: true,
+      })
+      // 即使已生成新清单，只要标记仍为 true，就继续强制编译。
+      await genManifestFile(platform, options)
+      await expect(checkCompile(platform, base, options)).resolves.toEqual({
+        ...cached,
+        expired: true,
+      })
+      expect(process.env.HX_IS_CLEAN_CACHE).toBe('true')
+
+      process.env.HX_IS_CLEAN_CACHE = 'false'
+      await expect(checkCompile(platform, base, options)).resolves.toEqual(
+        cached
+      )
+      delete process.env.HX_IS_CLEAN_CACHE
+      await expect(checkCompile(platform, base, options)).resolves.toEqual(
+        cached
+      )
+    } finally {
+      process.env = originalEnv
+      fs.removeSync(tempCacheDir)
+    }
+  })
+
   test('resolve android files', async () => {
     expect(await resolvePluginFiles('app-android', pluginDir, false)).toEqual([
       'interface.uts',
@@ -131,7 +180,9 @@ describe('manifest', () => {
       'uts',
       pluginRelativeDir
     )
+    const originalEnv = process.env
     try {
+      process.env = { ...originalEnv }
       const tempPluginDir = path.join(tempDir, 'test-uts')
       fs.copySync(pluginModuleDir, tempPluginDir)
       const configJsonFile = path.join(
@@ -166,14 +217,49 @@ describe('manifest', () => {
       await genManifestFile('app-android', options)
       fs.outputFileSync(dependenciesCacheFile, oldDependenciesCache)
 
-      const res = await checkKotlinCompile('custom', options)
-      expect(res.expired).toBe(true)
-      expect(res.tips).toBe(
-        'uts插件[test-uts]依赖发生变化，需要重新打包自定义基座'
-      )
+      for (const cleanCache of ['false', 'true'] as const) {
+        process.env.HX_IS_CLEAN_CACHE = cleanCache
+        await expect(
+          checkKotlinCompile('custom', options)
+        ).resolves.toMatchObject({
+          expired: true,
+          tips: 'uts插件[test-uts]依赖发生变化，需要重新打包自定义基座',
+        })
+      }
     } finally {
+      process.env = originalEnv
       fs.removeSync(tempDir)
       fs.removeSync(dependenciesCacheDir)
+    }
+  })
+  test('清理缓存时仍提示自定义基座的原生资源变更', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uts-resources-'))
+    const originalEnv = process.env
+    try {
+      process.env = { ...originalEnv, HX_IS_CLEAN_CACHE: 'true' }
+      const options = {
+        ...pluginModuleOptions,
+        pluginDir: path.join(tempDir, 'test-uts'),
+        cacheDir: path.join(tempDir, 'cache'),
+      }
+      const infoPlist = path.join(
+        options.pluginDir,
+        'utssdk/app-ios/Info.plist'
+      )
+      fs.outputFileSync(infoPlist, 'old')
+      await genManifestFile('app-ios', options)
+      fs.writeFileSync(infoPlist, 'new')
+      fs.utimesSync(infoPlist, 1, 1)
+
+      await expect(checkSwiftCompile('custom', options)).resolves.toMatchObject(
+        {
+          expired: true,
+          tips: 'uts插件[test-uts]依赖的原生配置或三方SDK发生变化，需要重新打包自定义基座',
+        }
+      )
+    } finally {
+      process.env = originalEnv
+      fs.removeSync(tempDir)
     }
   })
   test('gen ios manifest', async () => {

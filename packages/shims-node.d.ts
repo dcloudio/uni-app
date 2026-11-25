@@ -83,6 +83,7 @@ declare namespace NodeJS {
     UNI_H5_BROWSER?: 'builtin'
 
     HX_DEPENDENCIES_DIR?: string // 基座缓存目录，如：unpackage/cache/uts_standard_android
+    HX_IS_CLEAN_CACHE?: 'true' | 'false' // 本次运行是否勾选清理缓存
     HX_USE_BASE_TYPE?: 'standard' | 'custom' // 基座类型
     SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap (已废弃，请使用 UNI_APP_SOURCEMAP 代替)
     UNI_APP_SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap

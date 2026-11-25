@@ -57,11 +57,14 @@ import {
   resolveOutputPluginDir,
   resolveUVueOutputPluginDir,
 } from './uni_modules'
-import { existsSync, readdirSync, rmSync } from 'fs-extra'
+import { copySync, existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
 import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
-import { restoreConfigJson } from './manifest/config'
+import {
+  resolveConfigJsonCacheFile,
+  restoreConfigJson,
+} from './manifest/config'
 import { readCachedUtssdkJs, saveCachedUtssdkJs } from './manifest/utssdkJs'
 
 export { syncUTSFiles } from './uni_modules'
@@ -552,6 +555,7 @@ export async function compile(
       const components =
         utsPlatform === 'app-android' ? androidComponents : iosComponents
       let tips = ''
+      const forceCompile = process.env.HX_IS_CLEAN_CACHE === 'true'
       // dev 模式
       if (cacheDir) {
         // 检查缓存
@@ -662,7 +666,7 @@ export async function compile(
             pkg.is_uni_modules,
             inputDir,
             outputDir,
-            cacheDir,
+            '', // 配置先写入输出目录，编译成功后再更新缓存。
             resolveConfigProvider(utsPlatform, pkg.id, transform)
           )
         }
@@ -699,7 +703,7 @@ export async function compile(
             pkg.is_uni_modules,
             inputDir,
             outputDir,
-            cacheDir,
+            '', // 配置先写入输出目录，编译成功后再更新缓存。
             resolveConfigProvider(utsPlatform, pkg.id, transform),
             !!(res && hasUTSBridgeCode(res.uts_bridge))
           )
@@ -745,6 +749,23 @@ export async function compile(
             }
             // 生成缓存文件
             if (cacheDir) {
+              // 配置与成功产物一起更新，编译失败时保留原有缓存配置。
+              const configJsonFile = join(
+                outputPluginDir,
+                pkg.is_uni_modules ? 'utssdk' : '',
+                utsPlatform,
+                'config.json'
+              )
+              if (existsSync(configJsonFile)) {
+                copySync(
+                  configJsonFile,
+                  resolveConfigJsonCacheFile(
+                    pluginRelativeDir,
+                    cacheDir,
+                    utsPlatform
+                  )
+                )
+              }
               // 存储 sourcemap
               storeSourceMap(
                 utsPlatform,
@@ -771,8 +792,9 @@ export async function compile(
             }
           } else {
             errMsg = compileErrMsg(pkg.id)
-            // 如果编译失败，应该清空已有缓存
-            if (cacheDir) {
+            // 强制编译可能因本地环境不完整而失败，此时保留云端下发的缓存。
+            // 后续热更新或取消清理后，仍按源码及依赖校验缓存是否可用。
+            if (cacheDir && !forceCompile) {
               clearManifestFiles(utsPlatform, pluginRelativeDir, cacheDir)
             }
           }
