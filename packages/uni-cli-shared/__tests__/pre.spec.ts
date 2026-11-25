@@ -17,6 +17,7 @@ describe('pre plugin', () => {
 
   beforeEach(() => {
     inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-pre-plugin-'))
+    fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
     fs.mkdirSync(path.join(inputDir, 'pages', 'index'), { recursive: true })
     fs.writeFileSync(path.join(inputDir, 'pages', 'index', 'index.uvue'), '')
     fs.writeFileSync(
