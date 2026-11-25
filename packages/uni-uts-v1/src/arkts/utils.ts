@@ -337,6 +337,7 @@ export function getArkTSAutoImports(
     /**
      * 蒸汽模式或编译内置插件时禁止autoImport vue相关变量
      * VDOM模式、蒸汽模式ArkTS引擎部分插件可能引用了vue相关变量，内置插件不允许引用
+     * 现状：内置uni-match-media在VDOM模式使用了onResize，仅此一例
      */
     if (
       (isX && !isVapor) ||
