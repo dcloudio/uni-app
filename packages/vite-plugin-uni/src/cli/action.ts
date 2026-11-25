@@ -8,7 +8,9 @@ import {
   APP_SERVICE_FILENAME,
   M,
   isInHBuilderX,
+  isNormalCompileTarget,
   isUniAppXAndroidNative,
+  isUniAppXVapor,
   output,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -24,6 +26,7 @@ import {
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
 import type { FSWatcher } from 'chokidar'
+import type { RollupWatcherEvent } from 'rollup'
 import { initLogger } from '../configResolved'
 
 export async function runDev(options: CliOptions & ServerOptions) {
@@ -57,8 +60,23 @@ export async function runDev(options: CliOptions & ServerOptions) {
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      await build(options, async (event) => {
+      let showCompileProgress = false
+      const onRenderStart =
+        (options.platform === 'app' || options.platform === 'app-harmony') &&
+        isUniAppXVapor() &&
+        process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' &&
+        isNormalCompileTarget()
+          ? () => {
+              if (showCompileProgress) {
+                showCompileProgress = false
+                console.log(M['compiling'])
+              }
+            }
+          : undefined
+      const onBuildEvent = async (event: RollupWatcherEvent) => {
         if (event.code === 'BUNDLE_START') {
+          // 首轮与重试共用 watcher 的构建开始事件判定。
+          showCompileProgress = isFirstStart
           if (isFirstStart) {
             isFirstStart = false
             return
@@ -227,7 +245,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             })
           }
         }
-      })
+      }
+      await build(options, onBuildEvent, onRenderStart)
     }
   } catch (e: any) {
     if (options.platform === 'h5') {

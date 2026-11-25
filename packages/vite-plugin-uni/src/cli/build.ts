@@ -18,17 +18,23 @@ export async function buildByVite(inlineConfig: InlineConfig) {
 
 export async function build(
   options: CliOptions,
-  callback?: (event: RollupWatcherEvent) => void
+  callback?: (event: RollupWatcherEvent) => void,
+  onRenderStart?: () => void
 ): Promise<void> {
   if (process.env.UNI_APP_X !== 'true' && options.platform === 'app') {
     await buildApp(options, callback)
     return
   }
-  const watcher = await buildByVite(
-    addConfigFile(
-      initBuildOptions(options, cleanOptions(options) as BuildOptions)
-    )
+  const config = initBuildOptions(
+    options,
+    cleanOptions(options) as BuildOptions
   )
+  if (onRenderStart) {
+    config.plugins = [
+      { name: 'uni:dev-compile-progress', renderStart: onRenderStart },
+    ]
+  }
+  const watcher = await buildByVite(addConfigFile(config))
   if (callback && typeof watcher === 'object' && 'on' in watcher) {
     watcher.on('event', callback)
   }
