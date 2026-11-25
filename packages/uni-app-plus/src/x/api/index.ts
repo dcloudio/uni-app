@@ -44,9 +44,8 @@ export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
 // export * from '@dcloudio/uni-ext-api/uni-actionSheet'
 export * from './route/closeNativeDialogPage'
 // base
-// #if !_VAPOR_
+// 蒸汽模式原生层event-bus会转发到js层的event-bus
 export { $emit, $off, $on, $once } from './base/event-bus'
-// #endif
 export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { getEnterOptionsSync } from './base/getEnterOptionsSync'
