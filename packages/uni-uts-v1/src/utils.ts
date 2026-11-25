@@ -50,6 +50,7 @@ interface ToOptions {
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   uniModules: string[]
+  onCompileStart?: () => void
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
@@ -72,6 +73,7 @@ export interface RunOptions {
   sourceMap: boolean
   transform?: UTSOutputOptions['transform']
   uniModules: string[]
+  onCompileStart?: () => void
 }
 
 export interface RunProdOptions extends RunOptions {

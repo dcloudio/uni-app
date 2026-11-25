@@ -30,6 +30,7 @@ describe('arkts compiler', () => {
       UNI_APP_X_TSC: 'false',
       UNI_APP_X_DOM2: 'true',
       UNI_UTS_MODULE_PREFIX: '',
+      UNI_HBUILDERX_LANGID: 'en',
     }
   })
 
@@ -46,7 +47,13 @@ describe('arkts compiler', () => {
       'export const zstd = 1'
     )
 
-    const bundle = jest.fn().mockResolvedValue({ deps: [] })
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const bundle = jest.fn().mockImplementation(async () => {
+      expect(log.mock.calls).toEqual([
+        ['UTS plugin [zstd] compilation started'],
+      ])
+      return { deps: [] }
+    })
     getUTSCompiler.mockReturnValue({
       bundle,
       UTSTarget: { ARKTS: 'arkts' } as any,
@@ -68,5 +75,9 @@ describe('arkts compiler', () => {
         }),
       })
     )
+    expect(log.mock.calls).toEqual([
+      ['UTS plugin [zstd] compilation started'],
+      ['UTS plugin [zstd] compilation completed'],
+    ])
   })
 })

@@ -67,6 +67,7 @@ export async function runSwiftProd(
     sourceMap,
     hookClass,
     uniModules,
+    onCompileStart,
   }: RunProdOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -89,6 +90,7 @@ export async function runSwiftProd(
     extApis,
     transform,
     uniModules,
+    onCompileStart,
   })
   if (!result) {
     return
@@ -162,6 +164,7 @@ export async function runSwiftDev(
     sourceMap,
     uniModules,
     rewriteConsoleExpr,
+    onCompileStart,
   }: RunDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -199,6 +202,7 @@ export async function runSwiftDev(
     extApis,
     transform,
     uniModules,
+    onCompileStart,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -294,6 +298,7 @@ export async function compile(
     extApis,
     transform,
     uniModules,
+    onCompileStart,
   }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -357,6 +362,7 @@ export async function compile(
       },
     },
   }
+  onCompileStart?.()
   const result = await bundle(UTSTarget.SWIFT, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {

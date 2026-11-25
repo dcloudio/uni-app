@@ -13,7 +13,7 @@ import {
 } from '../utils'
 import type { CompileResult } from '../index'
 import { sync } from 'fast-glob'
-import { parseJson } from '../shared'
+import { logUTSPluginCompile, parseJson } from '../shared'
 import { parseUTSSyntaxError } from '../stacktrace'
 import { getArkTSAutoImports, getHarmonyRuntimePackageName } from './utils'
 import { compileEncrypt } from './encrypt'
@@ -323,6 +323,7 @@ export default {
 }`
   )
 
+  logUTSPluginCompile(pluginId, 'start')
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
 
   if (!result) {
@@ -342,6 +343,8 @@ export default {
   if (result.inject_apis && result.inject_apis.length) {
     addPluginInjectApis(result.inject_apis)
   }
+
+  logUTSPluginCompile(pluginId, 'complete')
 
   return {
     code: requireUTSPluginCode(pluginId, !!isExtApi),

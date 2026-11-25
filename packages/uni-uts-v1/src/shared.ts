@@ -39,6 +39,17 @@ export function parseJson(jsonStr: string) {
   return parse(jsonStr)
 }
 
+export function logUTSPluginCompile(id: string, stage: 'start' | 'complete') {
+  if (process.env.UNI_HBUILDERX_LANGID === 'en') {
+    const status =
+      stage === 'start' ? 'compilation started' : 'compilation completed'
+    console.log(`UTS plugin [${id}] ${status}`)
+    return
+  }
+  const status = stage === 'start' ? '开始编译' : '编译完成'
+  console.log(`uts插件[${id}]${status}`)
+}
+
 export function once<T extends (...args: any[]) => any>(
   fn: T,
   ctx: unknown = null

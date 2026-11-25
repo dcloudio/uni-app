@@ -27,7 +27,7 @@ import {
 } from './utils'
 import { parseUTSSwiftPluginStacktrace } from './stacktrace'
 import { resolveUTSPluginSourceMapFile } from './sourceMap'
-import { isWindows, normalizePath } from './shared'
+import { isWindows, logUTSPluginCompile, normalizePath } from './shared'
 import {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
@@ -357,7 +357,15 @@ export async function compile(
       }
       return result
     }
-    // 生产模式 支持同时生成 android 和 ios 的 uts 插件
+    // 同时编译 Android 和 iOS 时，每个插件只输出一次进度。
+    const { id: pluginId } = pkg
+    let started = false
+    function logCompileStart() {
+      if (!started) {
+        logUTSPluginCompile(pluginId, 'start')
+        started = true
+      }
+    }
     if (
       utsPlatform === 'app-android' ||
       utsPlatform === 'app' ||
@@ -399,6 +407,7 @@ export async function compile(
                 )
               : '',
           noEmit: isWgtProxyCode,
+          onCompileStart: logCompileStart,
         })
         if (result) {
           if (!isWgtProxyCode && result.inject_apis) {
@@ -482,6 +491,7 @@ export async function compile(
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
+          onCompileStart: logCompileStart,
         })
         if (result) {
           if (result.inject_apis) {
@@ -511,6 +521,9 @@ export async function compile(
           }
         }
       }
+    }
+    if (started) {
+      logUTSPluginCompile(pluginId, 'complete')
     }
   } else {
     const compilerType = utsPlatform === 'app-android' ? 'kotlin' : 'swift'
@@ -671,6 +684,7 @@ export async function compile(
           ),
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
+          onCompileStart: () => logUTSPluginCompile(pkg.id, 'start'),
         })
         // 安卓平台config.json可以在dex之后生成
         if (utsPlatform === 'app-android') {
@@ -691,7 +705,10 @@ export async function compile(
           )
         }
         if (res) {
-          if (res.code) {
+          // Kotlin 仅在生成 dex 后记录产物，Swift 还需确认 framework 编译成功。
+          const isSuccess =
+            !!res.changed?.length && (res.type === 'kotlin' || res.code === 0)
+          if (res.code || (res.type === 'swift' && !isSuccess)) {
             //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。
             console.error(`uts插件[${pkg.id}]编译失败`)
           }
@@ -699,31 +716,21 @@ export async function compile(
             // 添加其他文件的依赖
             deps.push(...res.deps)
           }
-          let isSuccess = false
-          if (res.type === 'swift') {
-            if (res.code) {
-              errMsg = compileErrMsg(pkg.id)
-              try {
-                const stacktrace = await parseUTSSwiftPluginStacktrace({
-                  stacktrace: res.msg,
-                  sourceMapFile: resolveUTSPluginSourceMapFile(
-                    'swift',
-                    filename,
-                    inputDir,
-                    outputDir
-                  ),
-                  sourceRoot: inputDir,
-                })
-                console.log(stacktrace)
-              } catch (e) {
-                console.error(`error: ` + res.msg)
-              }
-            } else {
-              isSuccess = true
-            }
-          } else if (res.type === 'kotlin') {
-            if (res.changed.length) {
-              isSuccess = true
+          if (res.type === 'swift' && res.code) {
+            try {
+              const stacktrace = await parseUTSSwiftPluginStacktrace({
+                stacktrace: res.msg,
+                sourceMapFile: resolveUTSPluginSourceMapFile(
+                  'swift',
+                  filename,
+                  inputDir,
+                  outputDir
+                ),
+                sourceRoot: inputDir,
+              })
+              console.log(stacktrace)
+            } catch (e) {
+              console.error(`error: ` + res.msg)
             }
           }
           if (isSuccess) {
@@ -763,6 +770,7 @@ export async function compile(
               warn(versionTips)
             }
           } else {
+            errMsg = compileErrMsg(pkg.id)
             // 如果编译失败，应该清空已有缓存
             if (cacheDir) {
               clearManifestFiles(utsPlatform, pluginRelativeDir, cacheDir)
@@ -774,16 +782,15 @@ export async function compile(
               files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
             } catch (e) {}
           }
-          if (res.changed && res.changed.length) {
+          if (isSuccess) {
             files.push(...res.changed)
-          } else {
-            if (res.type === 'kotlin') {
-              errMsg = compileErrMsg(pkg.id)
-            }
           }
           process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
             ...new Set(files),
           ])
+          if (isSuccess) {
+            logUTSPluginCompile(pkg.id, 'complete')
+          }
         } else {
           errMsg = compileErrMsg(pkg.id)
         }

@@ -132,6 +132,7 @@ export async function runKotlinProd(
     sourceMap,
     uniModules,
     noEmit,
+    onCompileStart,
   }: RunProdOptions
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -159,6 +160,7 @@ export async function runKotlinProd(
     transform,
     uniModules,
     outFilename,
+    onCompileStart,
   })
   if (!result) {
     return
@@ -261,6 +263,7 @@ export async function runKotlinDev(
     sourceMap,
     uniModules,
     rewriteConsoleExpr,
+    onCompileStart,
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -282,6 +285,7 @@ export async function runKotlinDev(
     extApis,
     transform,
     uniModules,
+    onCompileStart,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -596,6 +600,7 @@ export async function compile(
     uniModules,
     outFilename,
     noEmit,
+    onCompileStart,
   }: ToKotlinOptions
 ) {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
@@ -704,7 +709,7 @@ export async function compile(
       },
     },
   }
-  // console.log('bundle options', options)
+  onCompileStart?.()
   const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
     !noEmit &&
