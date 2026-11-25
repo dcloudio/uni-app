@@ -57,7 +57,7 @@ Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18; iOS: 4.18 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
+| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18; iOS: 4.18; HarmonyOS: 5.33 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
 | distribute | [distribute 配置项列表](#app-distribute) |  |   | App平台发布配置 |
 | initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31; iOS: 4.31; HarmonyOS: x | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
 
