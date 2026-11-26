@@ -21121,7 +21121,25 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
+const setUniCustomEventTarget = Symbol.for("uni-app-x.setCustomEventTarget");
+const eventTargets = /* @__PURE__ */ new WeakMap();
 class UniCustomEvent2 {
+  get target() {
+    var _a;
+    return ((_a = eventTargets.get(toRaw(this))) == null ? void 0 : _a.target) ?? null;
+  }
+  get currentTarget() {
+    var _a;
+    return ((_a = eventTargets.get(toRaw(this))) == null ? void 0 : _a.currentTarget) ?? null;
+  }
+  [setUniCustomEventTarget](target) {
+    const event = toRaw(this);
+    if (target !== void 0) {
+      eventTargets.set(event, { target, currentTarget: target });
+    } else {
+      eventTargets.get(event).currentTarget = null;
+    }
+  }
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;

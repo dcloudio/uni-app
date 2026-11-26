@@ -11870,6 +11870,22 @@ function normalizeEmitsOptions(comp) {
 	} else normalized = raw;
 	return comp.__emitsOptions = normalized;
 }
+const setUniCustomEventTarget = Symbol.for("uni-app-x.setCustomEventTarget");
+function builtInEmit(instance, event, ...rawArgs) {
+	const payload = rawArgs[0];
+	const setTarget = rawArgs.length === 1 && isObject(payload) && payload[setUniCustomEventTarget];
+	if (typeof setTarget !== "function") {
+		emit(instance, event, ...rawArgs);
+		return;
+	}
+	const root = instance.block ? getRootElement(instance.block) : void 0;
+	setTarget.call(payload, root || null);
+	try {
+		emit(instance, event, payload);
+	} finally {
+		setTarget.call(payload);
+	}
+}
 function emit(instance, event, ...rawArgs) {
 	const vnode = isInteropEnabled && instance.interopVNode;
 	baseEmit(instance, vnode ? vnode.props || EMPTY_OBJ : instance.rawValues, defaultPropGetter, event, ...rawArgs);
@@ -15761,7 +15777,8 @@ var VaporComponentInstance = class {
 		}
 		this.block = null;
 		this.scope = new EffectScope(true);
-		this.emit = emit.bind(null, this);
+		const rootElement = comp.rootElement;
+		this.emit = (rootElement && rootElement.class ? builtInEmit : emit).bind(null, this);
 		this.expose = exposeVapor.bind(null, this);
 		this.refs = EMPTY_OBJ;
 		this.emitted = this.exposed = this.exposeProxy = this.propsDefaults = null;
