@@ -47,7 +47,7 @@ import {
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
 
-import { resolveSingleSubpackage } from '../plugins/subpackageChunks'
+import { resolveSubpackageRoots } from '../plugins/subpackageChunks'
 
 const debugChunk = debug('uni:chunk')
 
@@ -335,7 +335,8 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   const resolveManualChunk = (
     id: string,
     api: ManualChunkApi,
-    jsonDependencies?: Set<string>
+    jsonDependencies?: Set<string>,
+    subpackageRoots?: Map<string, string | undefined>
   ): ChunkAssignment | undefined => {
     const { getModuleInfo } = api
     const independentRoot = parseIndependentRoot(id)
@@ -361,12 +362,9 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     ) {
       return
     }
-    const subpackageRoot =
-      !independentRoot && optimizeSubpackages
-        ? resolveSingleSubpackage(id, getModuleInfo, inputDir, (importer) =>
-            resolveVendorChunk(importer, getModuleInfo, true)
-          )
-        : undefined
+    const subpackageRoot = independentRoot
+      ? undefined
+      : subpackageRoots?.get(id)
     const dataChunk = resolveDataChunkType(filename, optimizeSubpackages)
     if (dataChunk) {
       const root = independentRoot || subpackageRoot
@@ -433,12 +431,18 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     }
     let names = chunkNames.get(api)
     if (!names) {
+      const subpackageRoots = resolveSubpackageRoots(
+        api.getModuleIds(),
+        api.getModuleInfo,
+        inputDir,
+        (id) => resolveVendorChunk(id, api.getModuleInfo, true)
+      )
       const jsonDependencies = collectJsonDependencies(api)
       const assignments = new Map<string, ChunkAssignment | undefined>()
       for (const moduleId of api.getModuleIds()) {
         assignments.set(
           moduleId,
-          resolveManualChunk(moduleId, api, jsonDependencies)
+          resolveManualChunk(moduleId, api, jsonDependencies, subpackageRoots)
         )
       }
       names = assignChunkNames(assignments)
