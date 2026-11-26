@@ -32,6 +32,8 @@ uni-app x框架因为需要也会产生一些文件在CACHE目录中，比如拍
   [UTSAndroid.convert2AbsFullPath](../uts/utsandroid.md#convert2absfullpath-path-string)  
 - app-ios平台  
   [UTSiOS.convert2AbsFullPath](../uts/utsios.md#convert2absfullpath)  
+- app-harmony平台  
+  [UTSHarmony.convert2AbsFullPath](../uts/utsharmony.md#convert2absfullpath)  
 
 ## 代码包文件@package
 
@@ -155,6 +157,8 @@ App和小程序上都给应用提供了文件沙盒系统（SANDBOX）。即App�
 	应用专属存储空间的外置存储空间根目录下的cache目录，通常为“/Android/data/%应用包名%/cache/”
 - iOS平台
 	应用沙盒目录下的Library/Caches目录
+- HarmonyOS平台
+	应用沙盒的缓存目录；`uni.env.CACHE_PATH` 在鸿蒙上以 `unifile://cache/` 协议路径返回，uni-app x 在读写文件时会转换为真实路径
 
 uni-app x的部分内置API，在App平台会产生临时文件会放置在本cache目录，如：
 - uni.downloadFile下载的文件
