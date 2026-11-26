@@ -251,6 +251,7 @@ const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
 const compiledUniModules = new Map<string, CompileResult>()
+const pendingUTSCompiles = new Set<Promise<void | CompileResult>>()
 
 export function getCompiledUniModule(pluginId: string) {
   return compiledUniModules.get(pluginId)
@@ -278,6 +279,21 @@ let utsPluginsCompiler = async (
   plugins: string[],
   pluginContext?: PluginContext
 ) => {}
+
+// 多个 Vite 插件实例共享队列；依赖插件必须在入队前完成，避免互相等待。
+let utsCompileQueue = Promise.resolve()
+function enqueueUTSCompile<T extends unknown[], R>(
+  compile: (...args: T) => Promise<R>,
+  ...args: T
+): Promise<R> {
+  const result = utsCompileQueue.then(() => compile(...args))
+  // 保留当前任务的错误，同时允许后续插件及热更新继续编译。
+  utsCompileQueue = result.then(
+    () => {},
+    () => {}
+  )
+  return result
+}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   const uvueOutputDir = uvueOutDir(platform)
@@ -439,10 +455,21 @@ export function uniUTSAppUniModulesPlugin(
     }[]
   >()
 
-  const compilePlugin = async (
+  const compilePlugin = (pluginDir: string, pluginContext?: PluginContext) => {
+    // 跟踪完整任务，包含入队前的文件同步和依赖编译。
+    const task = doCompilePlugin(pluginDir, pluginContext)
+    pendingUTSCompiles.add(task)
+    const settled = () => {
+      pendingUTSCompiles.delete(task)
+    }
+    task.then(settled, settled)
+    return task
+  }
+
+  const doCompilePlugin = async (
     pluginDir: string,
     pluginContext?: PluginContext
-  ) => {
+  ): Promise<void | CompileResult> => {
     const pluginId = path.basename(pluginDir)
 
     if (uniXKotlinCompiler) {
@@ -588,7 +615,7 @@ export function uniUTSAppUniModulesPlugin(
     }
 
     if (process.env.UNI_PLATFORM === 'app-harmony') {
-      return compiler.compileArkTS(pluginDir, {
+      return enqueueUTSCompile(compiler.compileArkTS, pluginDir, {
         isX: !!options.x,
         isExtApi,
         sourceMap: enableSourceMap(),
@@ -622,7 +649,7 @@ export function uniUTSAppUniModulesPlugin(
       process.env.UNI_COMPILE_TARGET === 'uni_modules'
         ? resolveUniModuleNativeEntry(pluginDir, process.env.UNI_UTS_PLATFORM)
         : undefined
-    const result = await compiler.compile(pluginDir, {
+    const result = await enqueueUTSCompile(compiler.compile, pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
@@ -741,6 +768,10 @@ export function uniUTSAppUniModulesPlugin(
     isNormalCompileTarget()
 
   const cleanupBuild = async () => {
+    // Rollup 报错后可能仍有编译任务；先等完（含期间新增的依赖），再清理和关闭编译器。
+    while (pendingUTSCompiles.size) {
+      await Promise.allSettled(pendingUTSCompiles)
+    }
     utsModuleCaches.clear()
     changedFiles.clear()
     if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
