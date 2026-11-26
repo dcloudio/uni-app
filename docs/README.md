@@ -416,7 +416,7 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   
 	官方已于2024年停止nvue和5+的维护。并将于2027年初停止 uni-app 的App平台 和 uni-app x vdom平台 的维护。
 	
-	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app 的app平台的维护意义也不大了。
+	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app 的app平台的维护意义也不大了。[升级指南](./uniapptox.md)
 	
 	不再维护不是下线，而是没有重大问题的话（如新手机不兼容）不会再更新了。
 
