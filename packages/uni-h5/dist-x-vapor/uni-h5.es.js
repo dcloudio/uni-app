@@ -28952,22 +28952,16 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
 const _t0$1 = template('<i class="uni-toast__icon uni-icon-font">', 1);
 const _t1$1 = template('<i class="uni-toast__icon uni-loading">', 3);
 function createToastIconVNode(icon) {
-  return (() => {
-    const _n5 = _t0$1();
-    setInsertionState(_n5);
-    createIf(() => icon === "success", () => {
-      const _n2 = createNodes(() => ICON_FONT_SUCCESS_NO_CIRCLE);
-      return _n2;
-    }, () => {
-      const _n4 = createNodes(() => ICON_FONT_WARN);
-      return _n4;
-    }, 266);
-    setStyle(_n5, {
+  const element = (() => {
+    const _n0 = _t0$1();
+    setStyle(_n0, {
       color: "#fff",
       fontSize: "36px"
     });
-    return _n5;
+    return _n0;
   })();
+  element.textContent = icon === "success" ? ICON_FONT_SUCCESS_NO_CIRCLE : ICON_FONT_WARN;
+  return element;
 }
 function createToastIcon$1(icon) {
   switch (icon) {
