@@ -1,31 +1,5 @@
 // #ifdef WEB
-// #ifdef VUE3-VAPOR
-import { toRaw } from 'vue'
-
-const setUniCustomEventTarget = Symbol.for('uni-app-x.setCustomEventTarget')
-const eventTargets = new WeakMap<object, { target: Element | null; currentTarget: Element | null }>()
-// #endif
-
 class UniCustomEvent<T> {
-	// #ifdef VUE3-VAPOR
-	get target() {
-		return eventTargets.get(toRaw(this))?.target ?? null
-	}
-
-	get currentTarget() {
-		return eventTargets.get(toRaw(this))?.currentTarget ?? null
-	}
-
-	[setUniCustomEventTarget](target?: Element | null) {
-		const event = toRaw(this)
-		if (target !== undefined) {
-			eventTargets.set(event, { target, currentTarget: target })
-		} else {
-			eventTargets.get(event)!.currentTarget = null
-		}
-	}
-
-	// #endif
 	detail: T
 	constructor(type: string, detail: T) {
 		this.type = type

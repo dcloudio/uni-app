@@ -11668,20 +11668,33 @@ function normalizeEmitsOptions(comp) {
 	} else normalized = raw;
 	return comp.__emitsOptions = normalized;
 }
-const setUniCustomEventTarget = Symbol.for("uni-app-x.setCustomEventTarget");
 function builtInEmit(instance, event, ...rawArgs) {
 	const payload = rawArgs[0];
-	const setTarget = rawArgs.length === 1 && (0, _vue_shared.isObject)(payload) && payload[setUniCustomEventTarget];
-	if (typeof setTarget !== "function") {
+	if (rawArgs.length !== 1 || !(0, _vue_shared.isObject)(payload) || payload.type !== event || !(0, _vue_shared.hasOwn)(payload, "detail") || "target" in payload || "currentTarget" in payload || !Object.isExtensible(payload)) {
 		emit(instance, event, ...rawArgs);
 		return;
 	}
-	const root = instance.block ? getRootElement(instance.block) : void 0;
-	setTarget.call(payload, root || null);
+	const prototype = Object.getPrototypeOf(payload);
+	if (!prototype || !Object.getPrototypeOf(prototype)) {
+		emit(instance, event, payload);
+		return;
+	}
+	const target = instance.block ? getRootElement(instance.block) || null : null;
+	let currentTarget = target;
+	Object.defineProperties(payload, {
+		target: {
+			configurable: true,
+			value: target
+		},
+		currentTarget: {
+			configurable: true,
+			get: () => currentTarget
+		}
+	});
 	try {
 		emit(instance, event, payload);
 	} finally {
-		setTarget.call(payload);
+		currentTarget = null;
 	}
 }
 function emit(instance, event, ...rawArgs) {
