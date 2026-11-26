@@ -256,7 +256,7 @@
     }
 
     function initUTSJSONObjectProperties(obj) {
-        const internalKeyList = [
+        const propertyList = [
             '_resolveKeyPath',
             '_getValue',
             'toJSON',
@@ -271,18 +271,17 @@
             'toMap',
             'forEach',
         ];
-        return new Proxy(obj, {
-            ownKeys(target) {
-                return Reflect.ownKeys(target).filter((key) => typeof key !== 'string' || !internalKeyList.includes(key));
-            },
-            set(target, key, value) {
-                // 同名方法一旦被覆盖就可以被遍历到了
-                if (typeof key === 'string' && internalKeyList.includes(key)) {
-                    internalKeyList.splice(internalKeyList.indexOf(key), 1);
-                }
-                return Reflect.set(target, key, value);
-            },
-        });
+        const propertyDescriptorMap = {};
+        for (let i = 0; i < propertyList.length; i++) {
+            const property = propertyList[i];
+            propertyDescriptorMap[property] = {
+                enumerable: false,
+                configurable: true,
+                writable: true,
+                value: obj[property],
+            };
+        }
+        Object.defineProperties(obj, propertyDescriptorMap);
     }
     function getRealDefaultValue(defaultValue) {
         return defaultValue === void 0 ? null : defaultValue;
@@ -313,7 +312,7 @@
                     }
                 }
             }
-            return initUTSJSONObjectProperties(this);
+            initUTSJSONObjectProperties(this);
         }
         _resolveKeyPath(keyPath) {
             // 非法keyPath不抛出错误，直接返回空数组
