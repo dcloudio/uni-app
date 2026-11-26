@@ -140,6 +140,26 @@ Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
+#### getHarmonyComponentContent\<O extends Object>(): ComponentContent\<O> @getharmonycomponentcontent
+
+获取鸿蒙 ComponentContent
+
+##### getHarmonyComponentContent 兼容性 <Help /> 
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
+
+
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| ComponentContent\<O> |
+ 
+
+
+
+
 #### bindHarmonyController\<T extends Object>(controller: T): void @bindharmonycontroller
 
 绑定鸿蒙控制器

@@ -2787,6 +2787,46 @@ Web: √; 微信小程序: 4.53; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 
 
 
+#### getHarmonyFrameNode(): FrameNode \| null @getharmonyframenode
+
+获取鸿蒙 FrameNode
+
+##### getHarmonyFrameNode 兼容性 <Help /> 
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
+
+
+
+
+##### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| FrameNode | 否 |
+ 
+
+
+
+
+#### getHarmonyComponentContent\<O extends object>(): ComponentContent\<O> @getharmonycomponentcontent
+
+获取鸿蒙 ComponentContent
+
+##### getHarmonyComponentContent 兼容性 <Help /> 
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.36
+
+
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| ComponentContent\<O> |
+ 
+
+
+
+
 #### getHarmonyController(): any \| null @getharmonycontroller
 
 鸿蒙原生组件控制器，可以控制组件的状态。可能返回null
