@@ -97,7 +97,17 @@ export function uniAppManifestPlugin(
       const hasAppDefaultAppTheme = validateThemeValue(
         manifestJson.app?.defaultAppTheme
       )
-
+      // 鸿蒙蒸汽模式允许覆盖manifest.json内的runtime值
+      if (process.env.UNI_APP_X_VAPOR === 'true' && isXHarmony) {
+        if (!manifest['app-harmony']) {
+          manifest['app-harmony'] = {}
+        }
+        if (!manifest['app-harmony'].distribute) {
+          manifest['app-harmony'].distribute = {}
+        }
+        manifest['app-harmony'].distribute.runtime =
+          process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
+      }
       if (hasAppDefaultAppTheme) {
         const selectedTheme = manifestJson.app.defaultAppTheme
         outputManifestJson.app = outputManifestJson.app || {}
