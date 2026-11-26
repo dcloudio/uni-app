@@ -144,6 +144,40 @@ describe('框架 TSX 动态行为', () => {
         })
   }
 
+  test('Toast 图标在组件作用域外重新计算时不产生渲染警告', () => {
+    const successGlyph = '\uea08'
+    const errorGlyph = '\uea0b'
+    const { createToastIcon } = evaluateFramework(
+      compileFrameworkTsx('../../service/api/ui/popup/toast-vapor', true),
+      {
+        vue,
+        '/vue-jsx/vapor': jsx,
+        '@dcloudio/uni-components': {},
+        '@dcloudio/uni-core': {
+          ICON_FONT_SUCCESS_NO_CIRCLE: successGlyph,
+          ICON_FONT_WARN: errorGlyph,
+        },
+      }
+    )
+    const icon = vue.ref('success')
+    const node = vue.computed(() => createToastIcon(icon.value))
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      expect(node.value.textContent).toBe(successGlyph)
+      icon.value = 'error'
+      expect(node.value.textContent).toBe(errorGlyph)
+      expect(node.value.classList.contains('uni-icon-font')).toBe(true)
+      expect(node.value.style.fontSize).toBe('36px')
+      icon.value = 'loading'
+      expect(node.value.classList.contains('uni-loading')).toBe(true)
+      icon.value = 'none'
+      expect(node.value).toBeNull()
+      expect(warn).not.toHaveBeenCalled()
+    } finally {
+      warn.mockRestore()
+    }
+  })
+
   test.each([true, false])(
     '导航栏标题、loading、搜索与按钮保持动态更新（Vapor=%s）',
     async (vapor) => {

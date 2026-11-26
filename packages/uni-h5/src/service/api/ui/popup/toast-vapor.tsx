@@ -2,35 +2,22 @@
 export { VaporTransition as ToastTransition } from 'vue'
 export { defineSystemComponent as defineToast } from '@dcloudio/uni-components'
 import { ICON_FONT_SUCCESS_NO_CIRCLE, ICON_FONT_WARN } from '@dcloudio/uni-core'
-//#if !_X_
-import {
-  ICON_PATH_SUCCESS_NO_CIRCLE,
-  ICON_PATH_WARN,
-  createSvgIconVNode,
-} from '@dcloudio/uni-core'
-//#endif
 import type { API_TYPE_SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 
 function createToastIconVNode(icon: API_TYPE_SHOW_TOAST_ICON) {
-  //#if _X_
-  return (
+  const element = (
     <i
       class="uni-toast__icon uni-icon-font"
       style={{ color: '#fff', fontSize: '36px' }}
-    >
-      {icon === 'success' ? ICON_FONT_SUCCESS_NO_CIRCLE : ICON_FONT_WARN}
-    </i>
+    />
   )
-  //#else
-  return createSvgIconVNode(
-    icon === 'success' ? ICON_PATH_SUCCESS_NO_CIRCLE : ICON_PATH_WARN,
-    '#fff',
-    36
-  )
-  //#endif
+  // 图标在 computed 中创建，直接写入字形以避免生成依赖组件作用域的渲染副作用。
+  element.textContent =
+    icon === 'success' ? ICON_FONT_SUCCESS_NO_CIRCLE : ICON_FONT_WARN
+  return element
 }
 
-export function createToastIcon(icon: API_TYPE_SHOW_TOAST_ICON) {
+export function createToastIcon(icon: string) {
   switch (icon) {
     case 'success':
     case 'error': {
