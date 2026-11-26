@@ -1213,18 +1213,21 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 - HBuilder 5.36 的 Web平台 和 App平台蒸汽模式下，input 组件默认设置了背景色：light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。此问题仅存在于该版本，5.37起恢复了背景色透明。
 
 ### placeholder-style和placeholder-class说明
-- HBuilder 5.37前，input默认place-holder文字颜色未统一，建议显式设置文字颜色。HBuilder 5.37+, Web平台、App平台 蒸汽模式、支付宝小程序平台，light主题下文字颜色为#808080、dark主题下文字颜色为#5f5f5f。
-- App平台 VDOM模式 支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。
-- App平台 蒸汽模式 支持的css和普通文字css相同
+- HBuilder 5.37+，全平台统一，light主题下文字颜色为#808080、dark主题下文字颜色为#5f5f5f。HBuilder 5.37前，各平台input默认place-holder文字颜色未统一，建议显式设置文字颜色。
+- placeholder-style支持的css和普通文字css相同。
+
+App平台 VDOM模式 特殊说明：place-holder支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。）
 
 ## 相关API
 uni-app x 提供了隐藏软键盘、监听软键盘变化的API [详情](https://doc.dcloud.net.cn/uni-app-x/api/keyboard.html#hidekeyboard)
+
+## 扩展
+input默认无边框、背景透明，不自带右边的清除图标，密码框也不会自带显示隐藏图标。这些功能在 [uni-easyinput 组件](./uni-ui-x/uni-easyinput.md) 里进行了封装。
 
 ## Tips
 - html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。但在uni-app规范中，input仅仅是输入框，其type属性代表不同的输入框。其他功能有单独的组件或API：[radio组件](radio-group.md)、[checkbox组件](checkbox-group.md)、[图片选择](../api/choose-image.md)、[视频选择](../api/choose-video.md)等。
 - 支付宝小程序二级页面设置 `focus` 为 `true` 时不会自动聚焦
 - 支付宝小程序 `type="number"` 且 `maxlength="-1"` 时不会触发 `input` 事件，也不能通过 CSS 修改光标颜色
-- 从uni-app x 4.0起，App-Android平台 input 点击输入框外的屏幕会自动收起软键盘。
 - `Web` 平台，iOS 自带键盘的智能标点功能会导致：在 type 为 `number`、`digit` 时，连续输入两次 `.` 后，在第三次输入 `.` 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 `…`（三个点） 的输入。会导致表现异常，关闭智能标点功能后正常。
 - 如需输入负数，不推荐使用type=number或digit，这2个类型在不同平台表现不同，比如微信小程序上不允许输入负数，app不同rom也有差异。这类需求推荐设置type为text，自行写正则校验数据。在支持的平台，可以通过input-mode设置默认弹出键盘样式。
 - `微信小程序` 平台，如果不设置高度，在一些复杂布局的情况下会可能会出现placeholder高度不正确的问题，暂时通过手动设置样式 height 解决，示例: height: 28px
