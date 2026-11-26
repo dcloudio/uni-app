@@ -9,6 +9,7 @@ import {
   addMiniProgramUsingComponents,
   findChangedJsonFiles,
   findMiniProgramUsingComponents,
+  findUsingComponents,
   findUsingComponentsJson,
   resetMiniProgramJsonFiles,
 } from '../src/json/mp/jsonFile'
@@ -171,6 +172,119 @@ describe('miniProgram:jsonFile', () => {
       component: true,
       usingComponents: {},
     })
+  })
+
+  describe('component declaration cache across package ownership changes', () => {
+    const component = 'uni_modules/foo/components/中文 [foo]/foo.generated'
+    const icon = 'uni_modules/foo/components/icon/icon'
+    const scoped = (root: string) => (root ? `${root}/${component}` : component)
+
+    beforeEach(() => resetMiniProgramJsonFiles())
+    afterEach(() => resetMiniProgramJsonFiles())
+
+    test.each([
+      ['pages-a', ''],
+      ['', 'pages-a'],
+      ['pages-a', 'pages-b'],
+    ])(
+      'keeps declarations when JSON uses %s and template uses %s',
+      (jsonRoot, templateRoot) => {
+        addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+        addMiniProgramComponentPackageRoot(component, 'pages-a', false)
+        addMiniProgramComponentJson(scoped(jsonRoot), { component: true })
+        addMiniProgramComponentPackageRoot(component, 'pages-b', false)
+        addMiniProgramUsingComponents(scoped(templateRoot), {
+          icon: `/${icon}`,
+        })
+
+        const files = findChangedJsonFiles()
+        expect(JSON.parse(files.get(component)!)).toEqual({
+          component: true,
+          usingComponents: { icon: '../icon/icon' },
+        })
+        expect(files.has(scoped('pages-a'))).toBe(false)
+        expect(files.has(scoped('pages-b'))).toBe(false)
+      }
+    )
+
+    test('updates and removes declarations after a private component becomes shared', () => {
+      addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+      addMiniProgramComponentPackageRoot(component, 'pages-a', false)
+      addMiniProgramComponentPackageRoot(icon, 'pages-a', false)
+      addMiniProgramComponentJson(scoped('pages-a'), { component: true })
+      addMiniProgramUsingComponents(component, { icon: `/pages-a/${icon}` })
+      expect(
+        JSON.parse(findChangedJsonFiles().get(scoped('pages-a'))!)
+      ).toEqual({
+        component: true,
+        usingComponents: { icon: '../icon/icon' },
+      })
+
+      addMiniProgramComponentPackageRoot(component, 'pages-b', false)
+      addMiniProgramComponentPackageRoot(icon, 'pages-b', false)
+      expect(JSON.parse(findChangedJsonFiles().get(component)!)).toEqual({
+        component: true,
+        usingComponents: { icon: '../icon/icon' },
+      })
+      addMiniProgramUsingComponents(scoped('pages-b'), {})
+      expect(JSON.parse(findChangedJsonFiles().get(component)!)).toEqual({
+        component: true,
+        usingComponents: {},
+      })
+      expect(findChangedJsonFiles().size).toBe(0)
+    })
+
+    test('keeps independent package declarations separate from ordinary packages', () => {
+      addMiniProgramAppJson({
+        subPackages: [
+          { root: 'pages-a', pages: [] },
+          { root: 'independent', independent: true, pages: [] },
+        ],
+      })
+      addMiniProgramComponentPackageRoot(component, 'pages-a', false)
+      addMiniProgramComponentJson(scoped('pages-a'), { component: true })
+      addMiniProgramComponentJson(scoped('independent'), { component: true })
+      addMiniProgramUsingComponents(scoped('pages-a'), { icon: `/${icon}` })
+      addMiniProgramUsingComponents(scoped('independent'), {
+        other: '/independent/components/other',
+      })
+      const files = findChangedJsonFiles()
+      expect(JSON.parse(files.get(scoped('pages-a'))!).usingComponents).toEqual(
+        {
+          icon: '../../../../../uni_modules/foo/components/icon/icon',
+        }
+      )
+      expect(
+        JSON.parse(files.get(scoped('independent'))!).usingComponents
+      ).toEqual({
+        other: '../../../../components/other',
+      })
+    })
+
+    test.each(['ordinary uni-app', 'disabled optimization'])(
+      'preserves separate cache entries for %s',
+      (mode) => {
+        const appX = process.env.UNI_APP_X
+        try {
+          if (mode === 'ordinary uni-app') process.env.UNI_APP_X = 'false'
+          addMiniProgramAppJson(createSubPackagesAppJson(['pages-a']), {
+            subPackages: mode !== 'disabled optimization',
+          })
+          addMiniProgramUsingComponents(component, { main: '/components/main' })
+          addMiniProgramUsingComponents(scoped('pages-a'), {
+            sub: '/components/sub',
+          })
+          expect(findUsingComponents(component)).toEqual({
+            main: '/components/main',
+          })
+          expect(findUsingComponents(scoped('pages-a'))).toEqual({
+            sub: '/components/sub',
+          })
+        } finally {
+          process.env.UNI_APP_X = appX
+        }
+      }
+    )
   })
 
   test('keeps dotted component JSON in its sole subpackage', () => {
