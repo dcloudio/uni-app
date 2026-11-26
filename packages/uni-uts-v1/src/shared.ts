@@ -40,14 +40,16 @@ export function parseJson(jsonStr: string) {
 }
 
 export function logUTSPluginCompile(id: string, stage: 'start' | 'complete') {
+  // 复用页面编译进度的行尾标记，由 HBuilderX 转为回车；完成日志不加标记。
+  const suffix = stage === 'start' && runByHBuilderX() ? '\u200D' : ''
   if (process.env.UNI_HBUILDERX_LANGID === 'en') {
     const status =
       stage === 'start' ? 'compilation started' : 'compilation completed'
-    console.log(`UTS plugin [${id}] ${status}`)
+    console.log(`UTS plugin [${id}] ${status}${suffix}`)
     return
   }
   const status = stage === 'start' ? '开始编译' : '编译完成'
-  console.log(`uts插件[${id}]${status}`)
+  console.log(`uts插件[${id}]${status}${suffix}`)
 }
 
 export function once<T extends (...args: any[]) => any>(
