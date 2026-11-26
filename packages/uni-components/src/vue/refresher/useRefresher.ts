@@ -123,7 +123,7 @@ export function useRefresher({
         }, REFRESHER_RESTORE_DURATION)
         if (nextState === RefreshStateEnum.Restore) {
           emit('update:refresherTriggered', false)
-          trigger('refresherrestore', event, { dy })
+          trigger('refresherrestore', event, { dy: props.refresherThreshold })
         } else {
           trigger('refresherabort', event, { dy })
         }
