@@ -801,14 +801,14 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 - HBuilder 5.36 的 Web平台 和 App平台蒸汽模式下，input 组件默认设置了背景色：light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。此问题仅存在于该版本，5.37起恢复了背景色透明。
 
 ### placeholder-style和placeholder-class说明
-- HBuilder 5.37前，textarea默认place-holder文字颜色未统一，建议显式设置文字颜色。HBuilder 5.37+, Web平台、App平台 蒸汽模式、支付宝小程序平台，light主题下文字颜色为#808080、dark主题下文字颜色为#5f5f5f。
-- App平台 蒸汽模式 支持的css和普通文字css相同
-- App平台 VDOM模式 支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。
-- App-HarmonyOS VDOM模式 `placeholder-class` 不支持 css 变量。
+- HBuilder 5.37+，全平台统一，light主题下文字颜色为#808080、dark主题下文字颜色为#5f5f5f。HBuilder 5.37前，各平台input默认place-holder文字颜色未统一，建议显式设置文字颜色。
+- placeholder-style支持的css和普通文字css相同。
+
+App平台 VDOM模式 特殊说明：
+1. place-holder支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。）
+2. App-HarmonyOS VDOM模式 `placeholder-class` 不支持 css 变量。
 
 ## Tips
-* uni-app x 4.0 起，App-Android平台 textarea 点击输入框外的屏幕会自动收起软键盘。
-* uni-app x 4.15 起，App-iOS平台 textarea 软键盘默认右下角改为 return(换行) ，换行时，键盘不会收起。
 * 由于Android系统限制，textarea的键盘右下角按钮只能是`换行`，所以暂时不提供`confirm-type`属性。
 * 当软键盘右下角为 换行 时，confirm-hold 恒为 true，设置为false也不生效，即按下 换行 时，软键盘不会消失。
 * 在Android 9以下的系统版本，样式`line-height`点击键盘换行时行间距设置无效，此问题是Android系统的bug，后续解决。
