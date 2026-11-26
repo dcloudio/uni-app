@@ -2,7 +2,12 @@ import fs from 'fs-extra'
 import { tmpdir } from 'os'
 import { resolve } from 'path'
 import { compile } from '../src/index'
-import { genManifestFile, initCheckOptionsEnv } from '../src/manifest'
+import type { KotlinCompilerServer } from '../src/kotlin'
+import {
+  genManifestFile,
+  initCheckOptionsEnv,
+  restoreDex,
+} from '../src/manifest'
 import {
   getKotlinCompilerServer,
   getSwiftCompilerServer,
@@ -17,7 +22,11 @@ jest.mock('../src/utils', () => ({
 }))
 jest.mock('../src/manifest', () => {
   const manifest = jest.requireActual('../src/manifest')
-  return { ...manifest, genManifestFile: jest.fn(manifest.genManifestFile) }
+  return {
+    ...manifest,
+    genManifestFile: jest.fn(manifest.genManifestFile),
+    restoreDex: jest.fn(manifest.restoreDex),
+  }
 })
 
 describe('UTS 插件编译提示', () => {
@@ -53,8 +62,10 @@ describe('UTS 插件编译提示', () => {
       UNI_HBUILDERX_LANGID: 'zh_CN',
       UNI_APP_X_TSC: 'false',
     }
+    delete process.env.UNI_COMPILE_SNAPSHOT_DIR
     delete process.env.UNI_COMPILE_TARGET
     delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_UTS_CHANGED_FILES
     delete process.env.UNI_APP_PRODUCTION_TYPE
     bundle.mockReset().mockResolvedValue({})
     compileFramework.mockReset().mockResolvedValue({ code: 0 })
@@ -113,31 +124,88 @@ describe('UTS 插件编译提示', () => {
     expect(log.mock.calls).toEqual([[start]])
   })
 
-  test('Android 有 dex 时沿用原有的成功判定', async () => {
-    process.env.UNI_UTS_PLATFORM = 'app-android'
-    const nativeDir = resolve(
-      outputDir,
-      'uni_modules/test-uts/utssdk/app-android'
-    )
-    bundle.mockImplementation(async () => {
-      expect(log.mock.calls).toEqual([[start]])
-      fs.outputFileSync(resolve(nativeDir, 'index.kt'), '')
-      return {}
-    })
-    const compileDex = jest.fn().mockImplementation(async () => {
-      fs.outputFileSync(resolve(nativeDir, 'classes.dex'), '')
-      return {}
-    })
-    jest.mocked(getKotlinCompilerServer).mockReturnValue({
-      getKotlincHome: () => outputDir,
-      getDefaultJar: () => [],
-      compile: compileDex,
-      compileCpp: jest.fn(),
-    })
+  test.each([
+    ['直接输出', false, false, false],
+    ['直接输出并启用快照', false, false, true],
+    ['从缓存复制到输出目录', true, false, true],
+    ['缓存文件消失', true, true, true],
+  ] as const)(
+    'Android 发布 DEX 路径（%s）',
+    async (_, withCache, cacheMissing, snapshot) => {
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X = 'true'
+      if (snapshot) {
+        process.env.UNI_COMPILE_SNAPSHOT_DIR = resolve(outputDir, 'snapshots')
+      }
+      const options = { isX: true, isPlugin: true, isSingleThread: true }
+      const androidOutputDir = resolve(outputDir, 'output')
+      const cacheDir = resolve(outputDir, '缓存 [UTS]')
+      process.env.UNI_OUTPUT_DIR = androidOutputDir
+      if (withCache) {
+        process.env.HX_DEPENDENCIES_DIR = cacheDir
+      }
+      const nativeDir = resolve(
+        androidOutputDir,
+        'uni_modules/test-uts/utssdk/app-android'
+      )
+      bundle.mockImplementation(async () => {
+        expect(log.mock.calls).toEqual([[start]])
+        fs.outputFileSync(resolve(nativeDir, 'index.kt'), '')
+        return {}
+      })
+      const compileDex: KotlinCompilerServer['compile'] = async ({ d8 }) => {
+        const dexDir = d8[d8.indexOf('--output') + 1]
+        expect(dexDir).toBe(
+          withCache
+            ? resolve(cacheDir, 'app-android/uts/uni_modules/test-uts')
+            : nativeDir
+        )
+        fs.outputFileSync(resolve(dexDir, 'classes.dex'), 'compiled-dex')
+        return { code: 0, msg: '' }
+      }
+      jest.mocked(getKotlinCompilerServer).mockReturnValue({
+        getKotlincHome: () => outputDir,
+        getDefaultJar: () => [],
+        compile: compileDex,
+        compileCpp: jest.fn(),
+      })
 
-    await expect(compile(pluginDir)).resolves.toMatchObject({ errMsg: '' })
-    expect(log.mock.calls).toEqual([[start], [complete]])
-  })
+      if (cacheMissing) {
+        jest.mocked(restoreDex).mockImplementationOnce((...args) => {
+          fs.removeSync(
+            resolve(
+              cacheDir,
+              'app-android/uts/uni_modules/test-uts/classes.dex'
+            )
+          )
+          return jest
+            .requireActual<typeof import('../src/manifest')>('../src/manifest')
+            .restoreDex(...args)
+        })
+        await expect(compile(pluginDir, options)).resolves.toMatchObject({
+          errMsg: failure + '，无法使用',
+        })
+        expect(fs.existsSync(resolve(nativeDir, 'classes.dex'))).toBe(false)
+        expect(process.env.UNI_APP_UTS_CHANGED_FILES).toBe('[]')
+        return
+      }
+      await expect(compile(pluginDir, options)).resolves.toMatchObject({
+        errMsg: '',
+      })
+      expect(log.mock.calls).toEqual([[start], [complete]])
+      expect(fs.readFileSync(resolve(nativeDir, 'classes.dex'), 'utf8')).toBe(
+        'compiled-dex'
+      )
+      expect(fs.readJsonSync(resolve(nativeDir, 'config.json'))).toHaveProperty(
+        'components'
+      )
+      const prefix = 'uni_modules/test-uts/utssdk/app-android/'
+      expect(JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES || '[]')).toEqual(
+        [prefix + 'classes.dex', prefix + 'config.json']
+      )
+    }
+  )
 
   test('iOS 在 Swift 转译前打印开始，framework 编译后打印完成', async () => {
     bundle.mockImplementation(async () => {
@@ -154,6 +222,22 @@ describe('UTS 插件编译提示', () => {
     expect(log.mock.calls).toEqual(
       process.platform === 'win32' ? [] : [[start], [complete]]
     )
+    expect(process.env.UNI_APP_UTS_CHANGED_FILES).toBeUndefined()
+  })
+
+  test('iOS 蒸汽模式在 framework 编译成功后不发布 Swift 源码路径', async () => {
+    process.env.UNI_APP_X_DOM2 = 'true'
+    bundle.mockImplementation(async () => writeSwiftFile())
+
+    await expect(
+      compile(pluginDir, { isX: true, isPlugin: true, isSingleThread: true })
+    ).resolves.toMatchObject({ errMsg: '' })
+
+    if (process.platform !== 'win32') {
+      expect(compileFramework).toHaveBeenCalledTimes(1)
+      expect(log.mock.calls).toEqual([[start], [complete]])
+    }
+    expect(process.env.UNI_APP_UTS_CHANGED_FILES).toBeUndefined()
   })
 
   test('iOS 缺少产物或成功结果时重试，编译成功后复用缓存', async () => {
@@ -194,57 +278,78 @@ describe('UTS 插件编译提示', () => {
     ])
   })
 
-  test('本地缺少编译环境时，取消清理标记后仍可使用云端缓存', async () => {
-    process.env.UNI_UTS_PLATFORM = 'app-android'
-    process.env.HX_USE_BASE_TYPE = 'custom'
-    process.env.HX_Version = '5.0.0'
-    process.env.HX_DEPENDENCIES_DIR = resolve(outputDir, 'cache')
-    const cachedPluginDir = resolve(
-      process.env.HX_DEPENDENCIES_DIR,
-      'app-android/uts/uni_modules/test-uts'
-    )
-    await genManifestFile('app-android', {
-      pluginDir,
-      pluginRelativeDir: 'uni_modules/test-uts',
-      is_uni_modules: true,
-      cacheDir: process.env.HX_DEPENDENCIES_DIR,
-      env: initCheckOptionsEnv(),
-    })
-    fs.writeFileSync(resolve(cachedPluginDir, 'classes.dex'), 'cloud-dex')
-    const oldManifest = fs.readFileSync(
-      resolve(cachedPluginDir, 'manifest.json')
-    )
-    const nativeDir = resolve(
-      outputDir,
-      'uni_modules/test-uts/utssdk/app-android'
-    )
-    bundle.mockImplementation(async () => {
-      fs.outputFileSync(resolve(nativeDir, 'index.kt'), '')
-      return {}
-    })
-    jest.mocked(getKotlinCompilerServer).mockReturnValue(undefined)
+  test.each([true, false])(
+    '取消清理后恢复云端缓存并上报产物（快照=%s）',
+    async (snapshot) => {
+      const options = { isX: true, isPlugin: true, isSingleThread: true }
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X = 'true'
+      if (snapshot) {
+        process.env.UNI_COMPILE_SNAPSHOT_DIR = resolve(outputDir, 'snapshots')
+      }
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.HX_USE_BASE_TYPE = 'custom'
+      process.env.HX_Version = '5.0.0'
+      process.env.HX_DEPENDENCIES_DIR = resolve(outputDir, 'cache')
+      const cachedPluginDir = resolve(
+        process.env.HX_DEPENDENCIES_DIR,
+        'app-android/uts/uni_modules/test-uts'
+      )
+      await genManifestFile('app-android', {
+        pluginDir,
+        pluginRelativeDir: 'uni_modules/test-uts',
+        is_uni_modules: true,
+        cacheDir: process.env.HX_DEPENDENCIES_DIR,
+        env: initCheckOptionsEnv(),
+      })
+      fs.writeFileSync(resolve(cachedPluginDir, 'classes.dex'), 'cloud-dex')
+      fs.writeJsonSync(resolve(cachedPluginDir, 'config.json'), {
+        components: [],
+      })
+      const oldManifest = fs.readFileSync(
+        resolve(cachedPluginDir, 'manifest.json')
+      )
+      const nativeDir = resolve(
+        outputDir,
+        'uni_modules/test-uts/utssdk/app-android'
+      )
+      bundle.mockImplementation(async () => {
+        fs.outputFileSync(resolve(nativeDir, 'index.kt'), '')
+        return {}
+      })
+      jest.mocked(getKotlinCompilerServer).mockReturnValue(undefined)
 
-    process.env.HX_IS_CLEAN_CACHE = 'true'
-    await expect(compile(pluginDir)).rejects.toThrow(
-      '正在安装 uts Android 运行扩展'
-    )
-    expect(fs.readFileSync(resolve(cachedPluginDir, 'manifest.json'))).toEqual(
-      oldManifest
-    )
-    expect(
-      fs.readFileSync(resolve(cachedPluginDir, 'classes.dex'), 'utf8')
-    ).toBe('cloud-dex')
+      process.env.HX_IS_CLEAN_CACHE = 'true'
+      await expect(compile(pluginDir, options)).rejects.toThrow(
+        '正在安装 uts Android 运行扩展'
+      )
+      expect(
+        fs.readFileSync(resolve(cachedPluginDir, 'manifest.json'))
+      ).toEqual(oldManifest)
+      expect(
+        fs.readFileSync(resolve(cachedPluginDir, 'classes.dex'), 'utf8')
+      ).toBe('cloud-dex')
 
-    delete process.env.HX_IS_CLEAN_CACHE
-    await expect(compile(pluginDir)).resolves.toMatchObject({ errMsg: '' })
-    expect(bundle).toHaveBeenCalledTimes(1)
-    expect(fs.readFileSync(resolve(nativeDir, 'classes.dex'), 'utf8')).toBe(
-      'cloud-dex'
-    )
-    expect(log).toHaveBeenCalledWith(
-      'uts插件[test-uts]文件未发生变化，跳过编译'
-    )
-  })
+      delete process.env.HX_IS_CLEAN_CACHE
+      await expect(compile(pluginDir, options)).resolves.toMatchObject({
+        errMsg: '',
+      })
+      expect(fs.readJsonSync(resolve(nativeDir, 'config.json'))).toEqual({
+        components: [],
+      })
+      const prefix = 'uni_modules/test-uts/utssdk/app-android/'
+      expect(process.env.UNI_APP_UTS_CHANGED_FILES).toBe(
+        JSON.stringify([prefix + 'classes.dex', prefix + 'config.json'])
+      )
+      expect(bundle).toHaveBeenCalledTimes(1)
+      expect(fs.readFileSync(resolve(nativeDir, 'classes.dex'), 'utf8')).toBe(
+        'cloud-dex'
+      )
+      expect(log).toHaveBeenCalledWith(
+        'uts插件[test-uts]文件未发生变化，跳过编译'
+      )
+    }
+  )
 
   test.each(['true', 'false'] as const)(
     'iOS 返回编译失败时按清理标记保留缓存（%s）',
@@ -287,6 +392,7 @@ describe('UTS 插件编译提示', () => {
       await expect(compile(pluginDir)).resolves.toMatchObject({
         errMsg: failure + '，无法使用',
       })
+      expect(process.env.UNI_APP_UTS_CHANGED_FILES).toBe('[]')
       expect(genManifestFile).not.toHaveBeenCalled()
       if (cleanCache === 'false') {
         expect(fs.existsSync(manifestFile)).toBe(false)

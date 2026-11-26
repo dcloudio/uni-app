@@ -9,13 +9,16 @@ import {
   M,
   isInHBuilderX,
   isNormalCompileTarget,
+  isUniAppXAndroid,
   isUniAppXAndroidNative,
+  isUniAppXIOS,
   isUniAppXVapor,
   output,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
+import { publishChangedFiles } from './compileSnapshot'
 import { createSSRServer, createServer } from './server'
 import {
   type PLATFORM,
@@ -61,6 +64,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
       let isFirstStart = true
       let isFirstEnd = true
       let showCompileProgress = false
+      let needsFullSyncAfterError = false
+      const isVaporApp =
+        options.platform === 'app' &&
+        isUniAppXVapor() &&
+        (isUniAppXAndroid() || isUniAppXIOS())
       const onRenderStart =
         (options.platform === 'app' || options.platform === 'app-harmony') &&
         isUniAppXVapor() &&
@@ -89,6 +97,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
           output('log', M['dev.watching.start'])
         } else if (event.code === 'BUNDLE_END') {
           event.result.close()
+          const recoveringFromError = needsFullSyncAfterError
+          needsFullSyncAfterError = false
+          const cppChanged =
+            isVaporApp && process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true'
+          if (cppChanged) {
+            process.env.UNI_APP_X_DOM2_CPP_CHANGED = ''
+          }
           if (isFirstEnd) {
             // 首次全量同步
             if (
@@ -102,6 +117,12 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (options.platform === 'app') {
               process.env.UNI_APP_CHANGED_PAGES = ''
               process.env.UNI_APP_UTS_CHANGED_FILES = ''
+              if (isVaporApp) {
+                process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED = ''
+                if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
+                  process.env.UNI_APP_X_DOM2_BYTES_CHANGED_FILES = ''
+                }
+              }
             }
             isFirstEnd = false
             output('log', M['dev.watching.end'])
@@ -124,57 +145,73 @@ export async function runDev(options: CliOptions & ServerOptions) {
             process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED === 'true'
           process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED = ''
           let changedFiles = ''
-          let hasBinFiles = false
+          let hasBytesFiles = false
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
-            const dex = process.env.UNI_APP_UTS_CHANGED_FILES
-            hasBinFiles = getHasBinFiles()
+            const utsFiles = process.env.UNI_APP_UTS_CHANGED_FILES
+            const bytes = getReportedBytesFiles()
+            hasBytesFiles = !!bytes
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
             if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
-              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+              process.env.UNI_APP_X_DOM2_BYTES_CHANGED_FILES = ''
             }
-            const hasIncrementalFiles =
-              changedFiles &&
-              !changedFiles.includes(APP_CONFIG_SERVICE) &&
-              !changedFiles.includes(APP_SERVICE_FILENAME)
+            // 修改 pages.json 可能移除页面产物，增量列表无法表达删除。
             if (
-              // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
-              !hasBinFiles &&
-              !pagesJsonChanged &&
-              (hasIncrementalFiles || dex)
+              recoveringFromError ||
+              pagesJsonChanged ||
+              cppChanged ||
+              (hasBytesFiles && (!isVaporApp || pages))
             ) {
+              return output('log', M['dev.watching.end'])
+            }
+
+            // iOS 原生渲染不报告 C++ 产物，应用入口变更时需要全量同步。
+            const hasAppService =
+              changedFiles &&
+              (changedFiles.includes(APP_CONFIG_SERVICE) ||
+                changedFiles.includes(APP_SERVICE_FILENAME))
+            if (
+              hasAppService &&
+              (isVaporApp
+                ? isUniAppXIOS() &&
+                  process.env.UNI_APP_X_DOM2_DYNAMIC !== 'true'
+                : !utsFiles)
+            ) {
+              return output('log', M['dev.watching.end'])
+            }
+            if (changedFiles || utsFiles || hasBytesFiles) {
               if (pages) {
                 return output(
                   'log',
                   M['dev.watching.end.pages'].replace('{pages}', changedFiles)
                 )
               }
-              return output(
-                'log',
-                M['dev.watching.end.files'].replace(
-                  '{files}',
-                  JSON.stringify(
-                    JSON.parse(changedFiles || JSON.stringify([])).concat(
-                      JSON.parse(dex || JSON.stringify([]))
-                    )
-                  )
-                )
+              const bytesFiles = bytes ? parseBytesFiles(bytes) : []
+              if (hasBytesFiles && !bytesFiles.length) {
+                return output('log', M['dev.watching.end'])
+              }
+              const incrementalFiles: string[] = JSON.parse(
+                changedFiles || '[]'
+              ).concat(JSON.parse(utsFiles || '[]'), bytesFiles)
+              return publishChangedFiles(
+                incrementalFiles,
+                isVaporApp ? process.env.UNI_COMPILE_SNAPSHOT_DIR : undefined
               )
             }
           } else if (
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
-            hasBinFiles = getHasBinFiles()
+            hasBytesFiles = !!getReportedBytesFiles()
             // 动态化且没有uts插件变更时，输出变更文件列表
             if (
               process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' &&
               !utsChanged &&
-              !hasBinFiles
+              !hasBytesFiles
             ) {
               const changed: string[] = []
               const files = process.env.UNI_APP_CHANGED_FILES
@@ -184,14 +221,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
                   changed.push(...JSON.parse(files))
                 } catch {}
               }
-              // 鸿蒙平台暂不启用 bin 文件热更新，先不合并到 changes 中。
-              // const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
-              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
-              // if (binFiles) {
-              //   try {
-              //     changed.push(...JSON.parse(binFiles))
-              //   } catch {}
-              // }
+              // 鸿蒙平台暂不启用 bytes 文件热更新。
+              process.env.UNI_APP_X_DOM2_BYTES_CHANGED_FILES = ''
               if (!pagesJsonChanged && changed.length) {
                 return output(
                   'log',
@@ -206,7 +237,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
               !utsChanged &&
-              !hasBinFiles
+              !hasBytesFiles
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
               process.env.UNI_APP_CHANGED_FILES = ''
@@ -229,8 +260,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               return output('log', M['dev.watching.end'])
             }
-            // 没有cpp/uts插件变更，且没有增量js/bin文件变更，就输出无变更
-            if (!changedFiles && !hasBinFiles) {
+            // 没有cpp/uts插件变更，且没有增量js/bytes文件变更，就输出无变更
+            if (!changedFiles && !hasBytesFiles) {
               return output('log', M['uvue.dev.watching.end.empty'])
             }
           }
@@ -244,6 +275,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             }, 2000)
           }
         } else if (event.code === 'ERROR') {
+          // 失败的编译可能已经写入产物，重试时这些文件可能命中缓存。
+          needsFullSyncAfterError = isVaporApp
           if (runByHBuilderX()) {
             setTimeout(() => {
               console.error(`Build failed with errors.`)
@@ -331,10 +364,22 @@ export const stopProfiler = (
   })
 }
 
-function getHasBinFiles() {
-  const binFiles =
+function getReportedBytesFiles() {
+  const files =
     process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
-      ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+      ? process.env.UNI_APP_X_DOM2_BYTES_CHANGED_FILES
       : ''
-  return !!(binFiles && binFiles !== '[]')
+  return files === '[]' ? '' : files
+}
+
+function parseBytesFiles(files: string): string[] {
+  try {
+    const parsed = JSON.parse(files)
+    return Array.isArray(parsed) &&
+      parsed.every((file) => typeof file === 'string' && file.length > 0)
+      ? parsed
+      : []
+  } catch {
+    return []
+  }
 }

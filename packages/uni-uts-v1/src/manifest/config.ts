@@ -25,9 +25,14 @@ export function restoreConfigJson(
     platform
   )
   if (cacheFile && existsSync(cacheFile)) {
-    copySync(
-      cacheFile,
-      join(outputDir, pluginRelativeDir, 'utssdk', platform, 'config.json')
+    const configFile = join(
+      outputDir,
+      pluginRelativeDir,
+      'utssdk',
+      platform,
+      'config.json'
     )
+    copySync(cacheFile, configFile)
+    return configFile
   }
 }

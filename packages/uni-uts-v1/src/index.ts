@@ -129,6 +129,18 @@ function compileErrMsg(id: string) {
   return `uts插件[${id}]编译失败，无法使用`
 }
 
+function addUTSChangedFiles(changed: string[]) {
+  const files: string[] = []
+  if (process.env.UNI_APP_UTS_CHANGED_FILES) {
+    try {
+      files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
+    } catch {}
+  }
+  process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
+    ...new Set(files.concat(changed)),
+  ])
+}
+
 function warn(msg: string) {
   console.warn(`提示：${msg}`)
 }
@@ -558,6 +570,10 @@ export async function compile(
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
       const components =
         utsPlatform === 'app-android' ? androidComponents : iosComponents
+      const isAndroidVapor =
+        isX &&
+        utsPlatform === 'app-android' &&
+        process.env.UNI_APP_X_DOM2 === 'true'
       let tips = ''
       const forceCompile = process.env.HX_IS_CLEAN_CACHE === 'true'
       // dev 模式
@@ -584,6 +600,7 @@ export async function compile(
         // console.log('uts插件[' + pkg.id + ']end', Date.now())
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
+          let dexFile: string | undefined
           if (utsPlatform === 'app-android') {
             // debugger 专用
             restoreDebuggerFiles(
@@ -594,7 +611,7 @@ export async function compile(
               inputDir,
               rewriteConsoleExpr
             )
-            restoreDex(
+            dexFile = restoreDex(
               pluginRelativeDir,
               cacheDir,
               outputDir,
@@ -612,7 +629,19 @@ export async function compile(
           )
 
           // 缓存有效时不重新升成，直接从缓存恢复
-          restoreConfigJson(utsPlatform, pluginRelativeDir, outputDir, cacheDir)
+          const configFile = restoreConfigJson(
+            utsPlatform,
+            pluginRelativeDir,
+            outputDir,
+            cacheDir
+          )
+          if (isAndroidVapor && (dexFile || configFile)) {
+            addUTSChangedFiles(
+              [dexFile, configFile].flatMap((file) =>
+                file ? [normalizePath(relative(outputDir, file))] : []
+              )
+            )
+          }
 
           if (useProxyCodeV2) {
             code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
@@ -694,10 +723,11 @@ export async function compile(
           uniModules: uni_modules || [],
           onCompileStart: () => logUTSPluginCompile(pkg.id, 'start'),
         })
+        let androidConfigFile: string | undefined
         // 安卓平台config.json可以在dex之后生成
         if (utsPlatform === 'app-android') {
           // 处理 config.json
-          genConfigJson(
+          androidConfigFile = genConfigJson(
             utsPlatform,
             isX,
             proxyCodeOptions.androidHookClass || '',
@@ -802,18 +832,16 @@ export async function compile(
               clearManifestFiles(utsPlatform, pluginRelativeDir, cacheDir)
             }
           }
-          const files: string[] = []
-          if (process.env.UNI_APP_UTS_CHANGED_FILES) {
-            try {
-              files.push(...JSON.parse(process.env.UNI_APP_UTS_CHANGED_FILES))
-            } catch (e) {}
+          if (res.type === 'kotlin' && isSuccess) {
+            const files = res.changed
+            if (isAndroidVapor && androidConfigFile) {
+              files.push(normalizePath(relative(outputDir, androidConfigFile)))
+            }
+            addUTSChangedFiles(files)
+          } else if (!isSuccess) {
+            // 原生编译失败时沿用空列表通知。
+            addUTSChangedFiles([])
           }
-          if (isSuccess) {
-            files.push(...res.changed)
-          }
-          process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify([
-            ...new Set(files),
-          ])
           if (isSuccess) {
             logUTSPluginCompile(pkg.id, 'complete')
           }

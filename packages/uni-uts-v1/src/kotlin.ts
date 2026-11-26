@@ -396,21 +396,15 @@ export async function runKotlinDev(
         // 短期内先不删除，方便排查问题
         // fs.unlinkSync(kotlinFile)
       } catch (e) {}
-      const dexFile = resolveDexFile(jarFile)
-      if (fs.existsSync(dexFile)) {
-        const newDexFile = restoreDex(
-          pluginRelativeDir,
-          cacheDir,
-          outputDir,
-          is_uni_modules
-        )
-        if (newDexFile && cacheDir) {
+      const dexFile = cacheDir
+        ? restoreDex(pluginRelativeDir, cacheDir, outputDir, is_uni_modules)
+        : resolveDexFile(jarFile)
+      if (dexFile && fs.existsSync(dexFile)) {
+        if (cacheDir) {
           // 缓存index.kt文件
           storeIndexKt(kotlinFile, pluginRelativeDir, cacheDir)
         }
-        result.changed = [
-          normalizePath(path.relative(outputDir, newDexFile || dexFile)),
-        ]
+        result.changed = [normalizePath(path.relative(outputDir, dexFile))]
       }
     } else {
       throw new Error(msg || 'kotlin编译失败')

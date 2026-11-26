@@ -690,7 +690,7 @@ export function genConfigJson(
     is_uni_modules ? 'utssdk' : '',
     platform
   )
-  copyConfigJson(
+  const configFile = copyConfigJson(
     platform,
     isX,
     utsInputDir,
@@ -714,6 +714,7 @@ export function genConfigJson(
   if (configJsonCacheFile && fs.existsSync(configJsonDestFile)) {
     fs.copySync(configJsonDestFile, configJsonCacheFile)
   }
+  return configFile
 }
 
 function copyConfigJson(
@@ -815,11 +816,12 @@ function copyConfigJson(
       outputConfigJsonFilename,
       JSON.stringify(configJson, null, 2)
     )
+  } else if (fs.existsSync(configJsonFilename)) {
+    fs.copySync(configJsonFilename, outputConfigJsonFilename)
   } else {
-    if (fs.existsSync(configJsonFilename)) {
-      fs.copySync(configJsonFilename, outputConfigJsonFilename)
-    }
+    return
   }
+  return outputConfigJsonFilename
 }
 
 function resolveComponentDelegateClassOptions(

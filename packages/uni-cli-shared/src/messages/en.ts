@@ -23,6 +23,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'dev.watching.end.snapshot': 'DONE  Build complete. SNAPSHOT:{id}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
   'dev.watching.restart.script.engine':

@@ -22,6 +22,7 @@ export default {
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
   'dev.watching.end.pages': 'DONE  Build complete. PAGES:{pages}',
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
+  'dev.watching.end.snapshot': 'DONE  Build complete. SNAPSHOT:{id}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. 切换蒸汽模式需要重新运行才能生效。',
   'dev.watching.restart.independentSubPackages':

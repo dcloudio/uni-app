@@ -38,7 +38,7 @@ declare namespace NodeJS {
     UNI_RENDERER_NATIVE: 'appService' | 'pages'
     UNI_NVUE_APP_STYLES: string
     UNI_APP_CHANGED_FILES: string
-    UNI_APP_X_DOM2_BIN_CHANGED_FILES: string // 动态渲染变更文件列表
+    UNI_APP_X_DOM2_BYTES_CHANGED_FILES: string // 动态渲染 bytes 变更文件列表
     UNI_APP_CHANGED_PAGES: string
     VUE_APP_DARK_MODE: 'true' | 'false'
 
@@ -106,6 +106,7 @@ declare namespace NodeJS {
      */
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string // 输出目录
+    UNI_COMPILE_SNAPSHOT_DIR?: string // 热更新快照根目录
     UNI_MINIMIZE?: 'true' // 是否压缩
     UNI_MP_PLUGIN?: string // 发行小程序插件的插件名
     UNI_PLATFORM: Exclude<UniApp.PLATFORM, 'app-android' | 'app-ios'> // 目标平台

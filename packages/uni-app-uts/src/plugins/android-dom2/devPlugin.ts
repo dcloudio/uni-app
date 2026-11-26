@@ -28,7 +28,7 @@ export function uniAppXAndroidEngineDevPlugin(): UniVitePlugin {
         return
       }
       const { changed, files } = UKF()
-      await compileVaporApp({
+      const result = await compileVaporApp({
         filename: 'index.kt',
         changed: changed,
         chunks: files,
@@ -46,14 +46,23 @@ export function uniAppXAndroidEngineDevPlugin(): UniVitePlugin {
         throw new Error(res.msg)
       }
       const soList = res.data?.soList
-      if (!soList || !soList.length) {
+      if (soList?.length) {
+        soList.forEach((so) => {
+          const soFile = path.resolve(soOutDir, so)
+          const targetSoFile = path.resolve(outputDir, so)
+          fs.copySync(soFile, targetSoFile)
+        })
+        process.env.UNI_APP_X_DOM2_CPP_CHANGED = 'true'
         return
       }
-      soList.forEach((so) => {
-        const soFile = path.resolve(soOutDir, so)
-        const targetSoFile = path.resolve(outputDir, so)
-        fs.copySync(soFile, targetSoFile)
-      })
+      if (result.kotlinc && result.changed.length) {
+        const utsFiles: string[] = JSON.parse(
+          process.env.UNI_APP_UTS_CHANGED_FILES || '[]'
+        )
+        process.env.UNI_APP_UTS_CHANGED_FILES = JSON.stringify(
+          utsFiles.concat(result.changed)
+        )
+      }
     },
   }
 }
