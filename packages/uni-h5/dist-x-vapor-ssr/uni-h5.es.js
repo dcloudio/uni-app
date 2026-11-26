@@ -13066,10 +13066,12 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent2 {
+class UniCustomEvent2 extends CustomEvent {
   constructor(type, detail) {
-    this.type = type;
-    this.detail = detail;
+    super(type, { detail });
+  }
+  toJSON() {
+    return { type: this.type, detail: this.detail };
   }
 }
 class UniSwiperChangeEvent extends UniCustomEvent2 {

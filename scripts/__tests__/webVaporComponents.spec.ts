@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import { execFileSync } from 'child_process'
+import ts from 'typescript'
 import {
   resolveWebVaporComponents,
   resolveWebVaporFrameworkComponents,
@@ -713,5 +714,47 @@ test('真实 Button 接入使用 uni-form 的组件、Element 和样式，保留
         .map((style: { content: string }) => style.content)
         .join('\n')
     ).not.toContain('uni-app div:where(.uni-button)')
+  }
+})
+
+test.each([true, false])('swiper 的事件 JSON 兼容 Web Vapor=%s', (vapor) => {
+  const filename = path.resolve(
+    __dirname,
+    '../../uni-ext-api/uni_modules/uni-swiper/components/swiper/types.ts'
+  )
+  const { preprocess } = require('../../packages/uni-cli-shared/lib/preprocess')
+  const code = preprocess(
+    fs.readFileSync(filename, 'utf8'),
+    { WEB: true, H5: true, VUE3_VAPOR: vapor },
+    { type: 'js' }
+  )
+  const { outputText } = ts.transpileModule(code, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2020,
+    },
+  })
+  const exports: Record<string, new (...args: any[]) => Event> = {}
+  new Function('exports', outputText)(exports)
+  const events = [
+    [
+      new exports.UniSwiperTransitionEvent(12, 0),
+      'transition',
+      { dx: 12, dy: 0 },
+    ],
+    [
+      new exports.UniSwiperChangeEvent(1, 'touch', 'second'),
+      'change',
+      { current: 1, source: 'touch', currentItemId: 'second' },
+    ],
+    [
+      new exports.UniSwiperAnimationFinishEvent(1, 'touch', null),
+      'animationfinish',
+      { current: 1, source: 'touch' },
+    ],
+  ]
+  for (const [event, type, detail] of events) {
+    expect(event instanceof CustomEvent).toBe(vapor)
+    expect(JSON.parse(JSON.stringify(event))).toEqual({ type, detail })
   }
 })

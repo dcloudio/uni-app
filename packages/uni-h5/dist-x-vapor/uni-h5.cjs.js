@@ -11924,10 +11924,12 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniCustomEvent2 {
+class UniCustomEvent2 extends CustomEvent {
   constructor(type, detail) {
-    this.type = type;
-    this.detail = detail;
+    super(type, { detail });
+  }
+  toJSON() {
+    return { type: this.type, detail: this.detail };
   }
 }
 class UniSwiperChangeEvent extends UniCustomEvent2 {

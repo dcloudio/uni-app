@@ -11872,16 +11872,11 @@ function normalizeEmitsOptions(comp) {
 }
 function builtInEmit(instance, event, ...rawArgs) {
 	const payload = rawArgs[0];
-	if (rawArgs.length !== 1 || !isObject(payload) || payload.type !== event || !hasOwn(payload, "detail") || "target" in payload || "currentTarget" in payload || !Object.isExtensible(payload)) {
+	if (rawArgs.length !== 1 || typeof CustomEvent === "undefined" || !(payload instanceof CustomEvent) || !Object.isExtensible(payload) || hasOwn(payload, "target") || hasOwn(payload, "currentTarget") || payload.target !== null) {
 		emit(instance, event, ...rawArgs);
 		return;
 	}
-	const prototype = Object.getPrototypeOf(payload);
-	if (!prototype || !Object.getPrototypeOf(prototype)) {
-		emit(instance, event, payload);
-		return;
-	}
-	const target = instance.block ? getRootElement(instance.block) || null : null;
+	const target = instance.block && getRootElement(instance.block) || null;
 	let currentTarget = target;
 	Object.defineProperties(payload, {
 		target: {
