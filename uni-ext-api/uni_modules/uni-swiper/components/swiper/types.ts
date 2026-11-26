@@ -1,4 +1,15 @@
 // #ifdef WEB
+// #ifdef VUE3-VAPOR
+class UniCustomEvent<T> extends CustomEvent<T> {
+	constructor(type: string, detail: T) {
+		super(type, { detail })
+	}
+
+	toJSON() {
+		return { type: this.type, detail: this.detail }
+	}
+}
+// #else
 class UniCustomEvent<T> {
 	detail: T
 	constructor(type: string, detail: T) {
@@ -6,6 +17,7 @@ class UniCustomEvent<T> {
 		this.detail = detail
 	}
 }
+// #endif
 // #endif
 
 export type UniSwiperChangeEventDetail = { current: number; source: string; currentItemId?: string; }
