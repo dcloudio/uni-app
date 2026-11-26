@@ -2326,6 +2326,8 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
+let UniCustomEvent$2 = class UniCustomEvent extends CustomEvent {
+};
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return inject(pageMetaKey);
@@ -8960,12 +8962,12 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -9198,7 +9200,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
     const rootRef = ref(null);
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.timeStamp = 0;
         const target = rootRef.value;
@@ -9208,12 +9210,12 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent3 {
+    class UniFormSubmitEvent extends UniCustomEvent4 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent3 {
+    class UniFormResetEvent extends UniCustomEvent4 {
       constructor() {
         super("reset", {});
       }
@@ -10501,26 +10503,26 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, options) {
         this.detail = options.detail;
       }
     }
-    class UniPickerCancelEvent extends UniCustomEvent3 {
+    class UniPickerCancelEvent extends UniCustomEvent4 {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent3 {
+    class UniPickerChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent4 {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -11779,12 +11781,12 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+    class UniPickerViewChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -12065,12 +12067,12 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent3 {
+    class UniProgressActiveendEvent extends UniCustomEvent4 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -12374,12 +12376,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -12439,7 +12441,7 @@ _sfc_main$7.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props2, ctx) : void 0;
 };
-let UniCustomEvent$1 = class UniCustomEvent {
+let UniCustomEvent$1 = class UniCustomEvent2 {
   constructor(type, detail) {
     this.detail = detail;
   }
@@ -13066,15 +13068,13 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent2 extends CustomEvent {
+class UniCustomEvent3 {
   constructor(type, detail) {
-    super(type, { detail });
-  }
-  toJSON() {
-    return { type: this.type, detail: this.detail };
+    this.type = type;
+    this.detail = detail;
   }
 }
-class UniSwiperChangeEvent extends UniCustomEvent2 {
+class UniSwiperChangeEvent extends UniCustomEvent3 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -13083,12 +13083,12 @@ class UniSwiperChangeEvent extends UniCustomEvent2 {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent2 {
+class UniSwiperTransitionEvent extends UniCustomEvent3 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent3 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -18644,6 +18644,7 @@ export {
   UniCheckboxElement as UniCheckboxElementImpl,
   UniCheckboxGroupElement,
   UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
+  UniCustomEvent$2 as UniCustomEvent,
   UniEditorElement,
   UniEditorElement as UniEditorElementImpl,
   UniElement2 as UniElement,

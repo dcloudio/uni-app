@@ -20870,6 +20870,8 @@ function useContextInfo(_id) {
 function getContextInfo(el) {
   return el.__uniContextInfo;
 }
+class UniCustomEvent extends CustomEvent {
+}
 function injectLifecycleHook(name, hook, publicThis, instance2) {
   if (isFunction(hook)) {
     injectHook(name, hook.bind(publicThis), instance2);
@@ -34345,6 +34347,7 @@ export {
   UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
   UniCoverImageElement,
   UniCoverViewElement,
+  UniCustomEvent,
   UniEditorElement,
   UniEditorElement as UniEditorElementImpl,
   UniElement2 as UniElement,
