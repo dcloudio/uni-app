@@ -20615,7 +20615,7 @@
           if (nextState === RefreshStateEnum.Restore) {
             emit2("update:refresherTriggered", false);
             trigger2("refresherrestore", event, {
-              dy
+              dy: props2.refresherThreshold
             });
           } else {
             trigger2("refresherabort", event, {

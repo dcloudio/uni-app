@@ -36,22 +36,22 @@ export interface ShowLoadingSuccess {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -69,6 +69,20 @@ export interface ShowLoadingSuccess {
 export type ShowLoadingFailErrorCode = 4
 
 export interface ShowLoadingFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.61", "unixVaporVer": "5.21" },
+   *     "ios": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.61", "unixUtsPlugin": "4.61", "unixVaporVer": "5.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
+   */
   errCode: ShowLoadingFailErrorCode
 }
 
@@ -141,22 +155,22 @@ export type ShowLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -197,22 +211,22 @@ export type ShowLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -256,27 +270,27 @@ export type ShowLoadingOptions = {
         },
         "baidu": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -323,22 +337,22 @@ export type ShowLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -382,22 +396,22 @@ export type ShowLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -441,22 +455,22 @@ export type ShowLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -508,22 +522,22 @@ export interface HideLoadingSuccess {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -543,6 +557,20 @@ export type HideLoadingFailErrorCode = 4
  * uni.hideLoading失败回调参数
  */
 export interface HideLoadingFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.61", "unixVaporVer": "5.21" },
+   *     "ios": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.61", "unixUtsPlugin": "4.61", "unixVaporVer": "5.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
+   */
   errCode: HideLoadingFailErrorCode
 }
 
@@ -617,27 +645,27 @@ export type HideLoadingOptions = {
         },
         "baidu": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
           "hostVer": "x",
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -681,22 +709,22 @@ export type HideLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -740,22 +768,22 @@ export type HideLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -799,22 +827,22 @@ export type HideLoadingOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -875,22 +903,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -946,22 +974,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
