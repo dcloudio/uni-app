@@ -1,5 +1,5 @@
 function initUTSJSONObjectProperties(obj: UTSJSONObject) {
-  const internalKeyList = [
+  const propertyList = [
     '_resolveKeyPath',
     '_getValue',
     'toJSON',
@@ -14,20 +14,17 @@ function initUTSJSONObjectProperties(obj: UTSJSONObject) {
     'toMap',
     'forEach',
   ]
-  return new Proxy(obj, {
-    ownKeys(target) {
-      return Reflect.ownKeys(target).filter(
-        (key) => typeof key !== 'string' || !internalKeyList.includes(key)
-      )
-    },
-    set(target, key, value) {
-      // 同名方法一旦被覆盖就可以被遍历到了
-      if (typeof key === 'string' && internalKeyList.includes(key)) {
-        internalKeyList.splice(internalKeyList.indexOf(key), 1)
-      }
-      return Reflect.set(target, key, value)
-    },
-  })
+  const propertyDescriptorMap: PropertyDescriptorMap = {}
+  for (let i = 0; i < propertyList.length; i++) {
+    const property = propertyList[i]
+    propertyDescriptorMap[property] = {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: obj[property as keyof UTSJSONObject],
+    }
+  }
+  Object.defineProperties(obj, propertyDescriptorMap)
 }
 
 function getRealDefaultValue<T>(defaultValue: T | undefined): T | null {
@@ -66,7 +63,7 @@ export class UTSJSONObject {
         }
       }
     }
-    return initUTSJSONObjectProperties(this)
+    initUTSJSONObjectProperties(this)
   }
   private _resolveKeyPath(keyPath: string): string[] {
     // 非法keyPath不抛出错误，直接返回空数组
