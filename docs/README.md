@@ -420,9 +420,9 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 	
 	不再维护不是下线，而是没有重大问题的话（如新手机不兼容）不会再更新了。
 
-  如果只开发小程序，那使用 uni-app 或 uni-app x 都可以。uni-app x 略有优势。[差异详见](./mp/README.md)。
+	如果只开发小程序，那使用 uni-app 或 uni-app x 都可以。uni-app x 略有优势。[差异详见](./mp/README.md)。
 	
-	如果开发App，那么推荐改用 uni-app x。
+	如果开发App，那么推荐改用 uni-app x。uni-app x 比 uni-app 不止是性能优秀，还多了非常多的功能，在隐私安全合规方面也更完善。[详见](./uniappvsuniappx.md)
 	
 	未来 uni-app x 的web平台也会升级蒸汽模式，而 老uni-app不会升级。所以后续web平台也推荐使用 uni-app x。
 

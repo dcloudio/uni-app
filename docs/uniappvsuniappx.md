@@ -257,7 +257,7 @@ uni-app x 的API错误码，严格遵循[uni error规范](https://doc.dcloud.net
 
 uni-app x 的每个页面都提供了 [UniPage对象](https://doc.dcloud.net.cn/uni-app-x/api/unipage.html)，可以通过编程的方式来操作页面样式，而不是只能使用固化在 pages.json 里的静态属性。
 
-uni-app x 的路由系统，新增了跨端统一的 [路由事件](https://doc.dcloud.net.cn/uni-app-x/api/app-route.html)
+uni-app x 的路由系统，新增了跨端统一的 [路由事件](https://doc.dcloud.net.cn/uni-app-x/api/app-route.html)。支持路由拦截和重写，可以动态指定首页。
 
 在弹窗实现方面，uni-app 时代方案杂乱：有人用uni-popup等z-index方案、有人用subnvue、有人利用了webview页面背景可透明的特性。
 
