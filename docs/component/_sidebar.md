@@ -75,6 +75,8 @@
   * [概述](./uni-ui-x/README.md)
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
   * [uni-backarrow-circle | 圆形返回按钮](./uni-ui-x/uni-backarrow-circle.md)
+  * [uni-calendar-picker | 日期选择](./uni-ui-x/uni-calendar-picker.md)
+  * [uni-calendar-view | 日历视图组件](./uni-ui-x/uni-calendar-view.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
   * [uni-data-checkbox | 枚举类平铺型选择器](./uni-ui-x/uni-data-checkbox.md)
