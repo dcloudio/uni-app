@@ -16,30 +16,46 @@ import type { Plugin } from 'vite'
  * 4. 用户代码script中import vue的api
  *
  * 如果在transform中处理，需要确保此插件在autoImport之后，否则此时2、3尚未生成import vue的代码。
- * 如果在renderChunk中处理，能保证所有代码都已经生成import vue的代码，但是此时热更新会触发所有文件重新处理import vue。
  */
 export function rewriteImportVuePlugin(): Plugin {
+  const isHarmonyArkTs =
+    process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+    process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm'
+
   return {
     name: 'uni:rewrite-import-vue',
     enforce: 'post',
-    async transform(source, id) {
-      await initEsModuleLexer
-      const [imports] = parseImports(source)
-      const vueImportRanges = imports.filter(
-        (specifier) => specifier.n === 'vue' && specifier.d === -1
-      )
-      if (!vueImportRanges.length) {
-        return
-      }
-      const rewritten = rewriteImportVue(source, vueImportRanges)
-      if (rewritten.hasChanged()) {
-        return {
-          code: rewritten.toString(),
-          // 必须指定hires，不然部分情况可能会无法正确映射行号。
-          map: rewritten.generateMap({ hires: 'boundary' }),
-        }
+    transform: rewriteStaticVueImports,
+    renderChunk(source, chunk, options) {
+      // Rollup 会把第三方依赖重新导出的 Vue API 渲染为导入，也可能把传递依赖提升到入口。
+      // 只扫描仍依赖 Vue 的 chunk，避免增量编译时重复解析其他产物。
+      if (
+        isHarmonyArkTs &&
+        options.format === 'es' &&
+        chunk.imports.includes('vue')
+      ) {
+        return rewriteStaticVueImports(source)
       }
     },
+  }
+}
+
+async function rewriteStaticVueImports(source: string) {
+  await initEsModuleLexer
+  const [imports] = parseImports(source)
+  const vueImportRanges = imports.filter(
+    (specifier) => specifier.n === 'vue' && specifier.d === -1
+  )
+  if (!vueImportRanges.length) {
+    return
+  }
+  const rewritten = rewriteImportVue(source, vueImportRanges)
+  if (rewritten.hasChanged()) {
+    return {
+      code: rewritten.toString(),
+      // 必须指定hires，不然部分情况可能会无法正确映射行号。
+      map: rewritten.generateMap({ hires: 'boundary' }),
+    }
   }
 }
 
