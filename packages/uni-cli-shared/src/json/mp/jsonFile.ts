@@ -63,7 +63,9 @@ export function findJsonFile(filename: string) {
 }
 
 export function findUsingComponents(filename: string) {
-  return jsonUsingComponentsCache.get(filename)
+  return jsonUsingComponentsCache.get(
+    normalizeUsingComponentsCacheKey(filename)
+  )
 }
 
 export function findMiniProgramSubPackageRoot(filename: string) {
@@ -166,7 +168,7 @@ export function findChangedJsonFiles(
     if (!newJson.usingComponents) {
       newJson.usingComponents = {}
     }
-    extend(newJson.usingComponents, jsonUsingComponentsCache.get(cacheFilename))
+    extend(newJson.usingComponents, findUsingComponents(cacheFilename))
     // 格式化为相对路径，这样作为分包也可以直接运行
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (outputFilename !== 'app') {
@@ -324,7 +326,7 @@ export function addMiniProgramUsingComponents(
   filename: string,
   json: UsingComponents
 ) {
-  jsonUsingComponentsCache.set(filename, json)
+  jsonUsingComponentsCache.set(normalizeUsingComponentsCacheKey(filename), json)
 }
 
 export function resetMiniProgramJsonFiles() {
@@ -408,6 +410,12 @@ function normalizeUsingComponentPackageFilename(
     false
   )
   return '/' + (packageRoot ? `${packageRoot}/` : '') + unrootedFilename
+}
+
+// 普通分包组件可能在加载后变为主包共享组件，声明缓存不能使用临时输出路径。
+// 仅去除普通分包的 uni_modules 前缀，独立分包仍保留各自的缓存。
+function normalizeUsingComponentsCacheKey(filename: string) {
+  return isUniAppX() ? withoutSubPackageRootForUniModules(filename) : filename
 }
 
 function withoutSubPackageRootForUniModules(filename: string) {
