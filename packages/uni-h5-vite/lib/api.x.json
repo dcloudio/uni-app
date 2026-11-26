@@ -6,6 +6,7 @@
   "UTS",
   "UTSJSONObject",
   "UTSValueIterable",
+  "UniCustomEvent",
   "UniError",
   "__f__",
   "addInterceptor",

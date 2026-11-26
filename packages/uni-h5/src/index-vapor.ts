@@ -13,6 +13,7 @@ export type {
   ScrollViewContext,
   ScrollViewScrollToOptions,
 } from '../../uni-components/src/vue/scroll-view/ScrollViewContext'
+export { UniCustomEvent } from '../../uni-components/src/helpers/UniCustomEvent'
 
 export { useI18n } from '@dcloudio/uni-core'
 export { default as plugin } from './framework/plugin'

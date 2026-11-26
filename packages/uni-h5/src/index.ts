@@ -109,6 +109,7 @@ export {
   UniStickyHeaderElement as UniStickyHeaderElementImpl,
   UniPageContainerElement,
   UniPageContainerElement as UniPageContainerElementImpl,
+  UniCustomEvent,
   //#endif
 } from '@dcloudio/uni-components'
 

@@ -195,6 +195,7 @@ const uniH5Preset = {
     'UniCoverViewElementImpl',
     'UniCoverImageElementImpl',
     'UniPickerElementImpl',
+    'UniCustomEvent',
   ],
 }
 
