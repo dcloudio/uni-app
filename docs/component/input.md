@@ -1213,7 +1213,7 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 - HBuilder 5.36 的 Web平台 和 App平台蒸汽模式下，input 组件默认设置了背景色：light主题下，文字颜色为 `#000000`；dark主题下，默认文字颜色为 `#ffffff`。此问题仅存在于该版本，5.37起恢复了背景色透明。
 
 ### placeholder-style和placeholder-class说明
-- 目前各平台、各版本input默认place-holder文字颜色未统一，建议显式设置背景色。后续会统一颜色为light下#808080、dark下#5f5f5f。
+- HBuilder 5.37前，input默认place-holder文字颜色未统一，建议显式设置文字颜色。HBuilder 5.37+, Web平台、App平台 蒸汽模式、支付宝小程序平台，light主题下文字颜色为#808080、dark主题下文字颜色为#5f5f5f。
 - App平台 VDOM模式 支持的css有限：`color`、`font-size`、`font-weight`、`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。`font-size`样式不支持rpx单位。
 - App平台 蒸汽模式 支持的css和普通文字css相同
 
