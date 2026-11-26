@@ -169,7 +169,7 @@ theme.json 里的变量仅能用于 pages.json。uvue页面不能引用。
 import { state } from '@/store/index.uts'
 
 onLaunch(() => {
-	// #ifdef WEB || MP-WEIXIN
+	// #ifdef WEB || MP-WEIXIN || MP-ALIPAY
 	state.isDark = (uni.getAppBaseInfo().hostTheme == 'dark')
 	uni.onHostThemeChange((result) => {
 		state.isDark = (result.hostTheme == 'dark')
@@ -205,7 +205,7 @@ export const state = reactive({
 import { state } from '@/store/index.uts'
 
 onLaunch(() => {
-	// #ifdef WEB || MP-WEIXIN
+	// #ifdef WEB || MP-WEIXIN || MP-ALIPAY
 	state.isDark = (uni.getAppBaseInfo().hostTheme == 'dark')
 	uni.onHostThemeChange((result) => {
 		state.isDark = (result.hostTheme == 'dark')
