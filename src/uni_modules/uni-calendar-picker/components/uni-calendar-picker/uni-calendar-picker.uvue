@@ -1,7 +1,7 @@
 <template>
 	<view style="position: relative;">
 		<!-- 触发区，默认插槽可替换 -->
-		<view class="cp-trigger" :class="props.disabled ? 'cp-trigger--disabled' : ''" ref="anchorRef" @click="onTriggerClick"
+		<view class="cp-trigger" :class="props.disabled ? 'cp-trigger--disabled' : ''" :style="webAnchorStyle" ref="anchorRef" @click="onTriggerClick"
 			<!-- #ifdef WEB -->
 			:tabindex="props.disabled ? '-1' : '0'"
 			@keydown="onTriggerKeydown"
@@ -19,6 +19,13 @@
 			</slot>
 		</view>
 
+		<!-- 弹层挂到页面根节点，避免祖先 overflow/transform/层叠上下文裁剪或破坏 fixed 与锚定定位 -->
+		<!-- #ifdef WEB -->
+		<teleport v-if="isOpened" to="body">
+		<!-- #endif -->
+		<!-- #ifndef WEB -->
+		<teleport v-if="isOpened" to="page">
+		<!-- #endif -->
 		<!-- 遮罩，宽屏下无过渡动画 -->
 		<view v-if="isOpened" class="cp-mask" :class="[props.maskClass, active ? 'cp-mask-active' : '']"
 			@click="close" />
@@ -173,6 +180,7 @@
 				</template>
 			</view>
 		</view>
+		</teleport>
 	</view>
 </template>
 
@@ -1197,6 +1205,20 @@ const dragTransitionOff = ref(false)
 // 触发区元素，宽屏时弹层锚定在其下方或上方
 const anchorRef = ref<UniElement | null>(null)
 
+// Web 宽屏优先使用 CSS 锚点定位：滚动位移由浏览器原生处理，无需 JS 逐帧更新
+const webAnchorStyle = ref('')
+// #ifdef WEB
+const webUseAnchorPositioning = typeof CSS != 'undefined'
+	&& CSS.supports('anchor-name', '--uni-calendar-picker')
+	&& CSS.supports('position-anchor', '--uni-calendar-picker')
+	&& CSS.supports('top', 'anchor(bottom)')
+	&& CSS.supports('left', 'anchor(left)')
+const webAnchorName = '--uni-calendar-picker-' + String(Math.floor(Math.random() * 1000000000))
+if (webUseAnchorPositioning) {
+	webAnchorStyle.value = 'anchor-name: ' + webAnchorName + ';'
+}
+// #endif
+
 const POPUP_DURATION = 250
 const DRAG_CLOSE_THRESHOLD = 60
 // 宽屏弹层宽度（px）：单日历与双日历
@@ -1223,6 +1245,10 @@ let widePopupTop = 0
 let widePopupWidth = 0
 let widePopupHeight = 0
 let widePopupReady = false
+// 锚点定位时弹层是否展示在触发区上方，是否可直接使用 anchor(left)，以及 top 是否可用 anchor() 表达
+let widePopupAbove = false
+let wideUseAnchorLeft = true
+let wideAnchorTopMode = false
 // 锚定定位请求序号，用于丢弃过期的异步测量结果
 let positionRequestId = 0
 
@@ -1294,16 +1320,39 @@ function getTouchY(touch : Touch) : number {
 	return touch.pageY
 }
 
+// 不支持 CSS 锚点定位时的回退：四个方向都用数值定位，避免引擎对过约束边距的解析差异
+function buildMeasuredPopupStyle() : string {
+	const windowInfo = uni.getWindowInfo()
+	const right = windowInfo.windowWidth - widePopupLeft - widePopupWidth
+	const bottom = windowInfo.windowHeight - widePopupTop - widePopupHeight
+	return 'position: fixed; left: ' + widePopupLeft.toFixed(2) + 'px; top: ' + widePopupTop.toFixed(2) +
+		'px; width: ' + widePopupWidth.toFixed(2) + 'px; height: ' + widePopupHeight.toFixed(2) +
+		'px; right: ' + right.toFixed(2) + 'px; bottom: ' + bottom.toFixed(2) + 'px; transform: translateY(0);'
+}
+
 function buildPopupStyle() {
 	let style = ''
 	if (isAnchoredPopup() && widePopupReady) {
-		// 宽屏弹层锚定触发区，四个方向都用数值定位，避免引擎对过约束边距的解析差异
-		const windowInfo = uni.getWindowInfo()
-		const right = windowInfo.windowWidth - widePopupLeft - widePopupWidth
-		const bottom = windowInfo.windowHeight - widePopupTop - widePopupHeight
-		style += 'position: fixed; left: ' + widePopupLeft.toFixed(2) + 'px; top: ' + widePopupTop.toFixed(2) +
-			'px; width: ' + widePopupWidth.toFixed(2) + 'px; height: ' + widePopupHeight.toFixed(2) +
-			'px; right: ' + right.toFixed(2) + 'px; bottom: ' + bottom.toFixed(2) + 'px; transform: translateY(0);'
+		// #ifdef WEB
+		if (webUseAnchorPositioning) {
+			// 优先使用 CSS 锚点定位：滚动位移由浏览器原生处理，无需 JS 逐帧更新
+			let top = widePopupTop.toFixed(2) + 'px'
+			if (wideAnchorTopMode) {
+				top = widePopupAbove
+					? 'calc(anchor(top) - ' + WIDE_POPUP_GAP + 'px - ' + widePopupHeight.toFixed(2) + 'px)'
+					: 'calc(anchor(bottom) + ' + WIDE_POPUP_GAP + 'px)'
+			}
+			const left = wideUseAnchorLeft ? 'anchor(left)' : widePopupLeft.toFixed(2) + 'px'
+			style += 'position: fixed; position-anchor: ' + webAnchorName + '; left: ' + left + '; top: ' + top +
+				'; right: auto; bottom: auto; width: ' + widePopupWidth.toFixed(2) + 'px; height: ' +
+				widePopupHeight.toFixed(2) + 'px; transform: translateY(0);'
+		} else {
+			style += buildMeasuredPopupStyle()
+		}
+		// #endif
+		// #ifndef WEB
+		style += buildMeasuredPopupStyle()
+		// #endif
 	} else if (compactMode.value > 0) {
 		// 紧凑模式按内容高度展示两个日历，空间不足时最多 98% 并内部滚动
 		style += 'height: auto; max-height: ' + COMPACT_POPUP_HEIGHT.toString() + '%;'
@@ -1327,11 +1376,19 @@ function applyWidePopupRect(rect : DOMRect | null) {
 		width = maxWidth
 	}
 	let left = (winWidth - width) / 2
-	let top = gap
-	let height = winHeight - gap * 2
-	if (height > WIDE_POPUP_MAX_HEIGHT) {
-		height = WIDE_POPUP_MAX_HEIGHT
+	// 锚定弹层优先保证内容完整展示，高度取视口可容纳的最大值
+	let height = WIDE_POPUP_MAX_HEIGHT
+	const maxHeight = winHeight - gap * 2
+	if (height > maxHeight) {
+		height = maxHeight
 	}
+	if (height < 1) {
+		height = 1
+	}
+	let top = gap
+	widePopupAbove = false
+	wideUseAnchorLeft = true
+	wideAnchorTopMode = false
 	if (rect != null) {
 		const rectTop = rect.top != null ? rect.top : 0
 		const rectLeft = rect.left != null ? rect.left : 0
@@ -1345,26 +1402,31 @@ function applyWidePopupRect(rect : DOMRect | null) {
 		if (left < gap) {
 			left = gap
 		}
-		const belowSpace = winHeight - rectBottom - WIDE_POPUP_GAP - gap
-		const aboveSpace = rectTop - WIDE_POPUP_GAP - gap
-		const preferBelow = belowSpace >= aboveSpace
-		height = preferBelow ? belowSpace : aboveSpace
-		if (height > WIDE_POPUP_MAX_HEIGHT) {
-			height = WIDE_POPUP_MAX_HEIGHT
-		}
-		if (height > winHeight - gap * 2) {
-			height = winHeight - gap * 2
-		}
-		if (height < 1) {
-			height = 1
-		}
-		top = preferBelow ? rectBottom + WIDE_POPUP_GAP : rectTop - WIDE_POPUP_GAP - height
-		const maxTop = winHeight - height - gap
-		if (top > maxTop) {
-			top = maxTop
-		}
-		if (top < gap) {
-			top = gap
+		// 触发区未被视口边缘裁切时可直接使用 anchor(left)，否则回退到 clamp 后的数值
+		wideUseAnchorLeft = rectLeft >= gap && rectLeft <= maxLeft
+		const belowTop = rectBottom + WIDE_POPUP_GAP
+		const aboveTop = rectTop - WIDE_POPUP_GAP - height
+		if (belowTop + height <= winHeight - gap) {
+			// 下方可完整展示
+			top = belowTop
+			wideAnchorTopMode = true
+		} else if (aboveTop >= gap) {
+			// 下方放不下时改到上方完整展示
+			top = aboveTop
+			widePopupAbove = true
+			wideAnchorTopMode = true
+		} else {
+			// 上下空间都不足以完整展示：选空间较大的一侧，必要时向视口内收拢并覆盖触发区
+			const belowSpace = winHeight - rectBottom - WIDE_POPUP_GAP - gap
+			const aboveSpace = rectTop - WIDE_POPUP_GAP - gap
+			widePopupAbove = aboveSpace > belowSpace
+			top = widePopupAbove ? aboveTop : belowTop
+			if (top + height > winHeight - gap) {
+				top = winHeight - gap - height
+			}
+			if (top < gap) {
+				top = gap
+			}
 		}
 	}
 	widePopupLeft = left
@@ -1406,6 +1468,70 @@ function openWide() {
 	openPopupNow()
 }
 
+// 窗口尺寸变化后重新测量触发区，更新锚定定位
+function repositionWide() {
+	const requestId = positionRequestId + 1
+	positionRequestId = requestId
+	const element = anchorRef.value
+	if (element != null) {
+		const rectPromise = element.getBoundingClientRectAsync()
+		if (rectPromise != null) {
+			rectPromise.then((rect : DOMRect) => {
+				if (requestId != positionRequestId || !isOpened.value) {
+					return
+				}
+				applyWidePopupRect(rect)
+				buildPopupStyle()
+			})
+			return
+		}
+	}
+	applyWidePopupRect(null)
+	buildPopupStyle()
+}
+
+// #ifdef WEB
+let resizeWatchActive = false
+
+// 打开期间监听窗口尺寸：跨过宽屏阈值时在锚定浮层与底部弹层之间切换
+function onWindowResize() {
+	if (!isOpened.value || !active.value) {
+		return
+	}
+	// 形态切换时结束进行中的拖拽位移，避免残留偏移覆盖新的定位样式
+	resetDrag()
+	curOffset = 0
+	dragTransitionOff.value = false
+	isWideLayout.value = isWideScreenLayout()
+	compactMode.value = computeCompactMode()
+	if (isAnchoredPopup()) {
+		// 宽屏：重新测量触发区，更新锚定定位与弹层高度
+		repositionWide()
+		return
+	}
+	// 窄屏：作废挂起的宽屏测量，清除锚定状态并交回底部弹层默认样式
+	positionRequestId++
+	widePopupReady = false
+	buildPopupStyle()
+}
+
+function startResizeWatch() {
+	if (resizeWatchActive) {
+		return
+	}
+	resizeWatchActive = true
+	window.addEventListener('resize', onWindowResize)
+}
+
+function stopResizeWatch() {
+	if (!resizeWatchActive) {
+		return
+	}
+	resizeWatchActive = false
+	window.removeEventListener('resize', onWindowResize)
+}
+// #endif
+
 function applyOffset(offset : number) {
 	curOffset = offset
 	buildPopupStyle()
@@ -1423,6 +1549,7 @@ function open() {
 	}
 	// #ifdef WEB
 	startWebScrollLock()
+	startResizeWatch()
 	// #endif
 	resetDrag()
 	resetCalendarMonths()
@@ -1471,8 +1598,10 @@ function close() {
 		}
 		committed = false
 		isOpened.value = false
+		widePopupReady = false
 		// #ifdef WEB
 		stopWebScrollLock()
+		stopResizeWatch()
 		// #endif
 		emit('popupclosed')
 	}, delay)
@@ -1807,6 +1936,7 @@ onMounted(() => {
 onUnmounted(() => {
 	document.removeEventListener('keydown', onDocumentKeydown, true)
 	stopWebScrollLock()
+	stopResizeWatch()
 })
 // #endif
 

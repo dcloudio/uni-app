@@ -1,6 +1,18 @@
 export type GetAppBaseInfoOptions = {
     /**
      * @description 过滤字段的字符串数组，假如要获取指定字段，传入此数组。
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.6", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "3.6", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     filter: Array<string>
 };
@@ -39,22 +51,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -98,22 +110,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -157,22 +169,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -215,22 +227,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -273,22 +285,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -332,22 +344,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -392,22 +404,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -451,22 +463,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -509,22 +521,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -567,22 +579,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -625,22 +637,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -683,22 +695,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -741,22 +753,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -799,22 +811,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -858,22 +870,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -917,22 +929,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1055,22 +1067,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1114,22 +1126,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1172,22 +1184,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1231,22 +1243,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1290,22 +1302,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1348,22 +1360,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -1410,22 +1422,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1469,22 +1481,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1527,22 +1539,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1586,22 +1598,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "x"
           },
           "baidu": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "toutiao": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "lark": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "qq": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "kuaishou": {
-            "uniVer": "x",
+            "uniVer": "x"
           },
           "jd": {
-            "uniVer": "x",
+            "uniVer": "x"
           }
         },
         "web": {
@@ -1645,22 +1657,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -1705,22 +1717,22 @@ export type GetAppBaseInfoResult = {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {
@@ -1776,22 +1788,22 @@ export interface Uni {
             "unixVer": "5.31"
           },
           "baidu": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "toutiao": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "lark": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "qq": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "kuaishou": {
-            "uniVer": "√",
+            "uniVer": "√"
           },
           "jd": {
-            "uniVer": "√",
+            "uniVer": "√"
           }
         },
         "web": {

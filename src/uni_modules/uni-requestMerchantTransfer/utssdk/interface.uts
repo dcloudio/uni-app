@@ -32,27 +32,27 @@ export interface Uni {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -95,27 +95,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -154,27 +154,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -213,27 +213,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -272,27 +272,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -331,27 +331,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -390,27 +390,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -449,27 +449,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -508,27 +508,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -567,27 +567,27 @@ export type RequestMerchantTransferOptions = {
 				},
 				"baidu": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"toutiao": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"lark": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"qq": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"kuaishou": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				},
 				"jd": {
 					"hostVer": "x",
-					"uniVer": "x",
+					"uniVer": "x"
 				}
 			}
 		}
@@ -606,5 +606,19 @@ export type RequestMerchantTransferSuccessCallback = (
 	res : RequestMerchantTransferGeneralCallbackResult
 ) => void
 export type RequestMerchantTransferGeneralCallbackResult = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "4.61", "unixVer": "4.61" },
+	 *     "ios": { "uniVer": "4.61", "unixVer": "4.61" },
+	 *     "harmony": { "uniVer": "5.22", "unixVer": "5.22" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.61" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   }
+	 * }
+	 */
 	errMsg : string
 }

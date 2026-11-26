@@ -6,7 +6,12 @@ export type GetProviderSuccess = {
 	 * 服务类型：支付 (payment)
 	 *
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -132,7 +137,12 @@ export type GetProviderSuccess = {
 	 * 得到的服务供应商
 	 * @type PlusShareShareService['id'][] | PlusPushClientInfo['id'][] | PlusOauthAuthService['id'][] | PlusPaymentPaymentChannel['id'][]
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -153,7 +163,12 @@ export type GetProviderSuccess = {
 	/**
 	 * 得到的服务供应商服务对象
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -179,7 +194,12 @@ export type GetProviderSyncSuccess = {
 	 * 服务类型
 	 *
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.25", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
@@ -305,6 +325,10 @@ export type GetProviderSyncSuccess = {
 	 * 得到的服务供应商
 	 * @type PlusShareShareService['id'][] | PlusPushClientInfo['id'][] | PlusOauthAuthService['id'][] | PlusPaymentPaymentChannel['id'][]
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
 	 *    "android": {
 	 *      "uniVer": "x",
@@ -331,6 +355,10 @@ export type GetProviderSyncSuccess = {
 	/**
 	 * 得到的服务供应商服务对象
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
 	 *    "android": {
 	 *      "uniVer": "x",
@@ -362,7 +390,12 @@ export type GetProviderSyncOptions = {
 	 * 服务类型
 	 *
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.25", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.25"
@@ -486,7 +519,12 @@ export type GetProviderOptions = {
 	 * 服务类型：支付 (payment)
 	 *
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -601,7 +639,12 @@ export type GetProviderOptions = {
 	/**
 	 * 接口调用成功的回调
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -622,7 +665,12 @@ export type GetProviderOptions = {
 	/**
 	 * 接口调用失败的回调函数
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -643,7 +691,12 @@ export type GetProviderOptions = {
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
 	 *  "app": {
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
 	 *    "android": {
 	 *      "uniVer": "√",
 	 *      "unixVer": "4.18"
@@ -703,27 +756,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    }
    *  },
 	 *  "web": {
@@ -767,27 +820,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    }
    *  },
 	 *  "web": {
@@ -825,5 +878,19 @@ export type ProviderErrorCode =
 	 */
 	110600;
 export interface IGetProviderFail extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.18" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.18", "unixVaporVer": "5.11" },
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
+	 */
 	errCode : ProviderErrorCode
 };

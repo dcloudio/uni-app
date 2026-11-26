@@ -32,22 +32,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -102,22 +102,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -168,22 +168,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -234,22 +234,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -300,22 +300,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -366,22 +366,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -430,22 +430,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -465,6 +465,20 @@ export interface Uni {
 
 export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
 export type ConnectSocketSuccess = {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errMsg: string
 };
 type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
@@ -478,6 +492,20 @@ export type ConnectSocketErrorCode = 600009;
  * 连接调用失败的错误回调参数
  */
 export interface ConnectSocketFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: ConnectSocketErrorCode;
 };
 
@@ -489,6 +517,7 @@ export type ConnectSocketOptions = {
    * 开发者服务器接口地址
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -517,22 +546,22 @@ export type ConnectSocketOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -544,7 +573,9 @@ export type ConnectSocketOptions = {
    * @defaultValue null
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
         "android": {
           "uniVer": "√",
           "uniUtsPlugin": "3.91",
@@ -567,22 +598,22 @@ export type ConnectSocketOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -594,7 +625,9 @@ export type ConnectSocketOptions = {
    * @defaultValue null
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
         "android": {
           "uniVer": "√",
           "uniUtsPlugin": "3.91",
@@ -617,22 +650,22 @@ export type ConnectSocketOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -642,18 +675,54 @@ export type ConnectSocketOptions = {
   /**
    * 接口调用成功的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success?: ConnectSocketSuccessCallback | null,
 
   /**
    * 接口调用失败的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail?: ConnectSocketFailCallback | null,
 
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete?: ConnectSocketCompleteCallback | null
 };
@@ -661,6 +730,18 @@ export type ConnectSocketOptions = {
 export type GeneralCallbackResult = {
     /**
      * 错误信息
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     errMsg: string
 };
@@ -686,6 +767,20 @@ export type SendSocketMessageErrorCode =
  * 发送失败的错误回调参数
  */
 export interface SendSocketMessageFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: SendSocketMessageErrorCode;
 };
 export type SendSocketMessageOptions = {
@@ -695,6 +790,7 @@ export type SendSocketMessageOptions = {
    * @type {SocketDataOptions}
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -723,22 +819,22 @@ export type SendSocketMessageOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -748,18 +844,54 @@ export type SendSocketMessageOptions = {
   /**
    * 接口调用成功的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success?: ((result: GeneralCallbackResult) => void) | null,
 
   /**
    * 接口调用失败的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail?: ((result: SendSocketMessageFail) => void) | null,
 
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete?: ((result: any) => void) | null
 };
@@ -770,6 +902,7 @@ export type CloseSocketOptions = {
    * @defaultValue 1000
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -798,22 +931,22 @@ export type CloseSocketOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -825,6 +958,7 @@ export type CloseSocketOptions = {
    * @defaultValue ""
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -853,22 +987,22 @@ export type CloseSocketOptions = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -878,18 +1012,54 @@ export type CloseSocketOptions = {
   /**
    * 接口调用成功的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success?: ((result: GeneralCallbackResult) => void) | null,
 
   /**
    * 接口调用失败的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail?: ((result: GeneralCallbackResult) => void) | null,
 
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+   *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete?: ((result: GeneralCallbackResult) => void) | null
 };
@@ -899,6 +1069,7 @@ export type OnSocketOpenCallbackResult = {
    * 连接成功的 HTTP 响应 Header
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -927,22 +1098,22 @@ export type OnSocketOpenCallbackResult = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -956,6 +1127,7 @@ export type OnSocketMessageCallbackResult = {
    * @type {SocketDataOptions}
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -984,22 +1156,22 @@ export type OnSocketMessageCallbackResult = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -1041,22 +1213,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1104,22 +1276,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1167,22 +1339,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1230,22 +1402,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1296,22 +1468,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1360,22 +1532,22 @@ export interface SocketTask {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {
@@ -1397,6 +1569,18 @@ export type OnSocketOpen = (options: OnSocketOpenCallback) => void;
 export type OnSocketErrorCallbackResult = {
     /**
      * 错误信息
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "3.91", "unixVer": "3.91" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "4.11", "unixVer": "4.11", "unixUtsPlugin": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     errMsg: string
 };
@@ -1415,6 +1599,7 @@ export type OnSocketCloseCallbackResult = {
    * 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -1443,22 +1628,22 @@ export type OnSocketCloseCallbackResult = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }
@@ -1469,6 +1654,7 @@ export type OnSocketCloseCallbackResult = {
    * 一个可读的字符串，表示连接被关闭的原因。
    * @uniPlatform
     {
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
       "app": {
         "android": {
           "uniVer": "√",
@@ -1497,22 +1683,22 @@ export type OnSocketCloseCallbackResult = {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       }
     }

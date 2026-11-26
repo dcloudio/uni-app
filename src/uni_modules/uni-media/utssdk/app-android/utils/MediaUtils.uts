@@ -398,7 +398,7 @@ export function getFileName(path : string, rename : boolean = false) : string {
 }
 
 export function formatNumber(input:number):number {
-	let bd = DecimalFormat("#.###")
+	let bd = new DecimalFormat("#.###")
 	bd.setDecimalSeparatorAlwaysShown(false)
 	return bd.format(input).toFloat()
 }

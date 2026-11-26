@@ -1,10 +1,10 @@
 {
   "id": "uni-calendar-view",
   "displayName": "uni-calendar-view 日历视图组件",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "日历视图组件",
   "isExt": true,
-  "extUrl": "https://ext.dcloud.net.cn/plugin?id=",
+  "extUrl": "https://ext.dcloud.net.cn/plugin?name=uni-calendar-view",
   "keywords": [
     "calendar",
     "uni-ui",
@@ -41,7 +41,8 @@
     "darkmode": "√",
     "i18n": "√",
     "widescreen": "√",
-    "npmurl": ""
+    "npmurl": "",
+    "vapor": "√"
   },
   "uni_modules": {
     "dependencies": [],
@@ -59,7 +60,8 @@
             "harmony": "√"
           },
           "mp": {
-            "weixin": "√"
+            "weixin": "√",
+            "alipay": "√"
           }
         }
       },

@@ -281,6 +281,11 @@ export interface IMediaError extends IUniError {
 	/**
 	 * 错误码
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "√" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "√",
@@ -389,6 +394,11 @@ export type ChooseImageSuccess = {
     /**
      * 调用API的名称
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -406,6 +416,11 @@ export type ChooseImageSuccess = {
     /**
      * 描述信息
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -423,6 +438,7 @@ export type ChooseImageSuccess = {
     /**
      * 图片的本地文件路径列表
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -450,6 +466,7 @@ export type ChooseImageSuccess = {
     /**
      * 图片的本地文件列表
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -835,6 +852,7 @@ export type ChooseImageOptions = {
      * 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。
      * @defaultValue 9
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -913,6 +931,7 @@ export type ChooseImageOptions = {
      * album 从相册选图，camera 使用相机，默认二者都有
      * @defaultValue ['album','camera']
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -989,6 +1008,10 @@ export type ChooseImageOptions = {
     /**
      * 图像裁剪参数，设置后 sizeType 失效。
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
      * "app":{
      *		"android": {
      *			"uniVer": "√",
@@ -1010,6 +1033,7 @@ export type ChooseImageOptions = {
     /**
      * 成功则返回图片的本地文件路径列表 tempFilePaths
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1037,6 +1061,7 @@ export type ChooseImageOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1064,6 +1089,7 @@ export type ChooseImageOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1116,6 +1142,11 @@ export type PreviewImageSuccess = {
     /**
      * 调用API的名称
      * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "√" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
      *   "app": {
      *     "android": { "uniVer": "√", "unixVer": "3.9" },
      *     "ios": { "uniVer": "√", "unixVer": "4.11" },
@@ -1127,6 +1158,11 @@ export type PreviewImageSuccess = {
     /**
      * 描述信息
      * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "√" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
      *   "app": {
      *     "android": { "uniVer": "√", "unixVer": "3.9" },
      *     "ios": { "uniVer": "√", "unixVer": "4.11" },
@@ -1303,6 +1339,10 @@ export type PreviewImageOptions = {
     /**
      * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -1324,6 +1364,10 @@ export type PreviewImageOptions = {
     /**
      * 需要预览的图片链接列表
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -1396,6 +1440,10 @@ export type PreviewImageOptions = {
      * 图片指示器样式
      *
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
      *	 "app": {
          *		"android": {
          *			"uniVer": "√",
@@ -1469,6 +1517,10 @@ export type PreviewImageOptions = {
     /**
      * 是否可循环预览
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
            *	 "app": {
                  *		"android": {
                  *			"uniVer": "√",
@@ -1539,6 +1591,10 @@ export type PreviewImageOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -1561,6 +1617,10 @@ export type PreviewImageOptions = {
      * 接口调用失败的回调函数
 	 *
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -1583,6 +1643,10 @@ export type PreviewImageOptions = {
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 *
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -1618,6 +1682,18 @@ export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
 export type ClosePreviewImageSuccess = {
     /**
      * 错误信息
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "x" },
+     *     "alipay": { "uniVer": "√", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     errMsg: string
 };
@@ -1630,14 +1706,50 @@ export type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback
 export type ClosePreviewImageOptions = {
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "x" },
+     *     "alipay": { "uniVer": "√", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     success?: (ClosePreviewImageSuccessCallback) | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "x" },
+     *     "alipay": { "uniVer": "√", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     fail?: (ClosePreviewImageFailCallback) | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "x" },
+     *     "alipay": { "uniVer": "√", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     complete?: (ClosePreviewImageCompleteCallback) | null
 };
@@ -1665,6 +1777,7 @@ export type GetImageInfoSuccess = {
     /**
      * 图片宽度，单位px
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1692,6 +1805,7 @@ export type GetImageInfoSuccess = {
     /**
      * 图片高度，单位px
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1719,6 +1833,7 @@ export type GetImageInfoSuccess = {
     /**
      * 返回图片的本地路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1897,6 +2012,7 @@ export type GetImageInfoOptions = {
     /**
      * 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1924,6 +2040,7 @@ export type GetImageInfoOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1951,6 +2068,7 @@ export type GetImageInfoOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -1978,6 +2096,7 @@ export type GetImageInfoOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2028,6 +2147,11 @@ export type SaveImageToPhotosAlbumSuccess = {
     /**
      * 保存到相册的图片路径
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2098,6 +2222,7 @@ export type SaveImageToPhotosAlbumOptions = {
     /**
      * 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2125,6 +2250,7 @@ export type SaveImageToPhotosAlbumOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2152,6 +2278,7 @@ export type SaveImageToPhotosAlbumOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2179,6 +2306,7 @@ export type SaveImageToPhotosAlbumOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2208,6 +2336,18 @@ export type CompressImage = (options: CompressImageOptions) => void;
 export type CompressImageSuccess = {
     /**
      * 压缩后图片的临时文件路径
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "4.18" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.25" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     tempFilePath: string
 };
@@ -2221,6 +2361,11 @@ export type CompressImageOptions = {
     /**
      * 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径
 	   * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -2238,6 +2383,11 @@ export type CompressImageOptions = {
     /**
      * 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2255,6 +2405,11 @@ export type CompressImageOptions = {
     /**
      * 旋转度数，范围0～360
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2272,16 +2427,41 @@ export type CompressImageOptions = {
     /**
      * 缩放图片的宽度
      * @deprecated 已废弃
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "4.18" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.25" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     width?: string | null,
     /**
      * 缩放图片的高度
      * @deprecated 已废弃
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "4.18" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.25" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     height?: string | null,
     /**
      * 压缩后图片的高度，单位为px，若不填写则默认以compressedWidth为准等比缩放
 	   * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	   *	 "app": {
 	   *		"android": {
 	   *			"uniVer": "√",
@@ -2310,6 +2490,7 @@ export type CompressImageOptions = {
     /**
      * 压缩后图片的宽度，单位为px，若不填写则默认以compressedHeight为准等比缩放。
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2338,6 +2519,7 @@ export type CompressImageOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2365,6 +2547,7 @@ export type CompressImageOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2392,6 +2575,7 @@ export type CompressImageOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2431,6 +2615,7 @@ export type ChooseVideoSuccess = {
     /**
      * 选定视频的临时文件路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2458,6 +2643,7 @@ export type ChooseVideoSuccess = {
     /**
      * 选定视频的时间长度
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2485,6 +2671,7 @@ export type ChooseVideoSuccess = {
     /**
      * 选定视频的数据量大小
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2512,6 +2699,7 @@ export type ChooseVideoSuccess = {
     /**
      * 返回选定视频的长
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2539,6 +2727,7 @@ export type ChooseVideoSuccess = {
     /**
      * 返回选定视频的宽
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2689,6 +2878,10 @@ export type ChooseVideoOptions = {
 		 * @deprecated 已废弃，仅为了向下兼容保留
          * @default "custom"
          * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
          *	 "app": {
          *		"android": {
          *			"uniVer": "4.33",
@@ -2710,6 +2903,7 @@ export type ChooseVideoOptions = {
     /**
      * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2921,6 +3115,7 @@ export type ChooseVideoOptions = {
     /**
      * 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。
      * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
      *	 "app": {
      *		"android": {
      *			"uniVer": "√",
@@ -2966,6 +3161,7 @@ export type ChooseVideoOptions = {
     /**
      * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -2993,6 +3189,7 @@ export type ChooseVideoOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3020,6 +3217,7 @@ export type ChooseVideoOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3150,6 +3348,7 @@ export type GetVideoInfoSuccess = {
     /**
      * 视频长度
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3177,6 +3376,7 @@ export type GetVideoInfoSuccess = {
     /**
      * 视频大小，单位 kB
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3204,6 +3404,7 @@ export type GetVideoInfoSuccess = {
     /**
      * 视频的长，单位 px
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3231,6 +3432,7 @@ export type GetVideoInfoSuccess = {
     /**
      * 视频的宽，单位 px
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3508,6 +3710,7 @@ export type GetVideoInfoOptions = {
     /**
      * 视频文件路径，可以是临时文件路径也可以是永久文件路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3535,6 +3738,7 @@ export type GetVideoInfoOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3562,6 +3766,7 @@ export type GetVideoInfoOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3589,6 +3794,7 @@ export type GetVideoInfoOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3691,6 +3897,7 @@ export type SaveVideoToPhotosAlbumOptions = {
     /**
      * 视频文件路径，可以是临时文件路径也可以是永久文件路径
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3718,6 +3925,7 @@ export type SaveVideoToPhotosAlbumOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3745,6 +3953,7 @@ export type SaveVideoToPhotosAlbumOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3772,6 +3981,7 @@ export type SaveVideoToPhotosAlbumOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3822,6 +4032,11 @@ export type CompressVideoSuccess = {
     /**
      * 压缩后的临时文件地址
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3839,6 +4054,11 @@ export type CompressVideoSuccess = {
     /**
      * 压缩后的大小，单位 kB
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3959,6 +4179,11 @@ export type CompressVideoOptions = {
     /**
      * 视频文件路径，可以是临时文件路径也可以是永久文件路径
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3977,6 +4202,11 @@ export type CompressVideoOptions = {
      * 压缩质量
      *
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -3994,6 +4224,7 @@ export type CompressVideoOptions = {
     /**
      * 码率，单位 kbps
      * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      *	 "app": {
      *		"android": {
      *			"uniVer": "√",
@@ -4039,6 +4270,7 @@ export type CompressVideoOptions = {
     /**
      * 帧率
      * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      *	 "app": {
      *		"android": {
      *			"uniVer": "√",
@@ -4084,6 +4316,11 @@ export type CompressVideoOptions = {
     /**
      * 相对于原视频的分辨率比例，取值范围(0, 1]
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -4101,6 +4338,11 @@ export type CompressVideoOptions = {
     /**
      * 接口调用成功的回调函数
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -4118,6 +4360,11 @@ export type CompressVideoOptions = {
     /**
      * 接口调用失败的回调函数
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -4135,6 +4382,11 @@ export type CompressVideoOptions = {
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *	 "app": {
 	 *		"android": {
 	 *			"uniVer": "√",
@@ -4287,7 +4539,7 @@ export type ChooseFileTempFile = {
 					"uniVer": "x",
 					"unixVer": "4.61"
 				},
-				"harmony": { "uniVer": "x", "unixVer": "x" }
+				"harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 		  },
 		  "web": {
 				"uniVer": "x",
@@ -4341,7 +4593,7 @@ export type ChooseFileTempFile = {
 					"uniVer": "x",
 					"unixVer": "4.61"
 				},
-				"harmony": { "uniVer": "x", "unixVer": "x" }
+				"harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 		  },
 		  "web": {
 				"uniVer": "x",
@@ -4395,7 +4647,7 @@ export type ChooseFileTempFile = {
 					"uniVer": "x",
 					"unixVer": "4.61"
 				},
-				"harmony": { "uniVer": "x", "unixVer": "x" }
+				"harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
 		  },
 		  "web": {
 				"uniVer": "x",

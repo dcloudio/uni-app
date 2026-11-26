@@ -45,24 +45,66 @@ export type StartFacialRecognitionVerifyScreenOrientation =
 "port";
 
 export interface IFacialRecognitionVerifyError extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
+   */
   errCode : FacialRecognitionVerifyErrorCode
 };
 
 export type StartFacialRecognitionVerifySuccess = {
   /**
    * 错误码
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   errCode : number,
   /**
    * 调用API的名称
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   errSubject : string,
   /**
    * 错误的详细信息
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   errMsg : string,
   /**
    * 错误来源
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   cause ?: SourceError
 }
@@ -74,12 +116,21 @@ export type StartFacialRecognitionVerifyCompleteCallback = (res : any) => void
 export type StartFacialRecognitionVerifyOptions = {
   /**
    * certifyId 调用实人认证的id
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   certifyId : string,
   /**
    * 活体检测页面的进度条颜色。
    *
    * @uniPlatform {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *    "android": {
    *      "uniVer": "√",
@@ -104,6 +155,7 @@ export type StartFacialRecognitionVerifyOptions = {
    * @type {StartFacialRecognitionVerifyScreenOrientation}
    * @defaultValue "port"
    * @uniPlatform {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *    "android": {
    *      "uniVer": "√",
@@ -124,16 +176,40 @@ export type StartFacialRecognitionVerifyOptions = {
 
   /**
    * 成功回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   success ?: StartFacialRecognitionVerifySuccessCallback | null,
 
   /**
    * 失败回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   fail ?: StartFacialRecognitionVerifyFailCallback | null,
 
   /**
    * 完成回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "3.7.4", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "3.7.4", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   complete ?: StartFacialRecognitionVerifyCompleteCallback | null
 }

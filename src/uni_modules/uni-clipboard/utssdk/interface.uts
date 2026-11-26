@@ -29,22 +29,22 @@ export interface Uni {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -83,22 +83,22 @@ export interface Uni {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -118,6 +118,20 @@ export type ClipBoardErrorCode =
 
 
 export interface IClipBoardError extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "√", "unixVer": "4.0" }
+	 * }
+	 */
 	errCode: ClipBoardErrorCode
 }
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
@@ -130,23 +144,83 @@ export type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete
 export type SetClipboardDataOptions = {
   /**
    * 需要设置的内容
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   data: string,
   /**
    * 是否弹出提示，默认弹出提示
    * @type boolean
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   showToast?: boolean | null,
   /**
    * 成功返回的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success?: SetClipboardDataSuccessCallback | null,
   /**
    * 失败的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail?: SetClipboardDataFailCallback | null,
   /**
    * 结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete?: SetClipboardDataCompleteCallback | null
 };
@@ -154,6 +228,18 @@ export type GetClipboardData = (options: GetClipboardDataOptions) => void;
 export type GetClipboardDataSuccess = {
   /**
    * 剪贴板的内容
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   data: string
 };
@@ -165,14 +251,50 @@ export type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete
 export type GetClipboardDataOptions = {
   /**
    * 成功返回的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success?: GetClipboardDataSuccessCallback | null,
   /**
    * 失败的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail?: GetClipboardDataFailCallback | null,
   /**
    * 结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "4.71" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete?: GetClipboardDataCompleteCallback | null
 };

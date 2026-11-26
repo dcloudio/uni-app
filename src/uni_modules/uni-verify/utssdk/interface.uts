@@ -298,8 +298,35 @@ export type UniverifyManager = UniVerifyManager
  * 预登录参数
  */
 export type UniVerifyManagerPreLoginOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   success ?: UniVerifyManagerPreLoginSuccessCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   fail ?: UniVerifyManagerPreLoginFailCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   complete ?: UniVerifyManagerPreLoginCompleteCallback
 }
 
@@ -329,10 +356,44 @@ export type UniVerifyManagerLoginOptions = {
   uniVerifyStyle ?: UniVerifyManagerLoginStyle,
   /**
    * @deprecated 已废弃，建议使用 uniVerifyStyle
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
    */
   univerifyStyle ?: UniVerifyManagerLoginStyle,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   success ?: UniVerifyManagerLoginSuccessCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   fail ?: UniVerifyManagerLoginFailCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   complete ?: UniVerifyManagerLoginCompleteCallback
 }
 
@@ -342,31 +403,100 @@ export type UniVerifyManagerLoginOptions = {
 export type UniVerifyManagerCustomLoginOptions = {
   /**
     * @description 号码栏，仅支持使用text组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   numberTextElement : UniElement,
   /**
     * @description 品牌露出，仅支持使用text组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   sloganTextElement : UniElement,
   /**
     * @description 登录按钮，仅支持使用button组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   loginButtonElement : UniElement,
   /**
     * @description 隐私确认，仅支持使用checkbox组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   privacyCheckBoxElement : UniElement,
   /**
     * @description 隐私标题，仅支持使用text组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   privacyTextElement : UniElement,
   /**
     * @description checkbox组件勾选状态
     * @internal
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
     */
   privacyCheckBoxElementChecked ?: boolean,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   success ?: UniVerifyManagerLoginSuccessCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   fail ?: UniVerifyManagerLoginFailCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "ios": { "uniVer": "4.41", "unixVer": "4.41" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.71", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   complete ?: UniVerifyManagerLoginCompleteCallback
 }
 
@@ -497,6 +627,15 @@ export type UniVerifyManagerPreLoginSuccess = {
 }
 export type UniVerifyManagerPreLoginSuccessCallback = (res : UniVerifyManagerPreLoginSuccess) => void
 export interface UniVerifyManagerPreLoginFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   errCode : UniVerifyManagerErrorCode
 }
 export type UniVerifyManagerPreLoginFailCallback = (err : UniVerifyManagerPreLoginFail) => void
@@ -506,15 +645,38 @@ export type UniVerifyManagerPreLoginCompleteCallback = (res : UniVerifyManagerPr
 export type UniVerifyManagerLoginSuccess = {
   /**
    * 登录授权唯一标识
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
    */
   openId : string,
   /**
    * token
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
    */
   accessToken : string
 }
 export type UniVerifyManagerLoginSuccessCallback = (res : UniVerifyManagerLoginSuccess) => void
 export interface UniVerifyManagerLoginFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.99" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.18" },
+   *     "harmony": { "uniVer": "4.61", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   }
+   * }
+   */
   errCode : UniVerifyManagerErrorCode
 }
 export type UniVerifyManagerLoginFailCallback = (err : UniVerifyManagerLoginFail) => void

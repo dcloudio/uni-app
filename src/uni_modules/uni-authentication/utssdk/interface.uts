@@ -40,27 +40,27 @@ export interface Uni {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -106,27 +106,27 @@ export interface Uni {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -171,27 +171,27 @@ export interface Uni {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -220,6 +220,18 @@ export type SoterAuthMode =
 export type StartSoterAuthenticationSuccess = {
     /**
      * 错误码
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     errCode: number,
     /**
@@ -227,18 +239,66 @@ export type StartSoterAuthenticationSuccess = {
      * - fingerPrint: 指纹识别
      * - facial: 人脸识别
      * - speech: 声纹识别（暂未支持）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     authMode: SoterAuthMode,
     /**
      * 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     resultJSON?: string | null,
     /**
      * 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20)
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     resultJSONSignature?: string | null,
     /**
      * 接口调用结果
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     errMsg: string
 };
@@ -252,26 +312,98 @@ export type StartSoterAuthenticationCompleteCallback = (result: StartSoterAuthen
 export type StartSoterAuthenticationOptions = {
     /**
      * 请求使用的可接受的生物认证方式
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     requestAuthModes: SoterAuthMode[],
     /**
      * 挑战因子
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     challenge?: string | null,
     /**
      * 验证描述，即识别过程中显示在界面上的对话框提示内容
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     authContent?: string | null,
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     success?: StartSoterAuthenticationSuccessCallback | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     fail?: StartSoterAuthenticationFailCallback | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     complete?: StartSoterAuthenticationCompleteCallback | null
 };
@@ -279,10 +411,34 @@ export type CheckIsSupportSoterAuthentication = (options: CheckIsSupportSoterAut
 export type CheckIsSupportSoterAuthenticationSuccess = {
     /**
      * 支持的生物认证方式
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     supportMode: SoterAuthMode[],
     /**
      * 接口调用结果
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     errMsg: string
 };
@@ -300,14 +456,50 @@ export type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIs
 export type CheckIsSupportSoterAuthenticationOptions = {
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     success?: CheckIsSupportSoterAuthenticationSuccessCallback | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     fail?: CheckIsSupportSoterAuthenticationFailCallback | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     complete?: CheckIsSupportSoterAuthenticationCompleteCallback | null
 };
@@ -316,10 +508,34 @@ export type CheckIsSoterEnrolledInDeviceSuccess = {
     /**
      * 是否已录入信息
      * @type boolean
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     isEnrolled: boolean,
     /**
      * 错误信息
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     errMsg: string
 };
@@ -340,18 +556,66 @@ export type CheckIsSoterEnrolledInDeviceOptions = {
      * - fingerPrint: 指纹识别
      * - facial: 人脸识别（暂未支持）
      * - speech: 声纹识别（暂未支持）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     checkAuthMode: SoterAuthMode,
     /**
      * 支持的生物认证方式
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     success?: CheckIsSoterEnrolledInDeviceSuccessCallback | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     fail?: CheckIsSoterEnrolledInDeviceFailCallback | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "2.3.8", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+     *   }
+     * }
      */
     complete?: CheckIsSoterEnrolledInDeviceCompleteCallback | null
 };

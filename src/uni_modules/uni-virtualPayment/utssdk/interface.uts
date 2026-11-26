@@ -37,22 +37,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *    "web": {
@@ -659,6 +659,10 @@ export type RequestVirtualPaymentSuccess = {
     /**
      * 支付成功返回结果
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
      *    "app": {
      *        "android": {
      *            "uniVer": "x",
@@ -687,6 +691,10 @@ export interface IRequestVirtualPaymentFail extends IUniError {
     /**
      * 错误码
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
      *    "app": {
      *        "android": {
      *            "uniVer": "x",
@@ -803,6 +811,10 @@ export type RequestVirtualPaymentOptions = {
     /**
      * 苹果IAP的参数
      * @uniPlatform {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
      *    "app": {
      *        "android": {
      *            "uniVer": "x",
@@ -855,22 +867,22 @@ export type RequestVirtualPaymentOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *    "web": {
@@ -903,22 +915,22 @@ export type RequestVirtualPaymentOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *    "web": {
@@ -951,22 +963,22 @@ export type RequestVirtualPaymentOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *    "web": {

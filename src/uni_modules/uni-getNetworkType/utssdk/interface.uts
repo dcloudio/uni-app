@@ -32,22 +32,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
    *   "web": {
@@ -96,22 +96,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
    *   "web": {
@@ -152,22 +152,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
    *   "web": {
@@ -183,6 +183,18 @@ export type GetNetworkType = (options : GetNetworkTypeOptions) => void;
 export type GetNetworkTypeSuccess = {
   /**
    * 网络类型
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.24", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   networkType : string
 };
@@ -195,16 +207,52 @@ export type GetNetworkTypeOptions = {
   /**
    * 接口调用成功的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.24", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   success ?: GetNetworkTypeSuccessCallback | null,
   /**
    * 接口调用失败的回调函数
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.24", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   fail ?: GetNetworkTypeFailCallback | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    * @defaultValue null
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "3.9+" },
+   *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+   *     "harmony": { "uniVer": "4.24", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" }
+   * }
    */
   complete ?: GetNetworkTypeCompleteCallback | null
 };
@@ -241,22 +289,22 @@ export type OnNetworkStatusChangeCallbackResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
    *   "web": {
@@ -298,22 +346,22 @@ export type OnNetworkStatusChangeCallbackResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
    *   "web": {

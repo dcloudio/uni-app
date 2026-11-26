@@ -5,18 +5,46 @@ export type CreateWebViewContext = (webviewId : string.WebviewIdString, componen
 export type UniWebviewContextLoadDataOptions = {
 	/**
 	 * 要加载的内容，编码后的字符串
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.71", "unixVer": "4.71", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	data: string,
 	/**
 	 * 页面的基础URL
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.71", "unixVer": "4.71", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	baseURL?: string | null,
 	/**
 	 * 加载的页面内容类型，默认值为"text/html"
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.71", "unixVer": "4.71", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	mimeType?: string | null,
 	/**
 	 * 页面内容的编码类型，默认值为"utf-8"
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.71", "unixVer": "4.71", "unixVaporVer": "5.0" }
+	 *   }
+	 * }
 	 */
 	encoding?: string | null
 }

@@ -29,22 +29,22 @@
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -55,6 +55,20 @@
  */
 export type PageScrollToErrorCode = 4
 export interface PageScrollToFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.91", "unixVaporVer": "5.21" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11", "unixVaporVer": "5.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: PageScrollToErrorCode
 }
 
@@ -97,22 +111,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -152,22 +166,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -205,11 +219,11 @@ export type PageScrollToOptions = {
      *    "alipay": {
      *        "uniVer": "√",
      *        "unixVer": "5.31"
-     *    },
+     *    }
      *  },
      *  "web": {
-     *      "uniVer": "√",
-     *      "unixVer": "4.0"
+     *      "uniVer": "x",
+     *      "unixVer": "x"
      *  }
      * }
      */
@@ -244,22 +258,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -299,22 +313,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -354,22 +368,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -409,22 +423,22 @@ export type PageScrollToOptions = {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -469,22 +483,22 @@ export interface Uni {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {

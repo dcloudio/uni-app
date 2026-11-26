@@ -655,7 +655,6 @@
 			}
 		},
 		// #endif
-		// #ifdef APP
 		{
 			"path": "pages/component/unicloud-db/unicloud-db/datacom/datacom",
 			"group": "0,11",
@@ -663,7 +662,6 @@
 				"navigationBarTitleText": "datacom"
 			}
 		},
-		// #endif
 		{
 			"path": "pages/component/global-properties/global-properties",
 			"group": "0,0",

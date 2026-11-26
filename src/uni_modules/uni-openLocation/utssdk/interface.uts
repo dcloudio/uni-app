@@ -34,12 +34,40 @@ export type OpenLocationErrorCode =
   4;
 
 export interface OpenLocationSuccess {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.11" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "5.11" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 
 type OpenLocationSuccessCallback = (result : OpenLocationSuccess) => void
 
 export interface OpenLocationFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.11" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.11" },
+   *     "harmony": { "uniVer": "4.23", "unixVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "5.11" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errCode : OpenLocationErrorCode
 }
 type OpenLocationFailCallback = (result : OpenLocationFail) => void
@@ -75,7 +103,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -109,7 +137,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -143,7 +171,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -177,7 +205,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -211,7 +239,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -245,7 +273,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -279,7 +307,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",
@@ -313,7 +341,7 @@ export type OpenLocationOptions = {
    *    "mp": {
    *      "weixin": {
    *        "uniVer": "√",
-   *        "unixVer": "5.11",
+   *        "unixVer": "5.11"
    *      },
    *      "alipay": {
    *        "uniVer": "√",

@@ -39,6 +39,20 @@ export type WorkerOnErrorCallbackResultErrorCode =
  * Worker错误回调参数
  */
 export interface WorkerOnErrorCallbackResult extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "4.81", "unixUtsPlugin": "4.81", "unixVaporVer": "x", "unixVaporUtsPlugin": "5.21" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixUtsPlugin": "4.81", "unixVaporVer": "x", "unixVaporUtsPlugin": "5.11" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.81", "unixUtsPlugin": "4.81", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "4.81" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "1.9.90", "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errCode: WorkerOnErrorCallbackResultErrorCode
 };
 
@@ -61,6 +75,10 @@ export type WorkerPostMessageOptions = {
    * 仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable
    *
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "uniVer": "x", "unixVer": "x" }
+   *   },
    *  "app": {
    *    "android": {
    *      "uniVer": "x",
@@ -91,6 +109,10 @@ export type WorkerPostMessageOptions = {
    * 仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects
    *
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "uniVer": "x", "unixVer": "x" }
+   *   },
    *  "app": {
    *    "android": {
    *      "uniVer": "x",
@@ -166,27 +188,27 @@ export type WorkerEnv = {
     *     },
     *     "baidu": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "toutiao": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "lark": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "qq": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "kuaishou": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "jd": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     }
     *   }
     * }
@@ -243,27 +265,27 @@ export interface Worker {
     *     },
     *     "baidu": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "toutiao": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "lark": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "qq": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "kuaishou": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     },
     *     "jd": {
     *       "hostVer": "-",
-    *       "uniVer": "-",
+    *       "uniVer": "-"
     *     }
     *   }
     * }

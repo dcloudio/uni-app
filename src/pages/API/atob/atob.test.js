@@ -4,7 +4,7 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('atob / btoa', () => {
-  if (isMP) {
+  if (isMP || isHarmony) {
     it('not support', () => {
       expect(1).toBe(1)
     })

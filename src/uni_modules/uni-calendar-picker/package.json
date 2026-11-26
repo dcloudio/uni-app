@@ -1,7 +1,7 @@
 {
   "id": "uni-calendar-picker",
   "displayName": "uni-calendar-picker 日期选择",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "日期选择，包括单日选择和范围选择",
   "isExt": true,
   "extUrl": "https://ext.dcloud.net.cn/plugin?name=uni-calendar-picker",
@@ -14,7 +14,7 @@
   "repository": "https://gitcode.com/dcloud/uni-ui-x",
   "engines": {
     "HBuilderX": "^5.35",
-    "uni-app-x": "^5.35",
+    "uni-app-x": "^5.26",
     "uni-app": ""
   },
   "directories": {
@@ -41,10 +41,13 @@
     "darkmode": "√",
     "i18n": "√",
     "widescreen": "√",
-    "npmurl": ""
+    "npmurl": "",
+    "vapor": "√"
   },
   "uni_modules": {
-    "dependencies": [],
+    "dependencies": [
+      "uni-calendar-view"
+    ],
     "encrypt": [],
     "platforms": {
       "client": {
@@ -59,7 +62,8 @@
             "harmony": "√"
           },
           "mp": {
-            "weixin": "√"
+            "weixin": "√",
+            "alipay": "-"
           }
         }
       },

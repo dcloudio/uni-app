@@ -76,6 +76,18 @@ type InstallWgtSuccessCallback = (result: InstallWgtSuccess) => void
 export interface InstallWgtFail extends IUniError {
   /**
    * 错误码
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   errCode: InstallWgtErrorCode
 }
@@ -109,24 +121,84 @@ type InstallWgtCompleteCallback = (result: InstallWgtComplete) => void
 export type InstallWgtOptions = {
   /**
    * 应用资源文件（wgt）路径
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   filePath: string
   /**
    * 忽略 WGT version.name 高低校验，默认值为 false。
    * 为 false 时，完整包必须高于当前版本，差量包必须等于或高于当前版本。
    * compilerRuleVersion 与差量 WGT 的 baseVersion 仍会校验。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   ignoreVersion?: boolean
   /**
    * 应用资源文件安装成功回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   success?: InstallWgtSuccessCallback | null
   /**
    * 应用资源文件安装失败回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   fail?: InstallWgtFailCallback | null
   /**
    * 应用资源文件安装完成回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixvVer": "5.31" },
+   *     "harmony": { "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   complete?: InstallWgtCompleteCallback | null
 }
@@ -139,7 +211,7 @@ export interface Uni {
   /**
    * 安装wgt包，HBuilderX 5.41 版本上新增支持 wgt 的差量更新功能
    * @param {InstallWgtOptions} options 参数
-   * 
+   *
    * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/install-wgt.html#installWgt
    *
    * @uniPlatform {

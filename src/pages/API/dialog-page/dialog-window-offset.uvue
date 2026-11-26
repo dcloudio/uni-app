@@ -38,7 +38,8 @@
       scrollHeight: scrollingElement.scrollHeight,
       clientHeight: scrollingElement.clientHeight,
       scrollTop: scrollingElement.scrollTop,
-      modalVisible: document.querySelector('uni-page[data-type="systemDialog"] .uni-modal-dialog__action--confirm') != null,
+      // Web Vapor 将系统弹页的 data-type 放在 uni-page-body 上。
+      modalVisible: document.querySelector('[data-type="systemDialog"] .uni-modal-dialog__action--confirm') != null,
       dialogVisible: document.getElementById('window-offset-dialog') != null
     }
   }

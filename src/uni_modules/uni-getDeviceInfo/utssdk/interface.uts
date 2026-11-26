@@ -3,7 +3,13 @@ export type GetDeviceInfoOptions = {
      * @description 过滤字段的字符串数组，假如要获取指定字段，传入此数组。
      * @uniPlatform
      * {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" },
      * 	"app": {
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9+"
@@ -49,22 +55,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -104,22 +110,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -159,22 +165,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -214,22 +220,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -269,22 +275,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -324,22 +330,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -379,22 +385,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -434,22 +440,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -489,22 +495,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -544,22 +550,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -598,22 +604,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -653,22 +659,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -707,22 +713,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -762,22 +768,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -817,22 +823,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -872,22 +878,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -927,22 +933,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -981,22 +987,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1036,22 +1042,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1091,22 +1097,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1146,22 +1152,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1201,22 +1207,22 @@ export type GetDeviceInfoResult = {
      *        "unixVer": "x"
      *    },
      *    "baidu": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
      *   "web": {
@@ -1270,22 +1276,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *   "web": {
@@ -1331,22 +1337,22 @@ export interface Uni {
 	 *        "unixVer": "x"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "x",
+	 *        "uniVer": "x"
 	 *    }
 	 *  },
 	 *   "web": {

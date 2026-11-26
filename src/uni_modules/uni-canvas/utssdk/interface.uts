@@ -48,27 +48,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -110,27 +110,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -171,27 +171,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -232,27 +232,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -293,27 +293,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -354,27 +354,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -415,27 +415,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -476,27 +476,27 @@ export interface CanvasContext {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }
@@ -543,27 +543,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -604,27 +604,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -665,27 +665,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -726,27 +726,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -787,27 +787,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -848,27 +848,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -907,27 +907,27 @@ export interface CanvasContext extends JSExport {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -944,6 +944,7 @@ export type CreateCanvasContextAsyncOptions = {
      * canvas 元素的 id 属性
      * @uniPlatform {
      *  "app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *    "android": {
      *        "uniVer": "x",
      *        "unixVer": "4.25"
@@ -971,32 +972,32 @@ export type CreateCanvasContextAsyncOptions = {
 },
     *    "baidu": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 },
     *    "toutiao": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 },
     *    "lark": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 },
     *    "qq": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 },
     *    "kuaishou": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 },
     *    "jd": {
     *      "hostVer": "x",
-    *      "uniVer": "x",
+    *      "uniVer": "x"
     *
 }
     *
@@ -1008,6 +1009,7 @@ export type CreateCanvasContextAsyncOptions = {
      * 组件或页面实例，限定在什么范围内查找id
      * @uniPlatform {
      *  "app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *    "android": {
      *        "uniVer": "x",
      *        "unixVer": "4.25",
@@ -1034,27 +1036,27 @@ export type CreateCanvasContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
      * }
@@ -1064,6 +1066,7 @@ export type CreateCanvasContextAsyncOptions = {
      * 接口调用成功的回调函数
      * @uniPlatform {
      *  "app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *    "android": {
      *        "uniVer": "x",
      *        "unixVer": "4.25",
@@ -1090,27 +1093,27 @@ export type CreateCanvasContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
      * }
@@ -1120,6 +1123,7 @@ export type CreateCanvasContextAsyncOptions = {
      * 接口调用失败的回调函数
      * @uniPlatform {
      *  "app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *    "android": {
      *        "uniVer": "x",
      *        "unixVer": "4.25",
@@ -1146,27 +1150,27 @@ export type CreateCanvasContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
      * }
@@ -1176,6 +1180,7 @@ export type CreateCanvasContextAsyncOptions = {
      * 接口调用结束的回调函数（调用成功、失败都会执行）
      * @uniPlatform {
      *  "app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *    "android": {
      *        "uniVer": "x",
      *        "unixVer": "4.25",
@@ -1202,27 +1207,27 @@ export type CreateCanvasContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
      * }
@@ -1270,27 +1275,27 @@ export interface Uni {
      *    },
      *    "baidu": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "toutiao": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "lark": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "qq": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "kuaishou": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    },
      *    "jd": {
      *      "hostVer": "x",
-     *      "uniVer": "x",
+     *      "uniVer": "x"
      *    }
      *  }
      * }

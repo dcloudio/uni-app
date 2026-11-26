@@ -59,6 +59,15 @@ export type CameraErrorCode =
  * CameraContext API调用失败
  */
 export interface CameraContextFail extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "4.61" },
+	 *     "ios": { "uniVer": "x", "unixVer": "4.61" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   }
+	 * }
+	 */
 	errCode : CameraErrorCode
 };
 
@@ -80,7 +89,7 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : any) => void) | null;
@@ -101,7 +110,7 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((result : any) => void) | null;
@@ -122,7 +131,7 @@ export type CameraContextCameraFrameListenerStartOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -146,7 +155,7 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : any) => void) | null;
@@ -167,7 +176,7 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((result : any) => void) | null;
@@ -188,7 +197,7 @@ export type CameraContextCameraFrameListenerStopOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -211,7 +220,7 @@ export interface CameraContextCameraFrameListener {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	start(options : CameraContextCameraFrameListenerStartOptions) : void;
@@ -232,7 +241,7 @@ export interface CameraContextCameraFrameListener {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	stop(options : CameraContextCameraFrameListenerStopOptions) : void;
@@ -256,7 +265,7 @@ export type CameraContextOnCameraFrame = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	width ?: number | null;
@@ -277,7 +286,7 @@ export type CameraContextOnCameraFrame = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	height ?: number | null;
@@ -298,7 +307,7 @@ export type CameraContextOnCameraFrame = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	data ?: ArrayBuffer | null
@@ -321,7 +330,7 @@ export type CameraContextSetZoomOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	zoom : number;
@@ -343,7 +352,7 @@ export type CameraContextSetZoomOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : any) => void) | null;
@@ -365,7 +374,7 @@ export type CameraContextSetZoomOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((result : any) => void) | null;
@@ -386,7 +395,7 @@ export type CameraContextSetZoomOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -411,7 +420,7 @@ export type CameraContextTakePhotoResult = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	tempImagePath ?: string | null
@@ -436,7 +445,7 @@ export type CameraContextTakePhotoOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	quality ?: "high" | "normal" | "low" | "original" | null;
@@ -458,7 +467,7 @@ export type CameraContextTakePhotoOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	selfieMirror?: boolean | null;
@@ -480,7 +489,7 @@ export type CameraContextTakePhotoOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : CameraContextTakePhotoResult) => void) | null;
@@ -501,7 +510,7 @@ export type CameraContextTakePhotoOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((error : CameraContextFail) => void) | null;
@@ -522,7 +531,7 @@ export type CameraContextTakePhotoOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -546,7 +555,7 @@ export type CameraContextStartRecordTimeoutResult = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	tempThumbPath ?: string | null;
@@ -567,7 +576,7 @@ export type CameraContextStartRecordTimeoutResult = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	tempVideoPath ?: string | null;
@@ -592,7 +601,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	timeoutCallback ?: ((result: any) => void) | null;
@@ -613,7 +622,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	timeout ?: number | null;
@@ -634,7 +643,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	selfieMirror ?: boolean | null;
@@ -656,7 +665,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : any) => void) | null;
@@ -677,7 +686,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((error : CameraContextFail) => void) | null;
@@ -698,7 +707,7 @@ export type CameraContextStartRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -723,7 +732,7 @@ export type CameraContextStopRecordResult = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	tempThumbPath ?: string | null;
@@ -745,7 +754,7 @@ export type CameraContextStopRecordResult = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	tempVideoPath ?: string | null;
@@ -770,7 +779,7 @@ export type CameraContextStopRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	compressed ?: boolean | null;
@@ -792,7 +801,7 @@ export type CameraContextStopRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	success ?: ((result : CameraContextStopRecordResult) => void) | null;
@@ -813,7 +822,7 @@ export type CameraContextStopRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	fail ?: ((error : CameraContextFail) => void) | null;
@@ -834,7 +843,7 @@ export type CameraContextStopRecordOptions = {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	complete ?: ((result : any) => void) | null;
@@ -858,7 +867,7 @@ export interface CameraContext {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	onCameraFrame(callback : (frame : CameraContextOnCameraFrame) => void) : CameraContextCameraFrameListener | null;
@@ -910,7 +919,7 @@ export interface CameraContext {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	setZoom(options : CameraContextSetZoomOptions) : void;
@@ -931,7 +940,7 @@ export interface CameraContext {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	takePhoto(options : CameraContextTakePhotoOptions) : void;
@@ -952,7 +961,7 @@ export interface CameraContext {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	startRecord(options: CameraContextStartRecordOptions): void;
@@ -973,7 +982,7 @@ export interface CameraContext {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	stopRecord(options: CameraContextStopRecordOptions) : void;
@@ -1085,7 +1094,7 @@ export interface Uni {
 	 *       "uniVer": "x",
 	 *       "unixVer": "x"
 	 *     }
-	 *   },
+	 *   }
 	 * }
 	 */
 	createCameraContext: CreateCameraContext

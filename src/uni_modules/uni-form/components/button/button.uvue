@@ -717,15 +717,13 @@
   }
 
   .uni-button-text-size-mini {
+    line-height: 2.3;
     font-size: 13px;
-    padding-top: 7.5px;
-    padding-bottom: 7.5px;
   }
 
   .uni-button-text-size-default {
+    line-height: 2.55555556;
     font-size: 18px;
-    padding-top: 12px;
-    padding-bottom: 12px;
   }
 
   .uni-button.uni-button-disabled {

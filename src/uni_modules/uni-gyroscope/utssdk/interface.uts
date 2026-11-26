@@ -32,6 +32,20 @@ export type GyroscopeErrorCode =
 	901
 
 export interface IGyroscopeError extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errCode : GyroscopeErrorCode
 }
 
@@ -42,6 +56,20 @@ export interface IStopGyroscopeFail extends IGyroscopeError {
 }
 
 export type StartGyroscopeSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -52,6 +80,20 @@ export type StartGyroscopeComplete = StartGyroscopeSuccess | StartGyroscopeFail
 export type StartGyroscopeCompleteCallback = (res : StartGyroscopeComplete) => void
 
 export type StopGyroscopeSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -67,18 +109,66 @@ export type StopGyroscopeCompleteCallback = (res : StopGyroscopeComplete) => voi
 export type StartGyroscopeOptions = {
   /**
    * 监听陀螺仪数据回调函数的执行频率
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	interval ?: GyroscopeInterval | null
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	success ?: StartGyroscopeSuccessCallback | null
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	fail ?: StartGyroscopeFailCallback | null
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	complete ?: StartGyroscopeCompleteCallback | null
 }
@@ -89,14 +179,50 @@ export type StartGyroscopeOptions = {
 export type StopGyroscopeOptions = {
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	success ?: StopGyroscopeSuccessCallback | null
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	fail ?: StopGyroscopeFailCallback | null
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	complete ?: StopGyroscopeCompleteCallback | null
 }
@@ -107,14 +233,50 @@ export type StopGyroscopeOptions = {
 export type OnGyroscopeChangeCallbackResult = {
 	/**
 	 * x 轴的角速度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08", "unixUtsPlugin": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	x : number
 	/**
 	 * y 轴的角速度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08", "unixUtsPlugin": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	y : number
 	/**
 	 * z 轴的角速度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08", "unixUtsPlugin": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.3.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
 	 */
 	z : number
 }
@@ -168,27 +330,27 @@ export interface Uni {
  	 *    },
  	 *    "baidu": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "toutiao": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "lark": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "qq": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "kuaishou": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "jd": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    }
  	 *  }
  	 * }
@@ -235,27 +397,27 @@ export interface Uni {
  	 *    },
  	 *    "baidu": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "toutiao": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "lark": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "qq": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "kuaishou": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "jd": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    }
  	 *  }
  	 * }
@@ -304,27 +466,27 @@ export interface Uni {
  	 *    },
  	 *    "baidu": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "toutiao": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "lark": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "qq": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "kuaishou": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "jd": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    }
  	 *  }
  	 * }
@@ -372,27 +534,27 @@ export interface Uni {
  	 *    },
  	 *    "baidu": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "toutiao": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "lark": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "qq": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "kuaishou": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    },
  	 *    "jd": {
  	 *      "hostVer": "x",
- 	 *      "uniVer": "x",
+	 *      "uniVer": "x"
  	 *    }
  	 *  }
  	 * }

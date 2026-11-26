@@ -42,6 +42,16 @@ export interface UniShareProvider extends UniProvider {
 
 
 export interface IShareFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "√", "unixVer": "4.81", "unixVaporVer": "5.0" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
+   */
   errCode: ShareErrorCode
 };
 /**
@@ -995,6 +1005,7 @@ export type ShareOptions = {
      * 是否启用拉起客服功能，为 true 时除 `corpid`、`customerUrl` 外其他参数无效
      * @defaultValue false
      * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      *  "app": {
      *   "android": {
      *      "uniVer": "x",
@@ -1016,6 +1027,7 @@ export type ShareOptions = {
      * 客服ID，`openCustomerServiceChat` 为 true 时必填
      *
      * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      *  "app": {
      *   "android": {
      *      "uniVer": "x",
@@ -1037,6 +1049,7 @@ export type ShareOptions = {
      * 客服的页面路径，`openCustomerServiceChat` 为 true 时必填
      *
      * @uniPlatform {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      *  "app": {
      *   "android": {
      *      "uniVer": "x",
@@ -1056,14 +1069,38 @@ export type ShareOptions = {
     customerUrl?: string | null,
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "√", "unixVer": "4.81", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     success?: ShareSuccessCallback | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "√", "unixVer": "4.81", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     fail?: ShareFailCallback | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "5.08" },
+     *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+     *     "harmony": { "uniVer": "√", "unixVer": "4.81", "unixVaporVer": "5.0" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     complete?: ShareCompleteCallback | null
 };

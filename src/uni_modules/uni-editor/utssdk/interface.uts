@@ -1,43 +1,379 @@
 export type UniEditorElementOptionsSuccessRes = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 export type UniEditorElementOptionsFailRes = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 export type UniEditorElementOptionsCompleteRes = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 
 export type UniEditorElementOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementInsertImageOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   src ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   alt ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   width ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   height ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   extClass ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   data ?: any | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementInsertTextOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   text ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementInsertLinkOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   text?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   href: string,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
@@ -45,61 +381,401 @@ export type UniEditorElementInsertLinkOptions = {
 export type UniEditorElementInsertMentionOptions = {
   /**
    * 被 @ 的人 id
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   id ?: string | null,
   /**
    * 被 @ 的人名字
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   name?: string | null,
   /**
    * 提及文本颜色，默认为 #1677ff
    * @defaultValue #1677ff
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   color?: string | null,
   /**
    * 提及背景颜色，默认为 #e6f3ff
    * @defaultValue #e6f3ff
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   background?: string | null,
   /**
    * 提及圆角，默认为 4px
    * @defaultValue 4px
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   radius?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.11" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementSetContentsOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   delta ?: any | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   html ?: string | null,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementOptionsSuccessRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementGetSelectionTextOptionsRes = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errMsg : string,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   text : string
 }
 
 export type UniEditorElementGetSelectionTextOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementGetSelectionTextOptionsRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
 export type UniEditorElementGetContentsOptionsRes = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   errMsg : string,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   delta : any,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   html : string,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   text : string
 }
 
 export type UniEditorElementGetContentsOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   success ?: ((res : UniEditorElementGetContentsOptionsRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail ?: ((res : UniEditorElementOptionsFailRes) => void) | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixVaporVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete ?: ((res : UniEditorElementOptionsCompleteRes) => void) | null
 }
 
@@ -163,27 +839,27 @@ export type CreateEditorContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -227,27 +903,27 @@ export type CreateEditorContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -291,27 +967,27 @@ export type CreateEditorContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -355,27 +1031,27 @@ export type CreateEditorContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -419,27 +1095,27 @@ export type CreateEditorContextAsyncOptions = {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -484,27 +1160,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -546,27 +1222,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -608,27 +1284,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -670,27 +1346,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -732,27 +1408,27 @@ export interface EditorContext {
     *     },
     *     "baidu": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     },
     *     "toutiao": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     },
     *     "lark": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     },
     *     "qq": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     },
     *     "kuaishou": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     },
     *     "jd": {
     *       "hostVer": "x",
-    *       "uniVer": "x",
+    *       "uniVer": "x"
     *     }
     *   }
     * }
@@ -794,27 +1470,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -856,27 +1532,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -918,27 +1594,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -980,27 +1656,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1042,27 +1718,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1104,27 +1780,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1166,27 +1842,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1228,27 +1904,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1290,27 +1966,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1352,27 +2028,27 @@ export interface EditorContext {
    *     },
    *     "baidu": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
    *       "hostVer": "x",
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   }
    * }
@@ -1421,27 +2097,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }

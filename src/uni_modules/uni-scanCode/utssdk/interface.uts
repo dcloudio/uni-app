@@ -2,7 +2,35 @@
  * uni.scanCode成功回调参数
  */
 export type ScanCodeSuccess = {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
+     */
     result: string,
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
+     */
     scanType: string
 }
 
@@ -22,6 +50,7 @@ export type ScanCodeCompleteCallback = (res: any) => void
 
 export type ScanCodeSupportedTypes =
 	/**
+	 * 一维码
 	 * @uniPlatform
 	  {
 	    "app": {
@@ -52,22 +81,22 @@ export type ScanCodeSupportedTypes =
 	        "unixVer": "5.31"
 	      },
 	      "baidu": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "toutiao": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "lark": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "qq": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "kuaishou": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "jd": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      }
 	    },
 	    "web": {
@@ -79,6 +108,7 @@ export type ScanCodeSupportedTypes =
 	 */
 	'barCode' |
 	/**
+	 * 二维码
 	 * @uniPlatform
 	  {
 	    "app": {
@@ -109,22 +139,22 @@ export type ScanCodeSupportedTypes =
 	        "unixVer": "5.31"
 	      },
 	      "baidu": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "toutiao": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "lark": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "qq": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "kuaishou": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "jd": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      }
 	    },
 	    "web": {
@@ -136,6 +166,7 @@ export type ScanCodeSupportedTypes =
 	 */
 	'qrCode' |
 	/**
+	 * Data Matrix 码
 	 * @uniPlatform
 	  {
 	    "app": {
@@ -166,22 +197,22 @@ export type ScanCodeSupportedTypes =
 	        "unixVer": "5.31"
 	      },
 	      "baidu": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "toutiao": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "lark": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "qq": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "kuaishou": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "jd": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      }
 	    },
 	    "web": {
@@ -193,6 +224,7 @@ export type ScanCodeSupportedTypes =
 	 */
 	'datamatrix' |
 	/**
+	 * PDF417 条码
 	 * @uniPlatform
 	  {
 	    "app": {
@@ -223,22 +255,22 @@ export type ScanCodeSupportedTypes =
 	        "unixVer": "5.31"
 	      },
 	      "baidu": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "toutiao": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "lark": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "qq": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "kuaishou": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      },
 	      "jd": {
-	        "uniVer": "√",
+	        "uniVer": "√"
 	      }
 	    },
 	    "web": {
@@ -256,22 +288,82 @@ export type ScanCodeSupportedTypes =
 export type ScanCodeOptions = {
     /**
      * 是否只能从相机扫码，不允许从相册选择图片
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     onlyFromCamera?: boolean | null,
     /**
      * 扫码类型
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     scanType?: ScanCodeSupportedTypes[] | null,
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     success?: ScanCodeSuccessCallback | null,
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     fail?: ScanCodeFailCallback | null,
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.71", "unixUtsPlugin": "4.71" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" }
+     * }
      */
     complete?: ScanCodeCompleteCallback | null
 }
@@ -311,22 +403,22 @@ export interface Uni {
           "unixVer": "5.31"
         },
         "baidu": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "toutiao": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "lark": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "qq": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "kuaishou": {
-          "uniVer": "√",
+          "uniVer": "√"
         },
         "jd": {
-          "uniVer": "√",
+          "uniVer": "√"
         }
       },
       "web": {

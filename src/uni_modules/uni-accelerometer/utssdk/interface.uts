@@ -30,6 +30,20 @@ export type AccelerometerErrorCode =
 	901
 
 export interface IAccelerometerError extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errCode : AccelerometerErrorCode
 }
 
@@ -40,6 +54,20 @@ export interface IStopAccelerometerFail extends IAccelerometerError {
 }
 
 export type StartAccelerometerSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -50,6 +78,20 @@ export type StartAccelerometerComplete = StartAccelerometerSuccess | StartAccele
 export type StartAccelerometerCompleteCallback = (res : StartAccelerometerComplete) => void
 
 export type StopAccelerometerSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -65,18 +107,66 @@ export type StopAccelerometerCompleteCallback = (res : StopAccelerometerComplete
 export type StartAccelerometerOptions = {
   /**
    * 监听加速度数据回调函数的执行频率
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	interval ?: AccelerometerInterval | null
   /**
    * 监听加速度数据调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	success ?: StartAccelerometerSuccessCallback | null
   /**
    * 监听加速度数据调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	fail ?: StartAccelerometerFailCallback | null
   /**
    * 监听加速度数据调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	complete ?: StartAccelerometerCompleteCallback | null
 }
@@ -87,14 +177,50 @@ export type StartAccelerometerOptions = {
 export type StopAccelerometerOptions = {
   /**
    * 停止监听加速度数据调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	success ?: StopAccelerometerSuccessCallback | null
   /**
    * 停止监听加速度数据调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	fail ?: StopAccelerometerFailCallback | null
   /**
    * 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.9.3", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	complete ?: StopAccelerometerCompleteCallback | null
 }
@@ -105,14 +231,50 @@ export type StopAccelerometerOptions = {
 export type OnAccelerometerChangeCallbackResult = {
   /**
    * X 轴加速度数据
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	x : number
   /**
    * Y 轴加速度数据
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	y : number
   /**
    * Z 轴加速度数据
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "2.9.6", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "2.9.6", "unixVer": "4.0" },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+	 *   }
+	 * }
    */
 	z : number
 }
@@ -164,26 +326,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -229,26 +391,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -293,26 +455,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -357,26 +519,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }

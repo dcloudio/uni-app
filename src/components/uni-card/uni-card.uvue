@@ -1,0 +1,67 @@
+<template>
+  <view class="uni-card__root">
+    <slot name="title">
+      <text v-if="title != ''" class="uni-card__title" :class="titleClass">{{ title }}</text>
+    </slot>
+    <view class="uni-card__content" :class="contentClass">
+      <slot></slot>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 卡片
+   * @description 展示外置分组标题和卡片内容，不管理内容中的数据、事件或操作。
+   * @property {String} title 卡片标题，默认不显示
+   * @property {String} titleClass 标题文字的自定义样式类
+   * @property {String} contentClass 内容区域的自定义样式类
+   */
+  defineOptions({
+    name: 'UniCard',
+    styleIsolation: 'app',
+    externalClasses: ['title-class', 'content-class']
+  })
+
+  interface Props {
+    /**
+     * @description 显示在卡片背景外的分组标题；为空时不显示，可通过 title 插槽替换。
+     * @default ""
+     */
+    title?: string;
+    /**
+     * @description 标题文字的自定义样式类，不作用于 title 插槽。
+     * @default ""
+     */
+    titleClass?: string;
+    /**
+     * @description 内容区域的自定义样式类，用于调整内边距、背景等样式。
+     * @default ""
+     */
+    contentClass?: string;
+  }
+
+  withDefaults(defineProps<Props>(), {
+    title: '',
+    titleClass: '',
+    contentClass: ''
+  })
+</script>
+
+<style>
+  .uni-card__root {
+    margin-bottom: 8px;
+  }
+
+  .uni-card__title {
+    margin: 8px 0;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .uni-card__content {
+    padding: 6px 8px;
+    border-radius: 8px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+</style>

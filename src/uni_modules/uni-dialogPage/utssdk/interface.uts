@@ -43,22 +43,22 @@ export type RouteErrorCode = 4
         "unixVer": "x"
       },
       "baidu": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "toutiao": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "lark": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "qq": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "kuaishou": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "jd": {
-        "uniVer": "x",
+        "uniVer": "x"
       }
     },
     "web": {
@@ -70,6 +70,20 @@ export type RouteErrorCode = 4
 export interface OpenDialogPageSuccess extends AsyncApiSuccessResult {}
 type OpenDialogPageSuccessCallback = (result : OpenDialogPageSuccess) => void
 export interface OpenDialogPageFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.31", "unixVaporVer": "5.21" },
+   *     "ios": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.31", "unixUtsPlugin": "4.31", "unixVaporVer": "5.11" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "uniVer": "x", "unixVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "4.31" }
+   * }
+   */
   errCode: RouteErrorCode
 }
 type OpenDialogPageFailCallback = (result : OpenDialogPageFail) => void
@@ -110,22 +124,22 @@ type OpenDialogPageCompleteCallback = (result: OpenDialogPageComplete) => void
         "unixVer": "x"
       },
       "baidu": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "toutiao": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "lark": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "qq": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "kuaishou": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "jd": {
-        "uniVer": "x",
+        "uniVer": "x"
       }
     },
     "web": {
@@ -169,22 +183,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -230,22 +244,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -325,22 +339,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -385,22 +399,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -445,22 +459,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -506,22 +520,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -566,22 +580,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -625,22 +639,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -684,22 +698,22 @@ export type OpenDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -747,22 +761,22 @@ type CloseDialogPageSuccessCallback = (result: CloseDialogPageSuccess) => void
         "unixVer": "x"
       },
       "baidu": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "toutiao": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "lark": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "qq": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "kuaishou": {
-        "uniVer": "x",
+        "uniVer": "x"
       },
       "jd": {
-        "uniVer": "x",
+        "uniVer": "x"
       }
     },
     "web": {
@@ -772,6 +786,20 @@ type CloseDialogPageSuccessCallback = (result: CloseDialogPageSuccess) => void
   }
  */
 export interface CloseDialogPageFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.31", "unixVaporVer": "5.21" },
+   *     "ios": { "uniVer": "x", "uniUtsPlugin": "x", "unixVer": "4.31", "unixUtsPlugin": "4.31", "unixVaporVer": "5.11" },
+   *     "harmony": { "uniVer": "x", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "uniVer": "x", "unixVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "4.31" }
+   * }
+   */
   errCode: RouteErrorCode
 }
 type CloseDialogPageFailCallback = (result: CloseDialogPageFail) => void
@@ -811,22 +839,22 @@ type CloseDialogPageCompleteCallback = (result: CloseDialogPageComplete) => void
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -870,22 +898,22 @@ export type CloseDialogPageOptions = {
    *       "unixVer": "x"
    *     },
    *     "baidu": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   },
    *   "web": {
@@ -931,22 +959,22 @@ export type CloseDialogPageOptions = {
    *       "unixVer": "x"
    *     },
    *     "baidu": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "toutiao": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "lark": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "qq": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "kuaishou": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     },
    *     "jd": {
-   *       "uniVer": "x",
+   *       "uniVer": "x"
    *     }
    *   },
    *   "web": {
@@ -990,22 +1018,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1049,22 +1077,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1108,22 +1136,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1167,22 +1195,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1226,22 +1254,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1285,22 +1313,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1344,22 +1372,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1403,22 +1431,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1462,22 +1490,22 @@ export type CloseDialogPageOptions = {
    *     "unixVer": "x"
    *   },
    *   "baidu": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "toutiao": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "lark": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "qq": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "kuaishou": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   },
    *   "jd": {
-   *     "uniVer": "x",
+   *     "uniVer": "x"
    *   }
    * },
    * "web": {
@@ -1521,22 +1549,22 @@ export type CloseDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -1581,22 +1609,22 @@ export type CloseDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -1640,22 +1668,22 @@ export type CloseDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -1699,22 +1727,22 @@ export type CloseDialogPageOptions = {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -1763,22 +1791,22 @@ export interface Uni {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {
@@ -1825,22 +1853,22 @@ export interface Uni {
           "unixVer": "x"
         },
         "baidu": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "toutiao": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "lark": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "qq": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "kuaishou": {
-          "uniVer": "x",
+          "uniVer": "x"
         },
         "jd": {
-          "uniVer": "x",
+          "uniVer": "x"
         }
       },
       "web": {

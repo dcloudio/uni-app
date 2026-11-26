@@ -29,22 +29,22 @@ export interface Uni {
        *        "unixVer": "5.31"
        *    },
        *    "baidu": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    },
        *    "toutiao": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    },
        *    "lark": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    },
        *    "qq": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    },
        *    "kuaishou": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    },
        *    "jd": {
-       *        "uniVer": "√",
+       *        "uniVer": "√"
        *    }
        *  },
       *   "web": {
@@ -68,7 +68,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "4.25"
@@ -112,7 +114,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "4.25"
@@ -156,7 +160,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
@@ -200,7 +206,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
@@ -244,7 +252,13 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
@@ -274,7 +288,9 @@ export type GetAppAuthorizeSettingResult = {
      * @type boolean
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "x"
@@ -302,7 +318,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
@@ -346,7 +364,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" },
      * 		"android": {
      * 			"uniVer": "√",
      * 			"unixVer": "3.9"
@@ -390,7 +410,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "x"
@@ -434,7 +456,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "x"
@@ -478,7 +502,9 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
+     *     "harmony": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
      * 		"android": {
      * 			"uniVer": "x",
      * 			"unixVer": "x"
@@ -522,6 +548,7 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
      * 		"android": {
      * 			"uniVer": "x",
@@ -570,6 +597,11 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
      * 		"android": {
      * 			"uniVer": "x",
@@ -609,6 +641,11 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
      * 		"android": {
      * 			"uniVer": "x",
@@ -644,6 +681,11 @@ export type GetAppAuthorizeSettingResult = {
      *
      * @uniPlatform
      * {
+     *   "mp": {
+     *     "weixin": { "uniVer": "x", "unixVer": "x" },
+     *     "alipay": { "uniVer": "x", "unixVer": "x" }
+     *   },
+     *   "web": { "uniVer": "x", "unixVer": "x" },
      * 	"app": {
      * 		"android": {
      * 			"uniVer": "x",

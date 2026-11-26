@@ -30,22 +30,22 @@ export interface Uni {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "uniVer": "√",
@@ -94,22 +94,22 @@ export interface Uni {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "uniVer": "√",
@@ -160,7 +160,7 @@ export type AppleLoginAppleInfo = {
    *      "unixVer": "x"
    *    }
    *  }
-   *
+   * }
    */
   authorizationCode?: string | null,
   /**
@@ -243,18 +243,37 @@ export type AppleLoginAppleInfo = {
 	 *      "unixVer": "x"
 	 *    }
 	 *  }
-	 *
+	 * }
    */
   user?: string | null
 };
 export type LoginSuccess = {
   /**
    * 描述信息
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   errMsg?: string | null,
   /**
    * 登录服务商提供的登录信息，服务商不同返回的结果不完全相同
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "√",
@@ -276,6 +295,12 @@ export type LoginSuccess = {
   /**
    * 小程序用户临时登录凭证
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "√",
@@ -297,6 +322,12 @@ export type LoginSuccess = {
   /**
    * 头条小程序当前设备标识
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -317,6 +348,12 @@ export type LoginSuccess = {
   /**
    * 支付宝小程序授权码
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -337,6 +374,12 @@ export type LoginSuccess = {
   /**
    * 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -357,6 +400,12 @@ export type LoginSuccess = {
   /**
    * 支付宝小程序登录成功的授权 scope
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -377,6 +426,12 @@ export type LoginSuccess = {
   /**
    * 苹果登录成功返回的信息
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -433,27 +488,27 @@ export type LoginOptions = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -562,7 +617,6 @@ export type LoginOptions = {
    *      "unixVer": "x"
    *    },
    *    "ios": {
-   *       "uniVer": "x",
    *       "uniVer": "√",
 	 *       "unixVer": "5.21"
    *    },
@@ -599,6 +653,8 @@ export type LoginOptions = {
    * 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）
    *
    * @uniPlatform {
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -612,8 +668,9 @@ export type LoginOptions = {
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
-   *  }
+   *  },
    *  "mp": {
+   *     "weixin": { "uniVer": "x", "unixVer": "x" },
    *    "alipay": {
    *        "uniVer": "√",
    *        "unixVer": "x"
@@ -625,6 +682,8 @@ export type LoginOptions = {
   /**
    * 超时时间，单位 ms
    * @uniPlatform {
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    *  "app": {
    *   "android": {
    *      "uniVer": "x",
@@ -638,17 +697,18 @@ export type LoginOptions = {
    *      "uniVer": "x",
    *      "unixVer": "x"
    *    }
-   *  }
+   *  },
    *  "mp": {
+   *     "alipay": { "uniVer": "x", "unixVer": "x" },
    *    "weixin": {
    *        "uniVer": "√",
    *        "unixVer": "2.35"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  }
    * }
@@ -658,6 +718,11 @@ export type LoginOptions = {
    * 微信登录仅请求授权认证
    *
    * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
    *  "app": {
    *    "android": {
    *        "uniVer": "3.2.6",
@@ -683,6 +748,12 @@ export type LoginOptions = {
   /**
    * 接口调用成功的回调函数
 	 * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *  "app": {
 	 *    "android": {
 	 *        "uniVer": "√",
@@ -704,6 +775,12 @@ export type LoginOptions = {
   /**
    * 接口调用失败的回调函数
 	 * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *  "app": {
 	 *    "android": {
 	 *        "uniVer": "√",
@@ -725,6 +802,12 @@ export type LoginOptions = {
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *  "app": {
 	 *    "android": {
 	 *        "uniVer": "√",
@@ -1088,27 +1171,27 @@ export type UserInfo = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1162,27 +1245,27 @@ export type UserInfo = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1243,22 +1326,22 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1305,23 +1388,23 @@ export type GetUserInfoSuccess = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1368,23 +1451,23 @@ export type GetUserInfoSuccess = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1431,23 +1514,23 @@ export type GetUserInfoSuccess = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1494,23 +1577,23 @@ export type GetUserInfoSuccess = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1531,6 +1614,19 @@ export type GetUserInfoSuccess = {
   iv?: string | null,
   /**
    * 描述信息
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "x" },
+   *     "ios": { "uniVer": "√", "unixVer": "x" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   errMsg: string
 };
@@ -1571,27 +1667,27 @@ export type GetUserInfoOptions = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1762,24 +1858,24 @@ export type GetUserInfoOptions = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1826,27 +1922,27 @@ export type GetUserInfoOptions = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1893,27 +1989,27 @@ export type GetUserInfoOptions = {
    *    },
    *    "baidu": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "qq": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
    *        "hostVer": "x",
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "360": {
    *        "hostVer": "x",
@@ -1934,19 +2030,73 @@ export type GetUserInfoOptions = {
   timeout?: number | null,
   /**
    * 接口调用成功的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "x" },
+   *     "ios": { "uniVer": "√", "unixVer": "x" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   success?: GetUserInfoSuccessCallback | null,
   /**
    * 接口调用失败的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "x" },
+   *     "ios": { "uniVer": "√", "unixVer": "x" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   fail?: GetUserInfoFailCallback | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "x" },
+   *     "ios": { "uniVer": "√", "unixVer": "x" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
    */
   complete?: GetUserInfoCompleteCallback | null
 };
 
 export interface IOauthFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "5.0" }
+   *   },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+   *   },
+   *   "quickapp": { "uniVer": "√", "unixVer": "√" },
+   *   "web": { "uniVer": "x", "unixVer": "x" }
+   * }
+   */
   errCode : OauthErrorCode
 };
 

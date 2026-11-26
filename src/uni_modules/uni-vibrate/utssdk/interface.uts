@@ -1,20 +1,76 @@
 export type VibrateShortType = "heavy" | "medium" | "light"
 
 export type VibrateShortSuccess = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 
 export type VibrateLongSuccess = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errMsg : string
 }
 
 export type VibrateErrorCode = 9001001 | 9001002 | 9001003
 
 export interface IVibrateShortFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errCode : VibrateErrorCode
 }
 
 export interface IVibrateLongFail extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errCode : VibrateErrorCode
 }
 
@@ -30,15 +86,113 @@ export type VibrateShortCompleteCallback = (result : VibrateShortComplete) => vo
 export type VibrateLongCompleteCallback = (result : VibrateLongComplete) => void
 
 export type VibrateShortOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   type : VibrateShortType,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   success ?: VibrateShortSuccessCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   fail ?: VibrateShortFailCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   complete ?: VibrateShortCompleteCallback
 }
 
 export type VibrateLongOptions = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   success ?: VibrateLongSuccessCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   fail ?: VibrateLongFailCallback,
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "√", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   complete ?: VibrateLongCompleteCallback
 }
 
@@ -84,26 +238,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -147,26 +301,26 @@ export interface Uni {
    *      "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }

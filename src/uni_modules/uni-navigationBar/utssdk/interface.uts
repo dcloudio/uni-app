@@ -5,6 +5,20 @@
 export type SetNavigationBarColorErrorCode = 4
 
 export interface SetNavigationBarColorFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "√" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: SetNavigationBarColorErrorCode
 }
 
@@ -37,23 +51,23 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "360": {
      *        "hostVer": "x",
@@ -100,22 +114,22 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -153,22 +167,22 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -199,7 +213,7 @@ export type SetNavigationBarColorOptions = {
      *  "mp": {
      *    "weixin": {
      *        "uniVer": "√",
-     *        "unixVer": "4.41
+     *        "unixVer": "4.41"
      *    },
      *    "alipay": {
      *        "hostVer": "x",
@@ -207,22 +221,22 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -260,22 +274,22 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -311,6 +325,20 @@ export type SetNavigationBarColor = (
  */
 export type SetNavigationBarTitleErrorCode = 4
 export interface SetNavigationBarTitleFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.97" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: SetNavigationBarTitleErrorCode
 }
 
@@ -343,23 +371,23 @@ export type SetNavigationBarTitleOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "360": {
      *        "hostVer": "x",
@@ -406,22 +434,22 @@ export type SetNavigationBarTitleOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -459,22 +487,22 @@ export type SetNavigationBarTitleOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -512,22 +540,22 @@ export type SetNavigationBarTitleOptions = {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -570,14 +598,50 @@ export type ShowNavigationBarLoadingFailCallback = (
 export type ShowNavigationBarLoadingOptions = {
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     success?: ShowNavigationBarLoadingSuccessCallback
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     fail?: ShowNavigationBarLoadingFailCallback
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     complete?: () => void
 }
@@ -595,14 +659,50 @@ export type HideNavigationBarLoadingFailCallback = (
 export type HideNavigationBarLoadingOptions = {
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     success?: HideNavigationBarLoadingSuccessCallback
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     fail?: HideNavigationBarLoadingFailCallback
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "x" },
+     *     "ios": { "uniVer": "√", "unixVer": "x" },
+     *     "harmony": { "uniVer": "4.31", "unixVer": "4.61", "unixVaporVer": "x" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     complete?: () => void
 }
@@ -639,22 +739,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -697,22 +797,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -755,22 +855,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -811,22 +911,22 @@ export interface Uni {
      *        "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "toutiao": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "lark": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "qq": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    },
      *    "jd": {
-     *        "uniVer": "√",
+     *        "uniVer": "√"
      *    }
      *  },
      *  "web": {

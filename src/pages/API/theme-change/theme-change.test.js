@@ -5,6 +5,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isVapor = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('API-theme-change', () => {
   let page;
@@ -34,6 +35,34 @@ describe('API-theme-change', () => {
       },
     };
   });
+
+  it("check-set-app-theme-auto-restores-os-theme", async () => {
+    // 该回归用例仅针对 App 蒸汽模式：editor 组件使用 WebView 实现，切换深色时会修改所在 Activity 的夜间配置（uiMode）。
+    // 若运行时将该配置误写入 osTheme，从 dark 切回 auto 后会停留在 dark。
+    // 这里以切换前记录的系统主题为基准，验证切回 auto 后 osTheme 不会被 dark 残留污染。
+    if (!isVapor) {
+      return
+    }
+    const systemInfoBefore = await program.callUniMethod('getSystemInfoSync')
+    const osThemeBefore = systemInfoBefore.osTheme
+
+    // 前置条件：仅当系统处于浅色主题时该用例才具备回归检测能力。
+    // 深色系统下 osTheme 本应为 dark，即使存在“切 dark 后污染 osTheme”的缺陷，最终断言也会通过，
+    // 因此必须显式校验，避免产生假通过。
+    if (osThemeBefore !== 'light') {
+      throw new Error(`该用例需要系统处于浅色主题，当前 osTheme 为 ${osThemeBefore}，请在浅色系统下运行`)
+    }
+
+    await page.callMethod('setAppTheme', 'dark')
+    await page.waitFor(500)
+    expect(await page.data('data.appTheme')).toBe('dark')
+
+    await page.callMethod('setAppTheme', 'auto')
+    await page.waitFor(800)
+
+    // auto 模式下生效主题跟随系统主题，osTheme 必须恢复为切换前的系统主题
+    expect(await page.data('data.osTheme')).toBe(osThemeBefore)
+  })
 
   it("check-set-app-theme", async () => {
     await page.callMethod('setAppTheme', "dark")

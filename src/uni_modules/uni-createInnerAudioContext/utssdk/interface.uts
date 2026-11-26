@@ -22,7 +22,7 @@ export interface Uni {
             },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
         },
         "mp": {
@@ -35,22 +35,22 @@ export interface Uni {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
         "web": {
@@ -78,7 +78,7 @@ export interface Uni {
 	        },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	    },
 	    "mp": {
@@ -91,22 +91,22 @@ export interface Uni {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -146,7 +146,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "4.85",
-	            "unixVer": "4.85",
+	            "unixVer": "4.85"
 	        }
 	    },
 	    "mp": {
@@ -159,22 +159,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -203,7 +203,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "5.0",
-	            "unixVer": "5.0",
+	            "unixVer": "5.0"
 	        }
 	    },
 	    "mp": {
@@ -216,22 +216,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -260,7 +260,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	    },
 	    "mp": {
@@ -273,22 +273,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -316,7 +316,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	    },
 	    "mp": {
@@ -329,22 +329,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -372,7 +372,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	    },
 	    "mp": {
@@ -385,22 +385,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -428,7 +428,7 @@ export type SetInnerAudioOptionOptions = {
 	        },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	    },
 	    "mp": {
@@ -441,22 +441,22 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	    "web": {
@@ -489,7 +489,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -502,22 +502,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -545,7 +545,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -558,22 +558,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -601,7 +601,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -614,22 +614,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -657,7 +657,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -670,22 +670,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -713,7 +713,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -726,22 +726,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -769,7 +769,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "x",
-                "unixVer": "x",
+                "unixVer": "x"
             }
           },
         "mp": {
@@ -782,22 +782,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -826,7 +826,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -839,22 +839,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -883,7 +883,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -896,22 +896,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -939,7 +939,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "x",
-                "unixVer": "x",
+                "unixVer": "x"
             }
           },
         "mp": {
@@ -952,22 +952,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -995,7 +995,7 @@ export interface InnerAudioContext {
              },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
          },
         "mp": {
@@ -1008,22 +1008,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
          "web": {
@@ -1052,7 +1052,7 @@ export interface InnerAudioContext {
              },
             "harmony": {
                 "uniVer": "x",
-                "unixVer": "x",
+                "unixVer": "x"
             }
          },
         "mp": {
@@ -1065,22 +1065,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
          "web": {
@@ -1108,7 +1108,7 @@ export interface InnerAudioContext {
 	          },
 	        "harmony": {
 	            "uniVer": "x",
-	            "unixVer": "x",
+	            "unixVer": "x"
 	        }
 	      },
 	    "mp": {
@@ -1121,22 +1121,22 @@ export interface InnerAudioContext {
 	            "unixVer": "5.31"
 	        },
 	        "baidu": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "toutiao": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "lark": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "qq": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "kuaishou": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        },
 	        "jd": {
-	            "uniVer": "√",
+	            "uniVer": "√"
 	        }
 	    },
 	      "web": {
@@ -1166,7 +1166,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1179,22 +1179,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1222,7 +1222,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1235,22 +1235,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1278,7 +1278,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1291,22 +1291,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1334,7 +1334,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1347,22 +1347,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1390,7 +1390,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -1418,7 +1418,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1431,22 +1431,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1474,7 +1474,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -1482,7 +1482,6 @@ export interface InnerAudioContext {
               "unixVer": "4.0"
           }
       }
-     * }
      */
     onPlay(callback: (result: any) => void): void;
     /**
@@ -1503,7 +1502,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1516,22 +1515,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1539,7 +1538,6 @@ export interface InnerAudioContext {
               "unixVer": "4.0"
           }
       }
-     * }
      */
     onPause(callback: (result: any) => void): void;
     /**
@@ -1560,7 +1558,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1573,22 +1571,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1616,7 +1614,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1629,22 +1627,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1672,7 +1670,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1685,22 +1683,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1728,7 +1726,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1741,22 +1739,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1784,7 +1782,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1797,22 +1795,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1840,7 +1838,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1853,22 +1851,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1896,7 +1894,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1909,22 +1907,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -1952,7 +1950,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -1965,22 +1963,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2008,7 +2006,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2021,22 +2019,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2064,7 +2062,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2077,22 +2075,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2120,7 +2118,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2133,22 +2131,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2176,7 +2174,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2189,22 +2187,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2232,7 +2230,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2245,22 +2243,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2288,7 +2286,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2301,22 +2299,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2344,7 +2342,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2372,7 +2370,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2385,22 +2383,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2428,7 +2426,7 @@ export interface InnerAudioContext {
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
         "mp": {
@@ -2441,22 +2439,22 @@ export interface InnerAudioContext {
                 "unixVer": "5.31"
             },
             "baidu": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "toutiao": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "lark": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "qq": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "kuaishou": {
-                "uniVer": "√",
+                "uniVer": "√"
             },
             "jd": {
-                "uniVer": "√",
+                "uniVer": "√"
             }
         },
           "web": {
@@ -2489,7 +2487,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2516,7 +2514,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2543,7 +2541,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2570,7 +2568,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2597,7 +2595,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2624,7 +2622,7 @@ export type CreateInnerAudioContextErrorCode =
               },
             "harmony": {
                 "uniVer": "4.23",
-                "unixVer": "4.61",
+                "unixVer": "4.61"
             }
           },
           "web": {
@@ -2636,5 +2634,19 @@ export type CreateInnerAudioContextErrorCode =
     1107609;
 
 export interface ICreateInnerAudioContextFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "uniUtsPlugin": "4.33", "unixVer": "4.33" },
+     *     "ios": { "uniVer": "√", "uniUtsPlugin": "x", "unixVer": "4.41", "unixUtsPlugin": "4.41" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: CreateInnerAudioContextErrorCode
 };

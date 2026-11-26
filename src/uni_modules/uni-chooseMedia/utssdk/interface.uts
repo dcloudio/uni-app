@@ -80,6 +80,11 @@ export interface IChooseMediaError extends IUniError {
 	/**
 	 * 错误码
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",
@@ -303,6 +308,11 @@ export type ChooseMediaSuccess = {
 	/**
 	 * 选中的图片或视频文件列表
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",
@@ -320,6 +330,11 @@ export type ChooseMediaSuccess = {
 	/**
 	 * 选择的文件类型
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",
@@ -552,6 +567,11 @@ export type ChooseMediaOptions = {
 	 * 最多可以选择的文件个数
 	 * @defaultValue 9
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 * "app": {
 		 *		"android": {
 		 *			"uniVer": "x",
@@ -570,6 +590,11 @@ export type ChooseMediaOptions = {
 	 * image 只能拍摄图片或从相册选择图片，video 只能拍摄视频或从相册选择视频，mix 可同时选择图片和视频，合法值：'image'、'video'、'mix'
 	 * @defaultValue 	['image', 'video']
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 * "app": {
 		 *		"android": {
 		 *			"uniVer": "x",
@@ -588,6 +613,11 @@ export type ChooseMediaOptions = {
 	 * album 从相册选择，camera 使用相机拍摄
 	 * @defaultValue ['album', 'camera']
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 * "app": {
 		 *		"android": {
 		 *			"uniVer": "x",
@@ -739,6 +769,11 @@ export type ChooseMediaOptions = {
 	/**
 	 * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",
@@ -756,6 +791,11 @@ export type ChooseMediaOptions = {
 	/**
 	 * 接口调用失败的回调函数
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",
@@ -773,6 +813,11 @@ export type ChooseMediaOptions = {
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @uniPlatform {
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
 	 *   "app": {
 	 *     "android": {
 	 *       "uniVer": "x",

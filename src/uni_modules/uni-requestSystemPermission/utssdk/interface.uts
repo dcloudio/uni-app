@@ -15,14 +15,50 @@ export type RequestSystemPermissionErrorCode =
 export interface RequestSystemPermissionSuccess {
   /**
    * 已授权权限列表，仅包含当前系统支持的权限
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   grantedList: string[]
   /**
    * 已拒绝权限列表
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   deniedList: string[]
   /**
    * 不在询问权限列表
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   doNotAskAgainList: string[]
 }
@@ -34,6 +70,18 @@ type RequestSystemPermissionSuccessCallback = (result: RequestSystemPermissionSu
 export interface RequestSystemPermissionFail extends IUniError {
   /**
    * 错误码
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   errCode: RequestSystemPermissionErrorCode
 }
@@ -51,14 +99,66 @@ type RequestSystemPermissionCompleteCallback = (result: RequestSystemPermissionC
 export type RequestSystemPermissionOptions = {
   /**
    * 申请的系统权限列表
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   permissions: string[]
   /**
    * 申请系统权限成功回调
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
    */
   success?: RequestSystemPermissionSuccessCallback | null
 
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   fail?: RequestSystemPermissionFailCallback | null
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" },
+   *     "ios": { "uniVer": "x", "unixVer": "x", "unixVaporVer": "x" },
+   *     "harmony": { "uniVer": "x", "unixVer": "5.25", "unixVaporVer": "5.25" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+   *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+   *   }
+   * }
+   */
   complete?: RequestSystemPermissionCompleteCallback | null
 }
 
@@ -103,27 +203,27 @@ export interface Uni {
 	 * 		},
 	 * 		"baidu": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		},
 	 * 		"toutiao": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		},
 	 * 		"lark": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		},
 	 * 		"qq": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		},
 	 * 		"kuaishou": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		},
 	 * 		"jd": {
 	 * 			"hostVer": "x",
-	 * 			"uniVer": "x",
+	 * 			"uniVer": "x"
 	 * 		}
 	 * 	}
 	 * }

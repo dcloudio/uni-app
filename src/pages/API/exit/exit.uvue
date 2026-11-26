@@ -5,12 +5,17 @@
 </template>
 
 <script setup lang="ts">
+  const exitCallback = ref('')
+
   const exitAppClick = () => {
+    exitCallback.value = ''
     uni.exit({
       success: function (res) {
+        exitCallback.value = 'success'
         console.log(res)
       },
       fail: function(error){
+        exitCallback.value = 'fail'
         console.log(error)
       }
     })
@@ -21,6 +26,7 @@
       url: '/pages/API/exit/exit'
     })
   }
+  defineExpose({ exitAppClick, exitCallback })
 </script>
 
 <style>

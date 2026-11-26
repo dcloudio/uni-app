@@ -125,15 +125,14 @@
       <button id="progress-reset" @click="resetProgressProps">重置示例</button>
     </template>
     <template #events>
-      <text class="uni-h4">事件</text>
-      <view class="uni-card">
+      <uni-card title="事件">
         <template v-if="supportsActiveend">
           <button id="progress-event-activeend-run" @click="runPreviewAnimation">触发 activeend</button>
           <text id="progress-event-activeend-log" class="uni-log">{{ previewLogs.activeend ?? '尚未触发' }}</text>
         </template>
         <text class="uni-comment">可触摸上方进度条，查看通用触摸与点击事件。</text>
         <text id="progress-general-log" class="uni-log">{{ previewLogs.general ?? '尚未触发通用事件' }}</text>
-      </view>
+      </uni-card>
     </template>
   </component-template>
 

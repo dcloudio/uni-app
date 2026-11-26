@@ -1,9 +1,143 @@
 import { ChooseFileOptions, ChooseFileTempFile,ChooseFileSuccess } from "../../interface.uts"
+import { MediaErrorImpl, UniError_ChooseFile } from "../../unierror.uts"
 import Intent from 'android.content.Intent';
 import Uri from 'android.net.Uri';
 import OpenableColumns from 'android.provider.OpenableColumns';
 import File from 'java.io.File';
+import MimeTypeMap from 'android.webkit.MimeTypeMap';
 const REQUEST_CODE : Int = 10
+
+/**
+ * 常用文件后缀名 -> MIME 类型映射表。
+ * Android 的 Intent 只能按 MIME 类型过滤，无法直接按后缀名过滤，
+ * 因此这里维护一份常用后缀名到 MIME 的映射，先经过系统 MimeTypeMap 查询，
+ * 查询不到时再回退到本表。仅覆盖常用文件格式。
+ */
+const COMMON_EXTENSION_MIME : Map<string, string> = new Map<string, string>([
+	// 图片
+	['png', 'image/png'],
+	['jpg', 'image/jpeg'],
+	['jpeg', 'image/jpeg'],
+	['gif', 'image/gif'],
+	['bmp', 'image/bmp'],
+	['webp', 'image/webp'],
+	['svg', 'image/svg+xml'],
+	['ico', 'image/x-icon'],
+	['tif', 'image/tiff'],
+	['tiff', 'image/tiff'],
+	// 视频
+	['mp4', 'video/mp4'],
+	['m4v', 'video/x-m4v'],
+	['mov', 'video/quicktime'],
+	['avi', 'video/x-msvideo'],
+	['mkv', 'video/x-matroska'],
+	['flv', 'video/x-flv'],
+	['wmv', 'video/x-ms-wmv'],
+	['webm', 'video/webm'],
+	['3gp', 'video/3gpp'],
+	['3g2', 'video/3gpp2'],
+	['mpg', 'video/mpeg'],
+	['mpeg', 'video/mpeg'],
+	// 音频
+	['mp3', 'audio/mpeg'],
+	['wav', 'audio/x-wav'],
+	['aac', 'audio/aac'],
+	['flac', 'audio/flac'],
+	['ogg', 'audio/ogg'],
+	['m4a', 'audio/mp4'],
+	['wma', 'audio/x-ms-wma'],
+	['amr', 'audio/amr'],
+	['mid', 'audio/midi'],
+	// 文档
+	['pdf', 'application/pdf'],
+	['doc', 'application/msword'],
+	['docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+	['xls', 'application/vnd.ms-excel'],
+	['xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+	['ppt', 'application/vnd.ms-powerpoint'],
+	['pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+	['txt', 'text/plain'],
+	['rtf', 'application/rtf'],
+	['csv', 'text/csv'],
+	['md', 'text/markdown'],
+	['json', 'application/json'],
+	['xml', 'text/xml'],
+	['html', 'text/html'],
+	['htm', 'text/html'],
+	// 压缩包
+	['zip', 'application/zip'],
+	['rar', 'application/vnd.rar'],
+	['7z', 'application/x-7z-compressed'],
+	['tar', 'application/x-tar'],
+	['gz', 'application/gzip'],
+	['bz2', 'application/x-bzip2'],
+	// 其他
+	['apk', 'application/vnd.android.package-archive'],
+	['epub', 'application/epub+zip']
+])
+
+/**
+ * 根据后缀名获取 MIME 类型：优先使用系统 MimeTypeMap，查不到时回退到内置常用表。
+ * @param extension 不带点的后缀名（已转为小写）
+ * @returns MIME 类型，未知时返回 null
+ */
+function getMimeTypeFromExtension(extension : string) : string | null {
+	const sysMime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+	if (sysMime != null && sysMime.length > 0) {
+		return sysMime
+	}
+	return COMMON_EXTENSION_MIME.get(extension) ?? null
+}
+
+/**
+ * 规范化 extension 数组：去空格、转小写、去前导点、去重，非法项直接忽略。
+ *
+ * 规则（对齐 Web 实现）：
+ * - 每一项忽略大小写，兼容带点或不带点（png / .png）；
+ * - 非法项（空、含 "/" 的 MIME、含 "\\" 的路径、含 "*" 的通配符）忽略，不报错；
+ * - 空数组、null 或全部无效时返回空数组，表示不过滤。
+ */
+function normalizeExtensions(extension : string[]) : string[] {
+	const result : string[] = []
+	for (let i = 0; i < extension.length; i++) {
+		let ext = extension[i].trim().toLowerCase()
+		if (ext.startsWith('.')) {
+			ext = ext.substring(1)
+		}
+		if (ext.length == 0 || ext.includes('/') || ext.includes('\\') || ext.includes('*')) {
+			continue
+		}
+		if (!result.includes(ext)) {
+			result.push(ext)
+		}
+	}
+	return result
+}
+
+/**
+ * 把规范化后的后缀名映射为 MIME 类型（用于给系统文件选择器做预过滤），去重。
+ */
+function extensionsToMimeTypes(extensions : string[]) : string[] {
+	const mimeTypes : string[] = []
+	for (let i = 0; i < extensions.length; i++) {
+		const mime = getMimeTypeFromExtension(extensions[i])
+		if (mime != null && !mimeTypes.includes(mime)) {
+			mimeTypes.push(mime)
+		}
+	}
+	return mimeTypes
+}
+
+/**
+ * 从文件名中取出后缀名（小写、不含点），无后缀返回空字符串。
+ */
+function getExtensionFromName(name : string) : string {
+	const dotIndex = name.lastIndexOf('.')
+	if (dotIndex < 0 || dotIndex == name.length - 1) {
+		return ''
+	}
+	return name.substring(dotIndex + 1).toLowerCase()
+}
 let resultCallBack : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
 
 function getFilePathEntry(uri : Uri) : ChooseFileTempFile {
@@ -46,11 +180,38 @@ function getFileTypeFromUri(uri : Uri) : string {
 export function chooseFileUtil(options : ChooseFileOptions) {
 	if (resultCallBack != null) {
 		UTSAndroid.offAppActivityResult(resultCallBack!)
+		resultCallBack = null
 	}
 	const type = options.type ?? 'all'
+
+	// 与 Web 对齐：extension 为空数组时直接报错（非数组、null、省略均不报错）
+	if (options.extension != null && options.extension!.length == 0) {
+		const error = new MediaErrorImpl(1101010, UniError_ChooseFile)
+		error.errMsg = 'param extension should not be empty.'
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+
+	// 解析 extension（仅 type=all 或省略 type 时生效）
+	let extensionList : string[] = []
+	let extensionMimeTypes : string[] = []
+	if (type.equals('all') && options.extension != null) {
+		extensionList = normalizeExtensions(options.extension!)
+		extensionMimeTypes = extensionsToMimeTypes(extensionList)
+	}
+
 	const intent = new Intent(Intent.ACTION_GET_CONTENT);
 	if (type.equals("all") || type.equals("file")) {
-		intent.setType("*/*");
+		if (extensionMimeTypes.length == 1) {
+			// 单一时尽量用具体 MIME，更多文件选择器能按它正确预过滤
+			intent.setType(extensionMimeTypes[0]);
+		} else {
+			intent.setType("*/*");
+			if (extensionMimeTypes.length > 1) {
+				intent.putExtra(Intent.EXTRA_MIME_TYPES, extensionMimeTypes.toTypedArray());
+			}
+		}
 	} else if (type.equals("video")) {
 		intent.setType("video/*");
 	} else if (type.equals("image")) {
@@ -80,14 +241,43 @@ export function chooseFileUtil(options : ChooseFileOptions) {
 						chooseFileTempFile.push(getFilePathEntry(uri))
 					}
 				}
-				options.success?.({
-					tempFiles:chooseFileTempFile,
-					tempFilePaths:[]
-				} as ChooseFileSuccess)
-				options.complete?.({
-					tempFiles:chooseFileTempFile,
-					tempFilePaths:[]
-				} as ChooseFileSuccess)
+				// 按后缀名对结果做强制过滤：部分 ROM / 文件管理器会忽略 MIME 预过滤，
+				// 这里再按文件名后缀兜底，确保不会返回不符合 extension 的文件。
+				let resultFiles : ChooseFileTempFile[] = chooseFileTempFile
+				let noMatch = false
+				if (extensionList.length > 0) {
+					const matched : ChooseFileTempFile[] = []
+					for (let i = 0; i < chooseFileTempFile.length; i++) {
+						const ext = getExtensionFromName(chooseFileTempFile[i].name)
+						if (extensionList.includes(ext)) {
+							matched.push(chooseFileTempFile[i])
+						}
+					}
+					if (chooseFileTempFile.length > 0 && matched.length == 0) {
+						noMatch = true
+					}
+					resultFiles = matched
+				}
+				if (noMatch) {
+					const error = new MediaErrorImpl(1101010, UniError_ChooseFile)
+					error.errMsg = 'no file matching the specified extension'
+					options.fail?.(error)
+					options.complete?.(error)
+				} else {
+					options.success?.({
+						tempFiles: resultFiles,
+						tempFilePaths: []
+					} as ChooseFileSuccess)
+					options.complete?.({
+						tempFiles: resultFiles,
+						tempFilePaths: []
+					} as ChooseFileSuccess)
+				}
+			} else {
+				// 用户取消（或未返回有效数据）：对齐 uni 规范，回调 fail / complete
+				const error = new MediaErrorImpl(1101001, UniError_ChooseFile)
+				options.fail?.(error)
+				options.complete?.(error)
 			}
 			resultCallBack = null
 		}

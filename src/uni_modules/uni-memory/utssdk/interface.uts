@@ -4,6 +4,18 @@
 export type MemoryWarningCallbackResult = {
   /**
    * 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "osVer": "5.0", "uniVer": "√", "unixVer": "5.08" },
+   *     "ios": { "osVer": "x", "uniVer": "x", "unixVer": "x", "unixUtsPlugin": "x" },
+   *     "harmony": { "osVer": "x", "uniVer": "x", "unixVer": "x", "unixvVer": "x" }
+   *   },
+   *   "web": { "uniVer": "x", "unixVer": "x" },
+   *   "mp": {
+   *     "weixin": { "hostVer": "2.0.2", "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   level?: number | null
 }

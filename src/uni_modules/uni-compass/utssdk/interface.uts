@@ -18,6 +18,20 @@ export type CompassErrorCode =
   901
 
 export interface ICompassError extends IUniError {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errCode : CompassErrorCode
 }
 
@@ -28,6 +42,20 @@ export interface IStopCompassFail extends ICompassError {
 }
 
 export type StartCompassSuccess = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errMsg ?: string | null
 }
 
@@ -40,6 +68,20 @@ export type StartCompassComplete = StartCompassSuccess | StartCompassFail
 export type StartCompassCompleteCallback = (res : StartCompassComplete) => void
 
 export type StopCompassSuccess = {
+  /**
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
+   */
   errMsg ?: string | null
 }
 
@@ -55,14 +97,50 @@ export type StopCompassCompleteCallback = (res : StopCompassComplete) => void
 export type StartCompassOptions = {
   /**
    * 开始监听罗盘数据调用成功的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   success ?: StartCompassSuccessCallback | null
   /**
    * 开始监听罗盘数据调用失败的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   fail ?: StartCompassFailCallback | null
   /**
    * 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   complete ?: StartCompassCompleteCallback | null
 }
@@ -73,14 +151,50 @@ export type StartCompassOptions = {
 export type StopCompassOptions = {
   /**
    * 停止监听罗盘数据调用成功的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   success ?: StopCompassSuccessCallback | null
   /**
    * 停止监听罗盘数据调用失败的回调函数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   fail ?: StopCompassFailCallback | null
   /**
    * 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   complete ?: StopCompassCompleteCallback | null
 }
@@ -91,14 +205,50 @@ export type StopCompassOptions = {
 export type OnCompassChangeCallbackResult = {
   /**
    * 面对的方向度数
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08", "unixUtsPlugin": "x" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   direction : number
   /**
    * 精度
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08", "unixUtsPlugin": "x" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   accuracy ?: CompassAccuracy
   /**
    * 错误信息
+   * @uniPlatform {
+   *   "app": {
+   *     "android": { "uniVer": "5.08", "unixVer": "5.08" },
+   *     "ios": { "uniVer": "5.08", "unixVer": "5.08", "unixUtsPlugin": "x" },
+   *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixvVer": "5.08" }
+   *   },
+   *   "web": { "uniVer": "√", "unixVer": "4.0" },
+   *   "mp": {
+   *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+   *     "alipay": { "hostVer": "√", "uniVer": "√", "unixVer": "5.31" }
+   *   }
+   * }
    */
   errMsg ?: string | null
 }
@@ -152,27 +302,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -220,27 +370,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -285,27 +435,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -350,27 +500,27 @@ export interface Uni {
    *    },
    *    "baidu": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }

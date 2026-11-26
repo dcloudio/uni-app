@@ -2,11 +2,10 @@
 
 
 class StatusCode {
-	public static statusCodeMap : Map<string, string> | null = null;
+	private static statusCodeMap : Map<string, string> = StatusCode.initStatusCodeMap();
 
-	private static initStatusCodeMap() {
+	private static initStatusCodeMap() : Map<string, string> {
 		let map = new Map<string, string>();
-		this.statusCodeMap = map;
 		map.set('100', "Continue");
 		map.set('101', "Switching Protocol");
 		map.set('200', "OK");
@@ -58,19 +57,11 @@ class StatusCode {
 		map.set('506', "Variant Also Negotiates");
 		map.set('507', "Variant Also Negotiates");
 		map.set('511', "Network Authentication Required");
+		return map;
 	}
 
 	public static getStatus(code : string) : string {
-		let map = this.statusCodeMap;
-		if (map == null) {
-			this.initStatusCodeMap();
-		}
-		let tmp = this.statusCodeMap!;
-		if (!(tmp.has(code))) {
-			return 'unknown status';
-		} else {
-			return tmp.get(code)! as string;
-		}
+		return this.statusCodeMap.get(code) ?? 'unknown status';
 	}
 }
 

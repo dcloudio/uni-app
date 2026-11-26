@@ -23,14 +23,50 @@ export type HideKeyboardCompleteCallback = (res : any) => void
 export type HideKeyboardOptions = {
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "√", "unixVer": "4.0" }
+	 * }
 	 */
 	success ?: HideKeyboardSuccessCallback | null,
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "√", "unixVer": "4.0" }
+	 * }
 	 */
 	fail ?: HideKeyboardFailCallback | null,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "√", "unixVer": "4.0" }
+	 * }
 	 */
 	complete ?: HideKeyboardCompleteCallback | null
 }
@@ -43,6 +79,18 @@ export type OnKeyboardHeightChangeCallback = (res : OnKeyboardHeightChangeCallba
 export type OnKeyboardHeightChangeCallbackResult = {
 	/**
 	 * 键盘高度
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "ios": { "uniVer": "√", "unixVer": "4.71" },
+	 *     "harmony": { "uniVer": "5.08", "unixVer": "5.08", "unixVaporVer": "5.08" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.7", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	height : number
 }
@@ -150,22 +198,22 @@ export interface Uni {
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -208,22 +256,22 @@ export interface Uni {
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    }
 	 *  },
 	 *  "web": {
@@ -265,22 +313,22 @@ export interface Uni {
 	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "toutiao": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "lark": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "qq": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "kuaishou": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    },
 	 *    "jd": {
-	 *        "uniVer": "√",
+	 *        "uniVer": "√"
 	 *    }
 	 *  },
 	 *  "web": {

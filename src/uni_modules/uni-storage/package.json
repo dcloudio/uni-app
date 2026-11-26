@@ -5,7 +5,7 @@
   "description": "UTS-Storage",
   "keywords": [
     "UTS-Storage"
-],
+  ],
   "repository": "",
   "engines": {
     "HBuilderX": "^3.6.8"
@@ -57,7 +57,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "getStorageSync": {
@@ -66,7 +66,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "getStorageInfo": {
@@ -75,7 +75,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "getStorageInfoSync": {
@@ -84,7 +84,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "removeStorage": {
@@ -93,7 +93,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "removeStorageSync": {
@@ -102,7 +102,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "clearStorage": {
@@ -111,7 +111,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         },
         "clearStorageSync": {
@@ -120,7 +120,7 @@
             "js": false,
             "kotlin": true,
             "swift": true,
-              "arkts": true
+            "arkts": true
           }
         }
       }

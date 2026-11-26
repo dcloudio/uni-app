@@ -6,6 +6,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -31,22 +32,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  }
    * }
@@ -57,6 +58,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -82,22 +84,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    }
    *  }
    * }
@@ -108,6 +110,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -133,22 +136,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  }
    * }
@@ -159,6 +162,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -184,22 +188,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  }
    * }
@@ -210,6 +214,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -235,22 +240,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "toutiao": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    },
    *    "jd": {
-   *        "uniVer": "x",
+   *        "uniVer": "x"
    *    }
    *  }
    * }
@@ -261,6 +266,7 @@ export type GetSystemSettingResult = {
    *
    * @uniPlatform
    * {
+   *   "web": { "uniVer": "x", "unixVer": "x" },
    * 	"app": {
    * 		"android": {
    * 			"uniVer": "√",
@@ -286,22 +292,22 @@ export type GetSystemSettingResult = {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  }
    * }
@@ -355,22 +361,22 @@ export interface Uni {
    *        "unixVer": "5.31"
    *    },
    *    "baidu": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "toutiao": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "lark": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "qq": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "kuaishou": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    },
    *    "jd": {
-   *        "uniVer": "√",
+   *        "uniVer": "√"
    *    }
    *  },
   *   "web": {

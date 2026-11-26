@@ -54,6 +54,20 @@ export type CalendarErrorCode =
 	609
 
 export interface ICalendarError extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
+	 */
 	errCode : CalendarErrorCode
 }
 
@@ -64,6 +78,20 @@ export interface IAddPhoneRepeatCalendarFail extends ICalendarError {
 }
 
 export type AddPhoneCalendarSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -74,6 +102,20 @@ export type AddPhoneCalendarComplete = AddPhoneCalendarSuccess | AddPhoneCalenda
 export type AddPhoneCalendarCompleteCallback = (res : AddPhoneCalendarComplete) => void
 
 export type AddPhoneRepeatCalendarSuccess = {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
+	 */
 	errMsg ?: string | null
 }
 
@@ -98,7 +140,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.08",
+			 "unixVer": "5.08"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -107,6 +149,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -129,7 +172,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -138,6 +181,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -161,7 +205,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -170,6 +214,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -192,7 +237,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -201,6 +246,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -223,7 +269,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -232,6 +278,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -254,7 +301,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -263,6 +310,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -285,7 +333,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -294,6 +342,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -317,7 +366,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -326,6 +375,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -348,7 +398,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -357,6 +407,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -379,7 +430,7 @@ export type AddPhoneCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -388,6 +439,7 @@ export type AddPhoneCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "x", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -402,14 +454,50 @@ export type AddPhoneCalendarOptions = {
 	signature ?: string | null
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	success ?: AddPhoneCalendarSuccessCallback | null
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	fail ?: AddPhoneCalendarFailCallback | null
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	complete ?: AddPhoneCalendarCompleteCallback | null
 }
@@ -428,7 +516,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -437,6 +525,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -459,7 +548,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -468,6 +557,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -491,7 +581,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -500,6 +590,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -522,7 +613,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -531,6 +622,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -553,7 +645,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -562,6 +654,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -584,7 +677,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -593,6 +686,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -615,7 +709,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -624,6 +718,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -647,7 +742,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -656,6 +751,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -678,7 +774,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -687,6 +783,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -709,7 +806,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -718,6 +815,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "x", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -741,7 +839,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -750,6 +848,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -772,7 +871,7 @@ export type AddPhoneRepeatCalendarOptions = {
 		 },
 		 "ios": {
 			 "uniVer": "x",
-			 "unixVer": "5.09",
+			 "unixVer": "5.09"
 		 },
 		 "harmony": {
 			 "uniVer": "x",
@@ -781,6 +880,7 @@ export type AddPhoneRepeatCalendarOptions = {
 			}
 		},
 		"mp": {
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" },
 		 "weixin": {
 				 "uniVer": "√",
 				 "unixVer": "√"
@@ -795,14 +895,50 @@ export type AddPhoneRepeatCalendarOptions = {
 	repeatEndTime ?: number | null
 	/**
 	 * 接口调用成功的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	success ?: AddPhoneRepeatCalendarSuccessCallback | null
 	/**
 	 * 接口调用失败的回调函数
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	fail ?: AddPhoneRepeatCalendarFailCallback | null
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "ios": { "uniVer": "x", "unixVer": "5.08" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "5.08", "unixvVer": "5.08" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "2.15.0", "uniVer": "√", "unixVer": "4.41" },
+	 *     "alipay": { "uniVer": "√", "unixVer": "x" }
+	 *   }
+	 * }
 	 */
 	complete ?: AddPhoneRepeatCalendarCompleteCallback | null
 }
@@ -852,26 +988,26 @@ export interface Uni {
    *      "unixVer": "x"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }
@@ -917,26 +1053,26 @@ export interface Uni {
    *      "unixVer": "x"
    *    },
    *    "baidu": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "toutiao": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "lark": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "qq": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    },
    *    "kuaishou": {
-   *      "uniVer": "√",
+   *      "uniVer": "√"
    *    },
    *    "jd": {
    *      "hostVer": "x",
-   *      "uniVer": "x",
+   *      "uniVer": "x"
    *    }
    *  }
    * }

@@ -31,27 +31,27 @@ export interface Uni {
      *    },
      *    "baidu": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "toutiao": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "lark": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "qq": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "kuaishou": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    },
      *    "jd": {
      *        "hostVer": "x",
-     *        "uniVer": "x",
+     *        "uniVer": "x"
      *    }
      *  },
 	  *  "web": {
@@ -74,6 +74,18 @@ export interface Uni {
 export type InstallApkSuccess = {
 	/**
 	 * 安装成功消息
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	errMsg : string
 }
@@ -88,6 +100,20 @@ export type InstallApkErrorCode = 1300002
  * 网络请求失败的错误回调参数
  */
 export interface InstallApkFail extends IUniError {
+	/**
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
+	 */
 	errCode : InstallApkErrorCode
 };
 export type InstallApkFailCallback = (err : InstallApkFail) => void
@@ -96,21 +122,69 @@ export type InstallApkCompleteCallback = (res : InstallApkComplete) => void
 export type InstallApkOptions = {
 	/**
 	 * apk文件地址（仅支持本地文件路径）
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	filePath : string,
 	/**
 	 * 接口调用成功的回调函数
 	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	success ?: InstallApkSuccessCallback | null,
 	/**
 	 * 接口调用失败的回调函数
 	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	fail ?: InstallApkFailCallback | null,
 	/**
 	 * 接口调用结束的回调函数（调用成功、失败都会执行）
 	 * @defaultValue null
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": { "uniVer": "3.94+", "unixVer": "3.94+" },
+	 *     "ios": { "uniVer": "x", "unixVer": "x" },
+	 *     "harmony": { "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": { "hostVer": "x", "uniVer": "x", "unixVer": "x" },
+	 *     "alipay": { "hostVer": "x", "uniVer": "x", "unixVer": "x" }
+	 *   },
+	 *   "web": { "uniVer": "x", "unixVer": "x" }
+	 * }
 	 */
 	complete ?: InstallApkCompleteCallback | null
 }

@@ -5,6 +5,20 @@
 export type PullDownRefreshErrorCode = 4
 
 export interface StartPullDownRefreshFail extends IUniError {
+    /**
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.91", "unixVaporVer": "5.21" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11", "unixVaporVer": "5.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
+     */
     errCode: PullDownRefreshErrorCode
 }
 
@@ -20,14 +34,50 @@ export class StartPullDownRefreshFailImpl extends UniError implements StartPullD
 export type StartPullDownRefreshOptions = {
     /**
      * 接口调用成功的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.91", "unixVaporVer": "5.21" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11", "unixVaporVer": "5.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     success?: StartPullDownRefreshSuccessCallback
     /**
      * 接口调用失败的回调函数
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.91", "unixVaporVer": "5.21" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11", "unixVaporVer": "5.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     fail?: StartPullDownRefreshFailCallback
     /**
      * 接口调用结束的回调函数（调用成功、失败都会执行）
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.91", "unixVaporVer": "5.21" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11", "unixVaporVer": "5.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     complete?: StartPullDownRefreshCompleteCallback
 }
@@ -85,22 +135,22 @@ export interface Uni {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {
@@ -144,22 +194,22 @@ export interface Uni {
      *      "unixVer": "5.31"
      *    },
      *    "baidu": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "toutiao": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "lark": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "qq": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "kuaishou": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    },
      *    "jd": {
-     *      "uniVer": "√",
+     *      "uniVer": "√"
      *    }
      *  },
      *  "web": {

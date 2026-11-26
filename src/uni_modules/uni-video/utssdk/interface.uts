@@ -3,14 +3,50 @@ export type CreateVideoContext = (videoId: string.VideoIdString, component?: Com
 export type Danmu = {
     /**
      * 弹幕文字
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9.0" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     text?: string | null,
     /**
      * 弹幕颜色
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9.0" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     color?: string | null,
     /**
      * 显示时刻
+     * @uniPlatform {
+     *   "app": {
+     *     "android": { "uniVer": "√", "unixVer": "3.9.0" },
+     *     "ios": { "uniVer": "√", "unixVer": "4.11" },
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" }
+     *   },
+     *   "mp": {
+     *     "weixin": { "uniVer": "√", "unixVer": "4.41" },
+     *     "alipay": { "uniVer": "√", "unixVer": "5.31" }
+     *   },
+     *   "web": { "uniVer": "√", "unixVer": "4.0" }
+     * }
      */
     time?: number | null
 };
@@ -20,6 +56,7 @@ export type RequestFullScreenOptions = {
      * direction
      * @uniPlatform {
      *   "app": {
+     *     "harmony": { "uniVer": "4.23", "unixVer": "4.61", "unixVaporVer": "5.0" },
      *     "android": {
      *       "uniVer": "√",
      *       "unixVer": "3.9.0"
@@ -39,22 +76,22 @@ export type RequestFullScreenOptions = {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -107,22 +144,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -161,22 +198,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -216,22 +253,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -270,22 +307,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -325,22 +362,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -391,22 +428,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -446,22 +483,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -501,22 +538,22 @@ export interface VideoContext {
     *        "unixVer": "5.31"
     *    },
     *    "baidu": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "toutiao": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "lark": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "qq": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "kuaishou": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    },
     *    "jd": {
-    *        "uniVer": "√",
+    *        "uniVer": "√"
     *    }
     *  },
      *   "web": {
@@ -563,22 +600,22 @@ export interface Uni {
      *       "unixVer": "5.31"
      *     },
      *     "baidu": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     },
      *     "toutiao": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     },
      *     "lark": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     },
      *     "qq": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     },
      *     "kuaishou": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     },
      *     "jd": {
-     *       "uniVer": "√",
+     *       "uniVer": "√"
      *     }
      *   }
      * }
