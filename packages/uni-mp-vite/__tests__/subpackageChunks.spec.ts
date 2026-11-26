@@ -2,7 +2,12 @@ import { execFileSync } from 'child_process'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { type OutputChunk, type RollupOptions, rollup } from 'rollup'
+import {
+  type ModuleInfo,
+  type OutputChunk,
+  type RollupOptions,
+  rollup,
+} from 'rollup'
 import {
   addMiniProgramComponentJson,
   addMiniProgramComponentPackageRoot,
@@ -11,6 +16,7 @@ import {
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
 import { createBuildOptions } from '../src/plugin/build'
+import { resolveSubpackageRoots } from '../src/plugins/subpackageChunks'
 import {
   uniEntryPlugin,
   virtualComponentPath,
@@ -141,6 +147,84 @@ describe('ordinary subpackage dependency chunks', () => {
       await bundle.close()
     }
   }
+
+  function resolveOwners(graph: Record<string, Partial<ModuleInfo>>) {
+    const getModuleInfo = jest.fn((id: string) =>
+      id in graph
+        ? ({
+            id,
+            isIncluded: true,
+            isEntry: false,
+            importers: [],
+            dynamicImporters: [],
+            ...graph[id],
+          } as ModuleInfo)
+        : null
+    )
+    const roots = resolveSubpackageRoots(
+      Object.keys(graph),
+      getModuleInfo,
+      inputDir,
+      () => undefined
+    )
+    return { roots, getModuleInfo }
+  }
+
+  test.each([100, 200, 400, 10000])(
+    'resolves a chain of %i helpers with linear module graph queries',
+    (size) => {
+      const graph: Record<string, Partial<ModuleInfo>> = { [pageA]: {} }
+      for (let i = 0; i < size; i++) {
+        graph[`helper${i}`] = {
+          importers: [i === 0 ? pageA : `helper${i - 1}`],
+        }
+      }
+      const { roots, getModuleInfo } = resolveOwners(graph)
+      for (let i = 0; i < size; i++) {
+        expect(roots.get(`helper${i}`)).toBe('pkgA')
+      }
+      expect(getModuleInfo.mock.calls.length).toBeLessThanOrEqual(size + 1)
+    }
+  )
+
+  test.each(['subpackage', 'main', 'missing'])(
+    'propagates a late %s consumer through a cycle and its dependencies',
+    (consumer) => {
+      const other = consumer === 'subpackage' ? pageB : consumer
+      const graph: Record<string, Partial<ModuleInfo>> = {
+        a: { importers: [pageA, 'b'] },
+        b: { importers: ['a'], dynamicImporters: ['bridge'] },
+        leaf: { importers: ['a'] },
+        bridge: { importers: [other] },
+        [pageA]: {},
+      }
+      if (consumer !== 'missing') {
+        graph[other] = { isEntry: consumer === 'main' }
+      }
+      // 模块枚举顺序不能影响循环中的最终结果。
+      for (const entries of [
+        Object.entries(graph),
+        Object.entries(graph).reverse(),
+      ]) {
+        const { roots } = resolveOwners(Object.fromEntries(entries))
+        for (const id of ['a', 'b', 'leaf']) {
+          expect(roots.get(id)).toBeUndefined()
+        }
+      }
+    }
+  )
+
+  test('keeps an unreachable cycle in main without blocking a known consumer', () => {
+    const { roots } = resolveOwners({
+      a: { importers: ['b'] },
+      b: { importers: ['a'] },
+      helper: { importers: ['a', pageA] },
+      [pageA]: {},
+    })
+    expect(roots.get('a')).toBeUndefined()
+    expect(roots.get('b')).toBeUndefined()
+    expect(roots.get('helper')).toBe('pkgA')
+  })
 
   test('moves transitive JS dependencies without following synthetic app imports', async () => {
     modules['utils/value.ts'] = `export { value } from './nested.ts'`
