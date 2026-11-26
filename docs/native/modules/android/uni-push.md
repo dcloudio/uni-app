@@ -66,7 +66,7 @@ android {
 
 dependencies {
     implementation 'com.getui:gtc-dcloud:3.2.16.7'  //个推核心组件
-    implementation('com.getui:gtsdk:3.3.7.0'){ exclude(group: 'com.getui') }  //个推SDK
+    implementation('com.getui:gtsdk:3.3.15.0'){ exclude(group: 'com.getui') }  //个推SDK
 
     // 根据所需厂商选择集成
     implementation 'com.getui.opt:hwp:3.1.2'   // 华为

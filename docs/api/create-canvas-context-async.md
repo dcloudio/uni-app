@@ -181,4 +181,4 @@ Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 
 ### 注意事项
 
 - CanvasContext的toDataURL方法在 App-Android 平台暂不支持在页面的onLoad和组件的onMount生命周期中调用
-- `Harmony` 平台暂不支持在页面和组件的 `script` 节点中调用本方法
+- `Harmony` 平台 `HBuilderX 5.41` 开始支持在页面和组件的 `script` 节点或`onLoad`中调用本方法，之前版本需要在`onMount`或`onReady`中调用
