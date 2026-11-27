@@ -18,6 +18,7 @@ import MagicString from 'magic-string'
 
 import {
   isAssignmentExpression,
+  isIdentifier,
   isJsFile,
   isMemberExpression,
   isProperty,
@@ -202,7 +203,15 @@ export function uniViteInjectPlugin(
             scope = (node as any).scope
           }
 
-          if (isProperty(node) && (node as Property).shorthand) {
+          // shorthand 属性仅在 value 也是 Identifier 时才能走快捷分支。
+          // 解构默认值（如 `{ uni = uni.showModal }` 或 `{ showModal = uni.showModal }`）
+          // 的 shorthand 同样为 true，但 value 是 AssignmentPattern，
+          // 此时跳过整棵子树会让默认值里的 uni.xxx 不被注入。
+          if (
+            isProperty(node) &&
+            (node as Property).shorthand &&
+            isIdentifier((node as Property).value as BaseNode)
+          ) {
             const { name } = (node as Property).key as Identifier
             handleReference(node, name, name)
             this.skip()
