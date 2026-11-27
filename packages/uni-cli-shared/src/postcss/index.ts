@@ -5,6 +5,8 @@ import uniPostcssExternalPlugin from './plugins/stylePluginExternal'
 import uniPostcssPlugin, {
   type UniAppCssProcessorOptions,
 } from './plugins/uniapp'
+import { removeRedundantPlaceholderPrefixes } from './plugins/vaporInputStyles'
+import { isUniAppXWebVapor } from '../x'
 export { uniPostcssPlugin }
 export { uniPostcssScopedPlugin }
 export { uniPostcssExternalPlugin }
@@ -19,6 +21,12 @@ export function initPostcssPlugin({
   // nvue 不需要 autoprefixer
   if (autoprefixer !== false) {
     plugins.push(require('autoprefixer')(autoprefixer))
+    if (isUniAppXWebVapor()) {
+      plugins.push({
+        postcssPlugin: 'uni-vapor-placeholder-prefixes',
+        OnceExit: removeRedundantPlaceholderPrefixes,
+      })
+    }
   }
   return plugins
 }

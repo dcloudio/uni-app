@@ -60,6 +60,44 @@ export async function createServer(options: CliOptions & ServerOptions) {
   return server
 }
 
+export function renderSSRTemplate(
+  template: string,
+  {
+    title,
+    headMeta,
+    preloadLinks,
+    appHtml,
+    appContext,
+  }: {
+    title: string
+    headMeta: string
+    preloadLinks: string
+    appHtml: string
+    appContext: string
+  }
+) {
+  const icon = template.includes('rel="icon"')
+    ? ''
+    : '<link rel="icon" href="data:," />\n'
+  const replacements: Record<string, string | undefined> = {
+    title: `${icon}<title>${title}</title>`,
+    'head-meta': headMeta,
+    'preload-links': preloadLinks,
+    'app-html': appHtml,
+    'app-context': appContext,
+  }
+  // 仅匹配原模板，避免再次解析样式和值里的占位标记或 $。
+  return template.replace(
+    /<title>.*?<\/title>|<!--(head-meta|preload-links|app-html|app-context)-->/g,
+    (match: string, marker: string | undefined) => {
+      const key = marker ?? 'title'
+      const replacement = replacements[key]
+      delete replacements[key]
+      return replacement ?? match
+    }
+  )
+}
+
 export async function createSSRServer(
   options: CliOptions & ServerOptions
 ): Promise<ViteDevServer> {
@@ -110,19 +148,7 @@ export async function createSSRServer(
         )
       ).render
 
-      const { title, headMeta, preloadLinks, appHtml, appContext } =
-        await render(url)
-
-      const icon = template.includes('rel="icon"')
-        ? ''
-        : '<link rel="icon" href="data:," />\n'
-
-      const html = template
-        .replace(/<title>(.*?)<\/title>/, `${icon}<title>${title}</title>`)
-        .replace(`<!--head-meta-->`, headMeta)
-        .replace(`<!--preload-links-->`, preloadLinks)
-        .replace(`<!--app-html-->`, appHtml)
-        .replace(`<!--app-context-->`, appContext)
+      const html = renderSSRTemplate(template, await render(url))
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
     } catch (e: any) {
       vite && vite.ssrFixStacktrace(e)

@@ -6,6 +6,9 @@ import {
   UNI_SSR_STORE,
   UNI_SSR_TITLE,
   UNI_SSR_GLOBAL_DATA,
+  UNI_SSR_INPUT_STYLES,
+  INPUT_PLACEHOLDER_STYLE_ATTRIBUTE,
+  stringifyInputStyle,
 } from '@dcloudio/uni-shared'
 import { plugin } from '@dcloudio/uni-h5'
 import { getSsrGlobalData } from '@dcloudio/uni-app'
@@ -84,16 +87,28 @@ function renderAppContext(ctx) {
 }
 
 function renderHeadMeta(ctx) {
-  if (!ctx.__teleportBuffers || !ctx.__teleportBuffers.head) {
-    return ''
-  }
-  return ctx.__teleportBuffers.head
-    .map((buffer) =>
-      buffer
-        .toString()
-        .replace(/\s+data-v-[a-f0-9]{8}/gi, '')
-        .replace('<!--[-->', '')
-        .replace('<!--]--><!---->', '')
-    )
-    .join('\n')
+  const styles = ctx[UNI_SSR_INPUT_STYLES]
+  // 首屏规则由客户端复用和清理。
+  const inputStyles = styles
+    ? Array.from(
+        styles.values(),
+        (style) =>
+          `<style ${INPUT_PLACEHOLDER_STYLE_ATTRIBUTE}="${
+            style.key
+          }">${stringifyInputStyle(style)}</style>`
+      ).join('\n')
+    : ''
+  const head = ctx.__teleportBuffers?.head || []
+  return (
+    inputStyles +
+    head
+      .map((buffer) =>
+        buffer
+          .toString()
+          .replace(/\s+data-v-[a-f0-9]{8}/gi, '')
+          .replace('<!--[-->', '')
+          .replace('<!--]--><!---->', '')
+      )
+      .join('\n')
+  )
 }

@@ -32,7 +32,10 @@ function isPaste(event: InputEvent) {
   return event.inputType === 'insertFromPaste'
 }
 
-type Props = ExtractPropTypes<typeof props>
+type InputProps = ExtractPropTypes<typeof props>
+type OptionalProps = 'step' | 'ignoreCompositionEvent' | 'textContentType'
+type Props = Omit<InputProps, OptionalProps> &
+  Partial<Pick<InputProps, OptionalProps>>
 type ResetCache = { fn: (() => void) | null }
 function useCache(props: Props, type: ComputedRef<string>) {
   if (type.value === 'number') {
@@ -83,7 +86,6 @@ export function useInput(
     'search',
     'email',
   ]
-  const AUTOCOMPLETES = ['off', 'one-time-code']
   const type = computed(() => {
     let type = ''
     switch (props.type) {
@@ -109,19 +111,11 @@ export function useInput(
     }
     return props.password ? 'password' : type
   })
-  const autocomplete = computed(() => {
-    const camelizeIndex = AUTOCOMPLETES.indexOf(props.textContentType)
-    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
-      hyphenate(props.textContentType)
-    )
-    const index =
-      camelizeIndex !== -1
-        ? camelizeIndex
-        : kebabCaseIndex !== -1
-        ? kebabCaseIndex
-        : 0
-    return AUTOCOMPLETES[index]
-  })
+  const autocomplete = computed(() =>
+    hyphenate(props.textContentType || '') === 'one-time-code'
+      ? 'one-time-code'
+      : 'off'
+  )
   const inputmode = computed(() => {
     // 如果同时配置 type、 inputmode，则以 inputmode 为准。防止与用户之前逻辑冲突
     if (props.inputmode !== undefined) {
@@ -236,9 +230,12 @@ export function useInput(
     }
   )
   const NUMBER_TYPES = ['number', 'digit']
-  const step = computed(() =>
-    NUMBER_TYPES.includes(props.type) ? props.step : ''
-  )
+  const step = computed(() => {
+    if (!NUMBER_TYPES.includes(props.type)) {
+      return ''
+    }
+    return props.step === undefined ? fieldProps.step.default : props.step
+  })
 
   function onKeyUpEnter(event: Event) {
     if ((event as KeyboardEvent).key !== 'Enter') {

@@ -193,7 +193,9 @@ export const emit = [
   ...keyboardEmit,
 ]
 
-type Props = ExtractPropTypes<typeof props>
+type FieldProps = ExtractPropTypes<typeof props>
+type Props = Omit<FieldProps, 'step' | 'ignoreCompositionEvent'> &
+  Partial<Pick<FieldProps, 'ignoreCompositionEvent'>>
 
 export interface State {
   value: string
@@ -432,6 +434,11 @@ function useEvent(
   triggerInput: Function,
   beforeInput?: (event: Event, state: State) => any
 ) {
+  function shouldIgnoreCompositionEvent() {
+    const { ignoreCompositionEvent } = props
+    return ignoreCompositionEvent === undefined || ignoreCompositionEvent
+  }
+
   function checkSelection() {
     const field = fieldRef.value
     if (
@@ -483,7 +490,7 @@ function useEvent(
         return
       }
       state.value = field.value
-      if (!state.composing || !props.ignoreCompositionEvent) {
+      if (!state.composing || !shouldIgnoreCompositionEvent()) {
         triggerInput(
           event,
           {
@@ -527,7 +534,7 @@ function useEvent(
     })
     field.addEventListener('compositionupdate', _onComposition)
     function _onComposition(event: Event) {
-      if (!props.ignoreCompositionEvent) {
+      if (!shouldIgnoreCompositionEvent()) {
         trigger((event as InputEvent).type, event, {
           value: (event as InputEvent).data,
         })

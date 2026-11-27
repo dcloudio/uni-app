@@ -4,6 +4,12 @@
  * VDOM 继续使用 uvue.css，组件样式路径保持原样。
  */
 
+/* 在按需组件和业务样式加载前固定默认层顺序。 */
+@layer uni-input-placeholder-inline-important, uni-input-placeholder-class;
+@layer uni-input-placeholder-class {
+  @layer uni-input-defaults;
+}
+
 html,
 body {
   font-family: -apple-system, HelveticaNeue;
@@ -148,15 +154,18 @@ uni-app uni-page-refresh[data-type] {
 }
 
 /* input 布局对齐 App 端 */
-uni-app div:where([uni-input]) {
+uni-app input:where([uni-input]) {
   height: auto;
-  display: flex;
+  display: block;
   line-height: 1.4em;
-  /* 保留旧 input 的 flex 默认值，不继承基础 view 的纵向布局。 */
-  flex-direction: row;
-  align-items: normal;
-  align-content: normal;
-  justify-content: normal;
+}
+
+@supports not selector(:where(*)) {
+  uni-app [uni-input] {
+    height: auto;
+    display: block;
+    line-height: 1.4em;
+  }
 }
 
 /* Textarea 保留旧宿主的尺寸、换行和布局默认值，内部类样式位于 style/vapor/textarea.css。 */

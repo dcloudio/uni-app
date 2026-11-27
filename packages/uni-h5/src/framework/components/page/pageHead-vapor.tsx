@@ -132,6 +132,11 @@ export default /*#__PURE__*/ defineSystemComponent({
               borderRadius: navigationBar.searchInput.borderRadius,
               backgroundColor: navigationBar.searchInput.backgroundColor,
             }}
+            onClick={() => {
+              if (navigationBar.searchInput?.disabled && searchOnClick) {
+                searchOnClick()
+              }
+            }}
           >
             <div
               style={{
@@ -162,13 +167,14 @@ export default /*#__PURE__*/ defineSystemComponent({
                 disabled={true}
                 style={{
                   color: navigationBar.searchInput.color,
+                  // 禁用和 Safari 只读兼容分支都由搜索区域接收点击。
+                  pointerEvents: 'none',
                 }}
                 placeholder-style={
                   'color: ' + navigationBar.searchInput.placeholderColor
                 }
                 class="uni-page-head-search-input"
                 confirm-type="search"
-                onClick={searchOnClick}
               ></Input>
             ) : (
               <Input

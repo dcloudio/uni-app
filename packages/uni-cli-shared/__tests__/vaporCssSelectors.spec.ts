@@ -1,5 +1,6 @@
 import postcss from 'postcss'
 import { compileStyle } from '@vue/compiler-sfc'
+import { initPostcssPlugin } from '../src/postcss'
 import uniappPlugin from '../src/postcss/plugins/uniapp'
 
 describe('Web Vapor 标签选择器', () => {
@@ -28,6 +29,21 @@ describe('Web Vapor 标签选择器', () => {
     ).css
   }
 
+  function placeholderRules(output: string, legacy = false) {
+    const rules: postcss.Rule[] = []
+    const params = legacy
+      ? 'not (color: revert-layer)'
+      : 'uni-input-placeholder-class'
+    postcss.parse(output).walkAtRules((rule) => {
+      if (rule.parent?.type === 'root' && rule.params === params) {
+        rule.walkRules((child) => {
+          rules.push(child)
+        })
+      }
+    })
+    return rules
+  }
+
   test.each([
     ['view', 'div:where([uni-view])'],
     ['text', 'span:where([uni-text])'],
@@ -42,7 +58,8 @@ describe('Web Vapor 标签选择器', () => {
     ['list-view', 'div:where([uni-list-view])'],
     ['waterflow', 'div:where([uni-waterflow])'],
     ['match-media', 'div:where([uni-match-media])'],
-    ['v-uni-input', 'div:where([uni-input])'],
+    ['input', 'input:where([uni-input])'],
+    ['v-uni-input', 'input:where([uni-input])'],
     ['page', 'uni-page-body'],
   ])('%s 保留标签权重并匹配对应宿主', async (input, output) => {
     expect(await css(`${input} { color: red }`)).toBe(
@@ -67,7 +84,7 @@ describe('Web Vapor 标签选择器', () => {
 
   test('原生 HTML、自定义组件、框架标签和显式命名空间保持不变', async () => {
     const source =
-      'div, span, img, .view, #text, my-card, uni-page-body, uni-progress, svg|image { color:red }'
+      'div, span, img, #text, my-card, uni-page-body, uni-progress, svg|image { color:red }'
     expect(await css(source)).toBe(source)
   })
 
@@ -144,6 +161,228 @@ describe('Web Vapor 标签选择器', () => {
     )
   })
 
+  test.each(['.field', '#email', '.field[data-state="invalid"]'])(
+    '为 scoped 占位类保留祖先与 Input 根节点条件，并生成无需 CSS 层的回退：%s',
+    async (condition) => {
+      const result = compileStyle({
+        source: `${condition} .hint { color: red; width: 10px }`,
+        filename: 'test.vue',
+        id: 'data-v-test',
+        scoped: true,
+      })
+      expect(result.errors).toEqual([])
+      const output = await css(result.code)
+      const root = postcss.parse(output)
+      const generated: Record<string, string> = {}
+      root.walkAtRules((rule) => {
+        if (rule.nodes?.length) generated[rule.params] = rule.toString()
+      })
+      expect(output).toContain(`${condition} .hint[data-v-test]`)
+      const layered = generated['uni-input-placeholder-class']
+      const scopedHint = '.uni-input-ph-hint[data-v-test]'
+      expect(layered).toContain(
+        `${condition} ${scopedHint}:where([uni-input])::placeholder`
+      )
+      expect(layered).toContain(
+        `${scopedHint}:where([uni-input]):is(${condition})::placeholder`
+      )
+      const fallback = generated['not (color: revert-layer)']
+      expect(fallback).toContain(
+        `${condition} ${scopedHint}[uni-input]::placeholder`
+      )
+      expect(fallback).toContain(
+        `${scopedHint}[uni-input]${condition}::placeholder`
+      )
+      expect(fallback).toContain('color: red')
+      expect(fallback).not.toContain('width')
+      expect(await css(output)).toBe(output)
+    }
+  )
+
+  test('保留占位规则的媒体条件，回退跳过嵌套的业务层', async () => {
+    const source = `@media (min-width: 768px) {
+  .hint { color: red; width: 10px; }
+  @layer card { .in-layer { color: blue; } }
+}`
+    const output = await css(source)
+    expect(output)
+      .toBe(`@layer uni-input-placeholder-inline-important, uni-input-placeholder-class;
+${source}
+@layer uni-input-placeholder-class {
+@media (min-width: 768px) {
+.uni-input-ph-hint:where([uni-input])::placeholder { color: red; }
+@layer card {
+.uni-input-ph-in-layer:where([uni-input])::placeholder { color: blue; } }
+}
+}
+@supports not (color: revert-layer) {
+@media (min-width: 768px) {
+.uni-input-ph-hint[uni-input]::placeholder { color: red; }
+}
+}`)
+    expect(await css(output)).toBe(output)
+  })
+
+  test('原规则和两种占位规则分别保留媒体参数原文', async () => {
+    const media = '@media screen /* original */ and (min-width: 768px)'
+    const { css: output } = await postcss([
+      uniappPlugin(),
+      {
+        postcssPlugin: 'rewrite-media-comment',
+        OnceExit(root) {
+          root.walkAtRules('media', (rule) => {
+            const parent = rule.parent
+            if (
+              parent?.type === 'root' ||
+              (parent?.type === 'atrule' && parent.name === 'layer')
+            ) {
+              const params = rule.raws.params!
+              params.raw = params.raw.replace(
+                'original',
+                parent.type === 'root' ? 'business' : 'modern'
+              )
+            }
+          })
+        },
+      },
+    ]).process(`${media} { .hint { color: red } }`, { from: undefined })
+
+    expect(
+      output.match(/@media [^{]+/g)?.map((params) => params.trim())
+    ).toEqual([
+      media.replace('original', 'business'),
+      media.replace('original', 'modern'),
+      media,
+    ])
+  })
+
+  test('默认 PostCSS 链仅在生成的现代层移除占位选择器前缀', async () => {
+    const { css: output } = await postcss(
+      initPostcssPlugin({
+        autoprefixer: {
+          overrideBrowserslist: ['Chrome 49', 'Firefox 45', 'Safari 15'],
+        },
+      })
+    ).process(
+      '.hint { background-clip: text; } .native::placeholder { color: red; }',
+      { from: undefined }
+    )
+
+    const modern = placeholderRules(output)
+    expect(modern.map((rule) => rule.selector)).toEqual([
+      '.uni-input-ph-hint:where([uni-input])::placeholder',
+    ])
+    expect(modern[0].toString()).toContain('-webkit-background-clip: text')
+    const legacy = placeholderRules(output, true)
+    expect(legacy.map((rule) => rule.selector)).toEqual(
+      expect.arrayContaining([
+        '.uni-input-ph-hint[uni-input]::-webkit-input-placeholder',
+        '.uni-input-ph-hint[uni-input]::-moz-placeholder',
+        '.uni-input-ph-hint[uni-input]::placeholder',
+      ])
+    )
+    expect(output).toContain('.native::-webkit-input-placeholder')
+    expect(output).toContain('.native::-moz-placeholder')
+  })
+
+  test.each(['.hint', '& .hint'])(
+    '原生 CSS 嵌套占位类保留祖先和 Input 根上的匹配：%s',
+    async (selector) => {
+      const source = `.field { ${selector} { color: red; width: 10px; } }`
+      const output = await css(source)
+      expect(output).toContain(source)
+      const [modern] = placeholderRules(output)
+      expect(modern?.selectors).toEqual([
+        '.field .uni-input-ph-hint:where([uni-input])::placeholder',
+        '.uni-input-ph-hint:where([uni-input]):is(.field)::placeholder',
+      ])
+      const [legacy] = placeholderRules(output, true)
+      expect(legacy?.selectors).toEqual([
+        '.field .uni-input-ph-hint[uni-input]::placeholder',
+        '.uni-input-ph-hint[uni-input].field::placeholder',
+      ])
+      expect(legacy.toString()).toContain('color: red')
+      expect(legacy.toString()).not.toContain('width')
+      expect(await css(output)).toBe(output)
+    }
+  )
+
+  test('原生 CSS 媒体嵌套保留子规则与父选择器直接声明', async () => {
+    const source = `.field {
+  @media (min-width: 768px) {
+    .hint { color: red; }
+  }
+}
+.hint {
+  @media (min-width: 768px) {
+    font-weight: bold;
+  }
+}`
+    const output = await css(source)
+    expect(output).toContain(source)
+    for (const legacy of [false, true]) {
+      const rules = placeholderRules(output, legacy)
+      expect(rules).toHaveLength(2)
+      for (const rule of rules) {
+        expect(rule.parent).toMatchObject({
+          type: 'atrule',
+          name: 'media',
+          params: '(min-width: 768px)',
+        })
+      }
+      expect(rules[0].selector).toContain('.field .uni-input-ph-hint')
+      expect(rules[0].toString()).toContain('color: red')
+      expect(rules[1].selector).toContain('.uni-input-ph-hint')
+      expect(rules[1].toString()).toContain('font-weight: bold')
+    }
+  })
+
+  test('原生 CSS 的嵌套声明按原顺序输出，并保留 & 的复合条件', async () => {
+    const output = await css(`.hint {
+  color: red;
+  & { color: blue; }
+  color: green;
+  &.accent { font-weight: bold; }
+}`)
+    for (const legacy of [false, true]) {
+      const rules = placeholderRules(output, legacy)
+      const colors: string[] = []
+      for (const rule of rules) {
+        rule.walkDecls('color', (decl) => {
+          colors.push(decl.value)
+        })
+      }
+      expect(colors).toEqual(['red', 'blue', 'green'])
+      const accent = rules.find((rule) =>
+        rule.selector.includes('.uni-input-ph-hint.uni-input-ph-accent')
+      )
+      expect(accent?.toString()).toContain('font-weight: bold')
+    }
+  })
+
+  test('父选择器列表保留原生 CSS 嵌套的最大权重', async () => {
+    const output = await css('#email, .field { & .hint { color: red; } }')
+    const [rule] = placeholderRules(output)
+    const selector = rule?.selector.replace(/\s/g, '')
+    expect(selector).toContain(':is(#email,.field).uni-input-ph-hint')
+    const [legacy] = placeholderRules(output, true)
+    expect(legacy?.selectors).toEqual([
+      '#email .uni-input-ph-hint[uni-input]::placeholder',
+      '.field .uni-input-ph-hint[uni-input]::placeholder',
+      '.uni-input-ph-hint[uni-input]#email::placeholder',
+      '.uni-input-ph-hint[uni-input].field::placeholder',
+    ])
+  })
+
+  test('嵌套的 & 仅匹配占位类，未匹配的父分支保留权重', async () => {
+    const output = await css('#email, .hint { & { color: red; } }')
+    expect(
+      placeholderRules(output).map((rule) => rule.selector.replace(/\s/g, ''))
+    ).toEqual([
+      ':is(#email:not(*),.uni-input-ph-hint):where([uni-input])::placeholder',
+    ])
+  })
+
   test('page 背景和 CSS 变量保留在页面滚动容器，继续转换 rpx', async () => {
     const output = await css(
       'page { background: red; --color:blue; width:10rpx }'
@@ -155,13 +394,13 @@ describe('Web Vapor 标签选择器', () => {
   })
 
   test('嵌套规则和组合选择器中的 page 样式也不提升到 body', async () => {
-    expect(
-      await css(
-        '@media (min-width: 768px) { page[data-v-test], .panel { background-color: var(--page-bg); --page-bg: red } }'
-      )
-    ).toBe(
+    const output = await css(
+      '@media (min-width: 768px) { page[data-v-test], .panel { background-color: var(--page-bg); --page-bg: red } }'
+    )
+    expect(output).toContain(
       '@media (min-width: 768px) { uni-page-body[data-v-test], .panel { background-color: var(--page-bg); --page-bg: red } }'
     )
+    expect(output).toContain('.uni-input-ph-panel[uni-input]::placeholder')
   })
 
   test.each([

@@ -143,8 +143,12 @@ uni-page-head {
 .uni-page-head-search-input {
   width: 100%;
   height: 100%;
-  padding-left: 34px;
   text-align: left;
+}
+
+.uni-page-head-search-input,
+.uni-page-head-search-input.uni-input-input {
+  padding-left: 34px;
 }
 
 .uni-page-head-search-input .uni-input-input:disabled {

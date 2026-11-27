@@ -580,8 +580,8 @@ describe('Web Vapor 真实运行时节点', () => {
       const hiddenRule = Array.from(style.sheet!.cssRules).find(
         (rule): rule is CSSStyleRule =>
           'selectorText' in rule &&
-          element.matches((rule as CSSStyleRule).selectorText) &&
-          (rule as CSSStyleRule).style.getPropertyValue('display') === 'none'
+          (rule as CSSStyleRule).style.getPropertyValue('display') === 'none' &&
+          element.matches((rule as CSSStyleRule).selectorText)
       )!
       expect(hiddenRule).toBeDefined()
       expect(hiddenRule.style.getPropertyPriority('display')).toBe('important')

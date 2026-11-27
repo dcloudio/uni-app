@@ -37,6 +37,8 @@ test.each(['input', 'textarea'])(
             }
             if (id === '../web-vapor-elements')
               return 'export class UniViewElement {}'
+            if (id === '../../helpers/UniElement')
+              return 'export class UniElement {}'
             if (id === 'vue') return 'export function initUniElement() {}'
           },
         },

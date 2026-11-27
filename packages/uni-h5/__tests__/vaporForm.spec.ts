@@ -49,6 +49,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
   let helpers: any
   let inputElement: any
   let textareaElement: any
+  let createVdomInput: () => Promise<any>
   let resizeTextarea: (height: number) => void
   let nativeElements: any
   let NativeUniElement: any
@@ -91,13 +92,10 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const compiler = nodeRequire.resolve('@vue-jsx/compiler', {
       paths: [jsxDir],
     })
-    const runtime = path.join(
-      path.dirname(
-        nodeRequire.resolve('@vue-jsx/runtime', { paths: [jsxDir] })
-      ),
-      'vapor.js'
+    const runtimeDir = path.dirname(
+      nodeRequire.resolve('@vue-jsx/runtime', { paths: [jsxDir] })
     )
-    const compile = async (name: string) =>
+    const compile = async (name: string, vapor = true) =>
       execFileSync(
         process.execPath,
         [
@@ -107,12 +105,15 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         compiler
       )});
       process.stdout.write(compiler.transform(fs.readFileSync(0, 'utf8'), {
-        filename: '${name}.tsx', vapor: true
+        filename: '${name}.tsx', vapor: ${vapor}
       }).code)
     `,
         ],
         {
-          input: await preprocess(`vue/${name}/index-vapor.tsx`, true),
+          input: await preprocess(
+            `vue/${name}/index${vapor ? '-vapor' : ''}.tsx`,
+            vapor
+          ),
           encoding: 'utf8',
         }
       )
@@ -141,7 +142,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     nativeElements.installWebVaporElements(dom.window)
     inputElement = evaluate(
       await preprocess('vue/input/element-vapor.ts', true),
-      { vue, '../web-vapor-elements': nativeElements }
+      { vue, '../../helpers/UniElement': { UniElement: NativeUniElement } }
     )
     textareaElement = evaluate(
       await preprocess('vue/textarea/element-vapor.ts', true),
@@ -191,6 +192,23 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         './utils': { resolveDigitDecimalPoint() {} },
       }
     )
+    const inputStyleSheet = evaluate(
+      await preprocess('helpers/inputStyleSheet.ts', true),
+      { '@dcloudio/uni-shared': uniShared }
+    )
+    const inputLayout = evaluate(
+      await preprocess('helpers/useInputLayout.ts', true),
+      { vue }
+    )
+    const inputStyles = evaluate(
+      await preprocess('helpers/useInputStyles.ts', true),
+      {
+        vue,
+        '@vue/shared': shared,
+        '@dcloudio/uni-shared': uniShared,
+        './inputStyleSheet': inputStyleSheet,
+      }
+    )
     const textareaState = evaluate(
       await preprocess('vue/textarea/useTextarea.ts', true),
       {
@@ -204,10 +222,15 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       inputs[name] = evaluate(await compile(name), {
         vue,
         '@vue/shared': shared,
-        '@dcloudio/uni-shared': { LINEFEED: '\n' },
-        '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
+        '@dcloudio/uni-shared': uniShared,
+        '/vue-jsx/vapor': evaluate(
+          fs.readFileSync(path.join(runtimeDir, 'vapor.js'), 'utf8'),
+          { vue }
+        ),
         '../../helpers/component': builtIn,
         '../../helpers/UniElement': { UniElement },
+        '../../helpers/useInputLayout': inputLayout,
+        '../../helpers/useInputStyles': inputStyles,
         './element-vapor': name === 'input' ? inputElement : textareaElement,
         './useInput': inputState,
         './useTextarea': textareaState,
@@ -224,6 +247,32 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
             },
           }),
         },
+      }).default
+    }
+    createVdomInput = async () => {
+      const vdom = evaluate(
+        await preprocess('helpers/component-vdom.ts', false),
+        {
+          vue,
+        }
+      )
+      const builtIn = evaluate(
+        await preprocess('helpers/component.ts', false),
+        {
+          '@vue/shared': shared,
+          './component-vdom': vdom,
+          './animation': { default: {} },
+        }
+      )
+      return evaluate(await compile('input', false), {
+        vue,
+        '/vue-jsx/vdom': evaluate(
+          fs.readFileSync(path.join(runtimeDir, 'vdom.js'), 'utf8'),
+          { vue }
+        ),
+        '../../helpers/component': builtIn,
+        '../../helpers/UniElement': { UniElement },
+        './useInput': inputState,
       }).default
     }
   }, 30000)
@@ -411,9 +460,12 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       )
       await vue.nextTick()
       const element = host.querySelector(name) as HTMLInputElement
-      expect(host.querySelectorAll(`div[uni-${name}][uni-view]`)).toHaveLength(
-        1
-      )
+      expect(host.querySelectorAll(`[uni-${name}]`)).toHaveLength(1)
+      if (name === 'input') {
+        expect(host.firstElementChild).toBe(element)
+      } else {
+        expect(host.firstElementChild).toMatchObject({ tagName: 'DIV' })
+      }
       expect(element.value).toBe('initial')
       element.value = 'edited'
       element.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
@@ -459,12 +511,12 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       const root = node.value
       expect(root).toBe(mountedRoot)
       expect(root).toBe(host.querySelector('#native-input'))
-      expect(root).toBeInstanceOf(dom.window.HTMLDivElement)
+      expect(root).toBeInstanceOf(dom.window.HTMLInputElement)
       expect(root).toBeInstanceOf(NativeUniElement)
-      expect(root).toBeInstanceOf(nativeElements.UniViewElement)
+      expect(root).not.toBeInstanceOf(nativeElements.UniViewElement)
       expect(root).toBeInstanceOf(inputElement.UniInputElement)
-      expect(root.tagName).toBe('DIV')
-      expect(root.constructor).toBe(dom.window.HTMLDivElement)
+      expect(root.tagName).toBe('INPUT')
+      expect(root.constructor).toBe(dom.window.HTMLInputElement)
       expect(root.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
       expect(root.removeAttribute).toBe(
         dom.window.Element.prototype.removeAttribute
@@ -472,13 +524,13 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       expect(root.attachVmProps).toBeUndefined()
       expect(root.__uniDataset).toBeUndefined()
       expect(dom.window.customElements.get('uni-input')).toBeUndefined()
-      const field = root.querySelector('input')
-      const focus = jest.spyOn(field, 'focus')
+      expect(root.querySelector('input')).toBeNull()
+      const focus = jest.spyOn(root, 'focus')
       root.focus({ preventScroll: true })
       expect(focus).toHaveBeenCalledWith({ preventScroll: true })
-      expect(document.activeElement).toBe(field)
+      expect(document.activeElement).toBe(root)
       root.value = 'manual'
-      expect(field.value).toBe('manual')
+      expect(root.value).toBe('manual')
       value.value = 'updated'
       await vue.nextTick()
       expect(root.value).toBe('updated')
@@ -486,8 +538,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       expect(initialized).toHaveBeenCalledTimes(1)
       class Derived extends inputElement.UniInputElement {}
       expect(root).not.toBeInstanceOf(Derived)
-      const plain = document.createElement('div')
-      plain.setAttribute('uni-view', '')
+      const plain = document.createElement('input')
       expect(plain).not.toBeInstanceOf(inputElement.UniInputElement)
     } finally {
       initialized.mockRestore()
@@ -509,7 +560,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       vue.createComponent(inputs.input),
     ])
     const [first, second] = Array.from(
-      host.querySelectorAll('div[uni-input]')
+      host.querySelectorAll('input[uni-input]')
     ) as any[]
     const dataset = first.dataset
     expect(dataset.get('payload')).toBe(data.value)
@@ -530,7 +581,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     expect(first.hasAttribute('data-payload')).toBe(false)
   })
 
-  test('Input 搜索表单与禁用修复分支切换后，Element 仍访问当前输入节点', async () => {
+  test('Input 搜索表单与 Safari 禁用分支切换时复用节点并保护原生属性', async () => {
     jest.useFakeTimers()
     fixDisabledColor = true
     const props = vue.reactive({
@@ -544,54 +595,254 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         disabled: () => props.disabled,
         confirmType: () => props.confirmType,
         value: () => props.value,
+        form: () => 'native-form',
+        readOnly: () => false,
+        tabIndex: () => 0,
         onConfirm: () => confirm,
       })
     )
-    const root = host.querySelector('div[uni-input]') as any
-    let field = root.querySelector('input')
-    expect(field.parentElement.tagName).toBe('FORM')
+    const nativeForm = document.createElement('form')
+    nativeForm.id = 'native-form'
+    document.body.appendChild(nativeForm)
+    nativeForm.appendChild(host)
+    const root = host.querySelector<HTMLInputElement>('input[uni-input]')!
+    expect(root.form).toBeNull()
+    expect(root.getAttribute('form')).toBe('')
+    expect(root.readOnly).toBe(false)
+    expect(root.tabIndex).toBe(0)
     expect(root.hasAttribute('uni-disabled')).toBe(false)
-    field.value = 'search'
-    field.dispatchEvent(
+    root.value = 'search'
+    root.dispatchEvent(
       new dom.window.KeyboardEvent('keyup', { key: 'Enter', bubbles: true })
     )
     expect(confirm.mock.calls[0][0].detail.value).toBe('search')
     props.disabled = true
     await vue.nextTick()
-    const readonly = root.querySelector('input')
-    expect(readonly).not.toBe(field)
-    expect(readonly.readOnly).toBe(true)
+    expect(host.firstElementChild).toBe(root)
+    expect(root.readOnly).toBe(true)
+    expect(root.tabIndex).toBe(-1)
+    expect(root.disabled).toBe(false)
     expect(root.hasAttribute('uni-disabled')).toBe(true)
     root.value = 'readonly'
-    expect(readonly.value).toBe('readonly')
     expect(root.value).toBe('readonly')
     props.disabled = false
     props.confirmType = 'done'
     await vue.nextTick()
-    field = root.querySelector('input')
-    expect(root.querySelector('form')).toBeNull()
-    expect(field.readOnly).toBe(false)
+    expect(host.firstElementChild).toBe(root)
+    expect(root.form).toBe(nativeForm)
+    expect(root.readOnly).toBe(false)
+    expect(root.tabIndex).toBe(0)
     expect(root.hasAttribute('uni-disabled')).toBe(false)
     root.focus()
-    expect(document.activeElement).toBe(field)
+    expect(document.activeElement).toBe(root)
     root.value = 'restored'
-    expect(field.value).toBe('restored')
     props.disabled = true
     await vue.nextTick()
-    expect(root.querySelector('input').readOnly).toBe(true)
+    expect(root.readOnly).toBe(true)
+    expect(document.activeElement).not.toBe(root)
     props.value = 'after-search'
     await vue.nextTick()
     expect(root.value).toBe('after-search')
     props.confirmType = 'search'
     props.disabled = false
     await vue.nextTick()
-    expect(root.querySelector('form input')).not.toBeNull()
-    expect(root.querySelector('input').readOnly).toBe(false)
+    expect(root.form).toBeNull()
+    expect(root.readOnly).toBe(false)
+    expect(root.tabIndex).toBe(0)
     props.value = 'twice'
     await vue.nextTick()
     jest.advanceTimersByTime(100)
     await vue.nextTick()
     expect(root.value).toBe('twice')
+  })
+
+  test('Input 禁用属性优先于透传的原生 disabled 别名', async () => {
+    const disabled = vue.ref(true)
+    const nativeDisabled = vue.ref(false)
+    const { host } = mount(() =>
+      vue.createComponent(inputs.input, {
+        disabled: () => disabled.value,
+        '.disabled': () => nativeDisabled.value,
+      })
+    )
+    const root = host.querySelector('input')!
+    expect(root.disabled).toBe(true)
+    root.focus()
+    expect(document.activeElement).not.toBe(root)
+
+    disabled.value = false
+    await vue.nextTick()
+    expect(root.disabled).toBe(false)
+    nativeDisabled.value = true
+    await vue.nextTick()
+    expect(root.disabled).toBe(true)
+  })
+
+  test('Input 移除只读与 Tab 顺序别名后保留原生透传，Safari 禁用期间优先保护', async () => {
+    fixDisabledColor = true
+    const disabled = vue.ref(false)
+    const attrs = vue.ref({
+      readonly: true,
+      readOnly: false,
+      tabindex: 4,
+      tabIndex: 7,
+    })
+    const { host } = mount(() =>
+      vue.createComponent(inputs.input, {
+        disabled: () => disabled.value,
+        $: [() => attrs.value],
+      })
+    )
+    const root = host.querySelector('input')!
+    expect(root.readOnly).toBe(false)
+    expect(root.tabIndex).toBe(7)
+
+    attrs.value = { readonly: true, tabindex: 4 }
+    await vue.nextTick()
+    expect(root.readOnly).toBe(true)
+    expect(root.tabIndex).toBe(4)
+
+    disabled.value = true
+    await vue.nextTick()
+    expect(root.readOnly).toBe(true)
+    expect(root.tabIndex).toBe(-1)
+
+    attrs.value = { '^ReadOnly': false, '.tabIndex': 2, '^DISABLED': true }
+    await vue.nextTick()
+    expect(root.disabled).toBe(false)
+    expect(root.readOnly).toBe(true)
+    expect(root.tabIndex).toBe(-1)
+
+    delete attrs.value['^DISABLED']
+    disabled.value = false
+    await vue.nextTick()
+    expect(root.disabled).toBe(false)
+    expect(root.readOnly).toBe(false)
+    expect(root.tabIndex).toBe(2)
+  })
+
+  test.each(['Form', '^form'])(
+    'Input 移除 %s 别名后仍保持搜索表单隔离并恢复透传',
+    async (alias) => {
+      const confirmType = vue.ref('done')
+      const attrs = vue.ref({ form: '', [alias]: 'external-form' })
+      const { host } = mount(() =>
+        vue.createComponent(inputs.input, {
+          confirmType: () => confirmType.value,
+          $: [() => attrs.value],
+        })
+      )
+      const outer = document.createElement('form')
+      const external = document.createElement('form')
+      outer.id = 'outer-form'
+      external.id = 'external-form'
+      document.body.append(outer, external)
+      outer.appendChild(host)
+      const root = host.querySelector('input')!
+      expect(root.form).toBe(external)
+
+      attrs.value = { form: '' }
+      await vue.nextTick()
+      expect(root.form).toBeNull()
+      expect(root.getAttribute('form')).toBe('')
+
+      confirmType.value = 'search'
+      attrs.value = { [alias]: 'external-form' }
+      await vue.nextTick()
+      expect(root.form).toBeNull()
+      expect(root.getAttribute('form')).toBe('')
+
+      confirmType.value = 'done'
+      await vue.nextTick()
+      expect(root.form).toBe(external)
+      root.removeAttribute('form')
+      expect(root.form).toBe(outer)
+    }
+  )
+
+  test('Web Vapor Input 接受原生 autocomplete，忽略 text-content-type', () => {
+    const { host } = mount(() => [
+      vue.createComponent(inputs.input, {
+        'text-content-type': () => 'oneTimeCode',
+      }),
+      vue.createComponent(inputs.input, {
+        autocomplete: () => 'one-time-code',
+      }),
+    ])
+    const [first, second] = Array.from(host.querySelectorAll('input'))
+    expect(first.autocomplete).toBe('off')
+    expect(first.hasAttribute('text-content-type')).toBe(false)
+    expect(second.autocomplete).toBe('one-time-code')
+  })
+
+  test('Input 仅在默认对齐的块布局中补齐宽度', async () => {
+    const { host } = mount(() => vue.createComponent(inputs.input))
+    const input = host.querySelector('input')!
+    expect(input.hasAttribute('uni-input-fill-width')).toBe(true)
+
+    host.style.cssText = 'display: grid; justify-items: center'
+    await vue.nextTick()
+    expect(input.hasAttribute('uni-input-fill-width')).toBe(false)
+
+    // JSDOM 不计算布局，模拟浏览器支持块级对齐的探测结果。
+    const offset = jest
+      .spyOn(dom.window.HTMLElement.prototype, 'offsetLeft', 'get')
+      .mockReturnValue(1)
+    try {
+      host.style.cssText = 'display: block; justify-items: end'
+      await vue.nextTick()
+    } finally {
+      offset.mockRestore()
+    }
+    expect(input.hasAttribute('uni-input-fill-width')).toBe(false)
+
+    const wrapper = document.createElement('div')
+    wrapper.style.display = 'contents'
+    host.appendChild(wrapper)
+    wrapper.appendChild(input)
+    host.style.justifyItems = 'normal'
+    await vue.nextTick()
+    expect(input.hasAttribute('uni-input-fill-width')).toBe(true)
+
+    wrapper.style.display = 'flex'
+    await vue.nextTick()
+    expect(input.hasAttribute('uni-input-fill-width')).toBe(false)
+  })
+
+  test('Input 的 cursor-color 优先于业务内联样式，清空后恢复业务颜色', async () => {
+    const cursorColor = vue.ref('red')
+    const style = vue.ref([
+      { caretColor: 'purple', color: 'black' },
+      'caret-color: blue !important; width: 40px',
+    ])
+    const { host } = mount(() =>
+      vue.createComponent(inputs.input, {
+        cursorColor: () => cursorColor.value,
+        style: () => style.value,
+      })
+    )
+    const input = host.querySelector('input')!
+    expect(input.style.getPropertyValue('caret-color')).toBe('red')
+    expect(input.style.color).toBe('black')
+    expect(input.style.width).toBe('40px')
+
+    cursorColor.value = ''
+    await vue.nextTick()
+    expect(input.style.getPropertyValue('caret-color')).toBe('blue')
+    expect(input.style.getPropertyPriority('caret-color')).toBe('important')
+
+    cursorColor.value = 'green'
+    await vue.nextTick()
+    expect(input.style.getPropertyValue('caret-color')).toBe('green')
+    expect(input.style.getPropertyPriority('caret-color')).toBe('')
+
+    style.value = { caretColor: 'purple', width: '50px' }
+    await vue.nextTick()
+    expect(input.style.getPropertyValue('caret-color')).toBe('green')
+    expect(input.style.width).toBe('50px')
+    cursorColor.value = ''
+    await vue.nextTick()
+    expect(input.style.getPropertyValue('caret-color')).toBe('purple')
   })
 
   test.each([false, true])(
@@ -615,7 +866,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       const focus = root.focus
       const descriptor = Object.getOwnPropertyDescriptor(root, 'value')
       for (let i = 0; i < 4; i++) {
-        const previous = root.querySelector('input')
         props.confirmType = i % 2 ? 'search' : 'done'
         await vue.nextTick()
         props.value = 'value-' + i
@@ -623,27 +873,24 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         // useField 的外部值同步保留既有 100ms 节流，先完成该任务再检查渲染结果。
         jest.advanceTimersByTime(100)
         await vue.nextTick()
-        const field = root.querySelector('input')
-        expect(field).not.toBe(previous)
         expect(root.value).toBe(props.value)
-        expect(field.value).toBe(props.value)
         expect(node.value).toBe(root)
-        expect(host.querySelectorAll('div[uni-input]')).toHaveLength(1)
-        expect(root.querySelectorAll('input')).toHaveLength(1)
+        expect(host.querySelectorAll('input[uni-input]')).toHaveLength(1)
+        expect(host.firstElementChild).toBe(root)
         expect(root.focus).toBe(focus)
         expect(Object.getOwnPropertyDescriptor(root, 'value')).toEqual(
           descriptor
         )
         root.focus()
-        expect(document.activeElement).toBe(field)
+        expect(document.activeElement).toBe(root)
         update.mockClear()
-        field.value = 'typed-' + i
-        field.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
+        root.value = 'typed-' + i
+        root.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
         await vue.nextTick()
         jest.advanceTimersByTime(100)
         await vue.nextTick()
         expect(update).toHaveBeenCalledTimes(1)
-        expect(update).toHaveBeenCalledWith(field.value)
+        expect(update).toHaveBeenCalledWith(root.value)
       }
     }
   )
@@ -884,6 +1131,26 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const helper = await preprocess('helpers/component.ts', false)
     expect(helper).toContain('customElements.define(')
     expect(helper).not.toContain('rootElement.native')
+  })
+
+  test('普通 H5 Input 保留 text-content-type 的验证码自动填充', async () => {
+    const Input = await createVdomInput()
+    const textContentType = vue.ref('oneTimeCode')
+    const app = vue.createApp({
+      render: () => vue.h(Input, { textContentType: textContentType.value }),
+    })
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    app.mount(host)
+    apps.push(app)
+    const input = host.querySelector('input')!
+    expect(input.autocomplete).toBe('one-time-code')
+    textContentType.value = 'one-time-code'
+    await vue.nextTick()
+    expect(input.autocomplete).toBe('one-time-code')
+    textContentType.value = ''
+    await vue.nextTick()
+    expect(input.autocomplete).toBe('off')
   })
 
   test('Textarea 非 Vapor 保留旧根节点、状态 getter 和 mounted 属性绑定', async () => {

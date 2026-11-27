@@ -5,20 +5,21 @@ import postcss from 'postcss'
 const styles = path.resolve(__dirname, '../../uni-h5/style')
 const read = (file: string) => fs.readFileSync(path.join(styles, file), 'utf8')
 
-function getThemeColors(code: string, selector: string) {
+function getThemeColors(source: string | postcss.Container, selector: string) {
+  const container = typeof source === 'string' ? postcss.parse(source) : source
   const colors: Record<string, string> = {}
-  postcss.parse(code).walkRules((rule) => {
+  container.walkRules((rule) => {
     if (!rule.selectors.includes(selector)) return
 
     const parent = rule.parent
     if (
-      parent?.type === 'root' ||
+      parent === container ||
       (parent?.type === 'atrule' &&
         parent.name === 'media' &&
         parent.params === '(prefers-color-scheme: dark)')
     ) {
       rule.walkDecls('color', (decl) => {
-        colors[parent.type === 'root' ? 'light' : 'dark'] = decl.value
+        colors[parent === container ? 'light' : 'dark'] = decl.value
       })
     }
   })
@@ -165,7 +166,7 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).not.toContain('uni-page-body::after')
   })
 
-  test.each(['input', 'textarea', 'video'])(
+  test.each(['textarea', 'video'])(
     '%s 独立样式保留旧实现的内部规则，不再依赖旧 CSS',
     (name) => {
       const oldFile =
@@ -202,7 +203,7 @@ describe('Web Vapor 独立组件样式', () => {
     })
   })
 
-  test.each(['input', 'textarea'])('%s 保留 placeholder 和暗色样式', (name) => {
+  test.each(['textarea'])('%s 保留 placeholder 和暗色样式', (name) => {
     const code = read(`vapor/${name}.css`)
     expect(getThemeColors(code, `.uni-${name}-placeholder`)).toEqual({
       light: 'rgba(60, 60, 67, 0.3)',
@@ -213,20 +214,93 @@ describe('Web Vapor 独立组件样式', () => {
     expect(code).toContain('cursor: inherit')
   })
 
-  test.each(['input', 'textarea'])(
-    '%s 禁用态的默认颜色由根节点提供',
-    (name) => {
-      const code = read(`vapor/${name}.css`)
-      expect(
-        getThemeColors(code, `:where(div[uni-${name}][uni-disabled])`)
-      ).toEqual({
-        light: 'rgba(60, 60, 67, 0.3)',
-        dark: 'rgba(255, 255, 255, 0.4)',
-      })
-      const field = `.uni-${name}-${name}`
-      expect(getThemeColors(code, field)).toEqual({ light: 'inherit' })
-      expect(getThemeColors(code, `${field}:disabled`)).toEqual({})
-      expect(getThemeColors(code, `${field}[readonly]`)).toEqual({})
+  test.each(['textarea'])('%s 禁用态的默认颜色由根节点提供', (name) => {
+    const code = read(`vapor/${name}.css`)
+    expect(
+      getThemeColors(code, `:where(div[uni-${name}][uni-disabled])`)
+    ).toEqual({
+      light: 'rgba(60, 60, 67, 0.3)',
+      dark: 'rgba(255, 255, 255, 0.4)',
+    })
+    const field = `.uni-${name}-${name}`
+    expect(getThemeColors(code, field)).toEqual({ light: 'inherit' })
+    expect(getThemeColors(code, `${field}:disabled`)).toEqual({})
+    expect(getThemeColors(code, `${field}[readonly]`)).toEqual({})
+  })
+
+  test('原生 Input 的占位颜色在有无 CSS 层时一致', () => {
+    const code = read('vapor/input.css')
+    const layers: Record<string, postcss.AtRule> = {}
+    postcss.parse(code).walkAtRules((rule) => {
+      layers[rule.params] = rule
+    })
+    const colors = {
+      light: 'rgba(60, 60, 67, 0.3)',
+      dark: 'rgba(255, 255, 255, 0.35)',
     }
-  )
+    expect(
+      getThemeColors(
+        layers['uni-input-defaults'],
+        'input:where([uni-input])::placeholder'
+      )
+    ).toEqual(colors)
+    expect(
+      getThemeColors(
+        layers['not (color: revert-layer)'],
+        '[uni-input]::placeholder'
+      )
+    ).toEqual(colors)
+    expect(code).not.toMatch(/\buni-input-(wrapper|form|placeholder)\b(?!-)/)
+    expect(
+      getThemeColors(code, ':where(input[uni-input][uni-disabled])')
+    ).toEqual({
+      light: 'rgba(60, 60, 67, 0.3)',
+      dark: 'rgba(255, 255, 255, 0.4)',
+    })
+  })
+
+  test('块级宽度补偿只作用于有标记的 Input，旧版横向 flex 仍可收缩', () => {
+    const css = postcss.parse(read('vapor/input.css'))
+    const stretch: string[] = []
+    const widths: Record<string, string[]> = {}
+    const shrink: Record<string, string[]> = {}
+    css.walkRules((rule) => {
+      rule.walkDecls('justify-self', (decl) => {
+        if (decl.value === 'stretch') stretch.push(rule.selector)
+      })
+      rule.walkDecls('width', (decl) => {
+        ;(widths[rule.selector] ||= []).push(decl.value)
+      })
+      rule.walkDecls('flex-shrink', (decl) => {
+        if (decl.value === '1' && rule.parent?.type === 'atrule') {
+          ;(shrink[rule.parent.params] ||= []).push(rule.selector)
+        }
+      })
+    })
+    const fill = 'input:where([uni-input][uni-input-fill-width])'
+    const fallback = ['-moz-available', '-webkit-fill-available']
+    expect(stretch).toEqual([fill])
+    expect(widths).toEqual({
+      [fill]: fallback,
+      '[uni-input-fill-width]': fallback,
+    })
+    expect(shrink).toEqual({
+      'not (width: stretch)': ['input:where([uni-input])'],
+      'not selector(:where(*))': ['.uni-input-input'],
+    })
+  })
+
+  test('导航栏原生搜索框的左内边距优先于旧版 Input 重置', () => {
+    const css = postcss.parse(read('framework/pageHead.css'))
+    const padding: Record<string, string> = {}
+    css.walkRules((rule) => {
+      rule.walkDecls('padding-left', (decl) => {
+        rule.selectors.forEach((selector) => {
+          padding[selector] = decl.value
+        })
+      })
+    })
+    expect(padding['.uni-page-head-search-input']).toBe('34px')
+    expect(padding['.uni-page-head-search-input.uni-input-input']).toBe('34px')
+  })
 })

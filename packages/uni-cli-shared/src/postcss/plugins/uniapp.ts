@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { extend } from '@vue/shared'
 import type { Declaration, Plugin, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
@@ -10,7 +11,9 @@ import {
 } from '@dcloudio/uni-shared'
 import { BG_PROPS } from './constants'
 import { adaptAlipayPageBackground } from './alipayPageBackground'
+import { resolveBuiltIn } from '../../resolve'
 import { isUniAppXWebVapor } from '../../x'
+import { transformVaporInputStyles } from './vaporInputStyles'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -76,6 +79,7 @@ function rewriteVaporTag(selector: selectorParser.Tag) {
   if (tag === 'text') host = 'span'
   else if (tag === 'image') host = 'img'
   else if (tag === 'canvas') host = 'canvas'
+  else if (tag === 'input') host = 'input'
   // Button、Navigator 会使用 View 或 Text 根，切换分支后仍须匹配。
   else if (tag === 'button' || tag === 'navigator') host = ':is(div,span)'
 
@@ -179,6 +183,16 @@ const transforms: Record<string, RewriteTag | undefined> = {
 
 const uniapp = (opts?: UniAppCssProcessorOptions) => {
   const platform = process.env.UNI_PLATFORM
+  const vapor = isUniAppXWebVapor()
+  let h5StyleDir: string | undefined
+  if (vapor) {
+    try {
+      const packageFile = resolveBuiltIn('@dcloudio/uni-h5/package.json')
+      h5StyleDir = path.join(path.dirname(packageFile), 'style')
+    } catch {
+      // 单独使用 PostCSS 插件时可能没有安装 H5 运行时。
+    }
+  }
   const { unit, unitRatio, unitPrecision } = extend(
     {},
     defaultUniAppCssProcessorOptions,
@@ -198,10 +212,11 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
             root.walkRules(
               walkRules({
                 rewriteTag,
-                vapor: isUniAppXWebVapor(),
+                vapor,
               })
             )
           }
+          if (vapor) transformVaporInputStyles(root, h5StyleDir)
         },
       }
     },
