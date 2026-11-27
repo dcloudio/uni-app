@@ -12736,7 +12736,7 @@
         "percentage",
         "enum"
       ],
-      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content() | repeat() ]+",
       "values": [
         {
           "name": "auto",
@@ -12874,33 +12874,6 @@
           }
         },
         {
-          "name": "fit-content",
-          "description": "按内容确定轨道尺寸，可省略参数。",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
-            }
-          }
-        },
-        {
           "name": "fit-content()",
           "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
           "uniPlatform": {
@@ -13008,32 +12981,6 @@
         },
         {
           "name": "subgrid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "masonry",
           "uniPlatform": {
             "app": {
               "android": {
@@ -13096,7 +13043,7 @@
         "percentage",
         "enum"
       ],
-      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content() | repeat() ]+",
       "values": [
         {
           "name": "auto",
@@ -13230,33 +13177,6 @@
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "fit-content",
-          "description": "按内容确定轨道尺寸，可省略参数。",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
             }
           }
         },
@@ -13391,32 +13311,6 @@
               "unixVer": "4.0"
             }
           }
-        },
-        {
-          "name": "masonry",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
         }
       ],
       "uniPlatform": {
@@ -13456,7 +13350,7 @@
         "percentage",
         "enum"
       ],
-      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content() ]+",
       "values": [
         {
           "name": "auto",
@@ -13594,33 +13488,6 @@
           }
         },
         {
-          "name": "fit-content",
-          "description": "按内容确定轨道尺寸，可省略参数。",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
-            }
-          }
-        },
-        {
           "name": "fit-content()",
           "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
           "uniPlatform": {
@@ -13644,33 +13511,6 @@
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "repeat()",
-          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))。",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
             }
           }
         },
@@ -13734,7 +13574,7 @@
         "percentage",
         "enum"
       ],
-      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content | fit-content() | repeat() ]+",
+      "syntax": "[ <length [0,∞]> | <percentage [0,∞]> | calc() | <number [0,∞]>fr | auto | max-content | minmax() | fit-content() ]+",
       "values": [
         {
           "name": "auto",
@@ -13872,33 +13712,6 @@
           }
         },
         {
-          "name": "fit-content",
-          "description": "按内容确定轨道尺寸，可省略参数。",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
-            }
-          }
-        },
-        {
           "name": "fit-content()",
           "description": "按内容确定轨道尺寸，上限为所给的长度、百分比或 calc()，例如 fit-content(40%)。",
           "uniPlatform": {
@@ -13922,33 +13735,6 @@
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "repeat()",
-          "description": "固定次数重复轨道列表，例如 repeat(2, 80px minmax(0px, 1fr))",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
             }
           }
         },
@@ -14871,35 +14657,8 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "auto | start | end | center | stretch",
+      "syntax": "start | end | center | stretch",
       "values": [
-        {
-          "name": "auto",
-          "description": "auto",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "ios": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              },
-              "harmony": {
-                "uniVer": "x",
-                "unixVer": "x",
-                "unixVaporVer": "5.41"
-              }
-            },
-            "web": {
-              "uniVer": "x",
-              "unixVer": "x"
-            }
-          }
-        },
         {
           "name": "start",
           "description": "向网格区域的行内起点对齐。",
@@ -15322,32 +15081,6 @@
         },
         {
           "name": "legacy",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "baseline first baseline",
           "uniPlatform": {
             "app": {
               "android": {
@@ -15806,58 +15539,6 @@
           }
         },
         {
-          "name": "save",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "unsave",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
           "name": "safe",
           "uniPlatform": {
             "app": {
@@ -15885,32 +15566,6 @@
         },
         {
           "name": "unsafe",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "ios": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              },
-              "harmony": {
-                "uniVer": "√",
-                "unixVer": "x",
-                "unixVaporVer": "x"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "baseline first baseline",
           "uniPlatform": {
             "app": {
               "android": {
