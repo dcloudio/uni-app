@@ -56,9 +56,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择的文件名称 |
-| path | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件路径 |
-| size | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件大小，单位 B |
+| name | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择的文件名称 |
+| path | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件路径 |
+| size | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件大小，单位 B |
 | type | string | 是 | 支付宝小程序: x | 选择的文件类型<br/>可选值：<br/>- 'video': 选择了视频文件;<br/>- 'image': 选择了图片文件;<br/>- 'audio': 选择了音频文件;<br/>- 'file': 选择了除图片和视频的文件; |
 
 ##### type 的属性描述

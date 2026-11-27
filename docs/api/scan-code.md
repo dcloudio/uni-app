@@ -34,12 +34,12 @@
 
 ##### scanType 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| "barCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| "qrCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| "datamatrix" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| "pdf417" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "barCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 一维码 |
+| "qrCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 二维码 |
+| "datamatrix" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | Data Matrix 码 |
+| "pdf417" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | PDF417 条码 |
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
