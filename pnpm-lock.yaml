@@ -1822,6 +1822,9 @@ importers:
       '@vue/server-renderer':
         specifier: 'catalog:'
         version: 3.4.21(vue@3.4.21(typescript@5.4.2))
+      '@vue/shared':
+        specifier: 'catalog:'
+        version: 3.4.21
 
   packages/uni-i18n: {}
 
