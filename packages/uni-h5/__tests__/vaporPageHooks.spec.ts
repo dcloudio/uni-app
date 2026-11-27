@@ -269,6 +269,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
             initPage: () => {},
             getPage$BasePage: (vm: any) => vm.$basePage,
           },
+          './keepAlive': jest.requireActual('../src/framework/setup/keepAlive'),
           './provide': {
             usePageRoute: () => ({ query }),
             usePageMeta: () => ({}),
@@ -435,6 +436,7 @@ describe('Web 弹窗不覆盖父页窗口变量', () => {
         '../..': {},
         './app': {},
         './page': { ...pageHelpers, initPage: () => {} },
+        './keepAlive': jest.requireActual('../src/framework/setup/keepAlive'),
         './provide': {
           usePageRoute: () => ({ query: {}, meta: pageMeta }),
           usePageMeta: () => pageMeta,
