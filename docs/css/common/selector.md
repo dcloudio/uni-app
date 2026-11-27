@@ -12,7 +12,14 @@ uni-app x 额外引入了 `page` 选择器，该选择器是小程序规范，un
 ## App平台不支持情况的替代方案
 ### 伪类
 - 通过`:active`伪类来实现点击态，很容易触发，并且滚动或滑动时点击态不会消失。小程序平台均给view组件引入了`hover-class`，考虑到跨端兼容和体验，需使用 `hover-class` 属性来实现点击态效果。[详见](../../component/view.md#hover-class)
+- :root ，改用 page选择器。
+~~~css
+page{
+  /*可以在这里设置css变量*/
+}
+~~~
 - :first-child / :last-child / :nth-child()，需改用动态class方式，示例代码[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/CSS/border/dynamic-border.uvue)
+
 
 ### 伪元素
 - 字体图标，无法使用`::before`、`::after`等伪元素，而需使用unicode直显方案。[详见](./at-rules.md#iconfont)
