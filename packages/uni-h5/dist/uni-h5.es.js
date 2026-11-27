@@ -17780,9 +17780,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
         state2.gestureType = "stop";
         return;
       }
-      changeToastThin();
-      state2.gestureType = "volume";
-      state2.volumeOld = video.volume;
+      startVolume();
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -17797,9 +17795,16 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       event.preventDefault();
     }
     if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
-      video.currentTime = state2.currentTimeNew;
+      if (event.type === "touchcancel") {
+        state2.currentTimeNew = state2.currentTimeOld;
+      } else {
+        video.currentTime = state2.currentTimeNew;
+      }
     }
-    state2.gestureType = "none";
+    if (state2.gestureType === "volume")
+      endVolume();
+    else
+      state2.gestureType = "none";
   }
   function changeProgress(x) {
     const duration = videoState.currentDuration;
@@ -17828,8 +17833,26 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       state2.volumeNew = value;
     }
   }
+  function startVolume() {
+    changeToastThin();
+    state2.gestureType = "volume";
+    state2.volumeOld = videoRef.value.volume;
+    state2.volumeNew = state2.volumeOld;
+  }
+  function endVolume() {
+    state2.gestureType = "none";
+    if (changeToastThinTimer != null)
+      clearTimeout(changeToastThinTimer);
+    changeToastThinTimer = null;
+    clearChangeShowToast();
+    state2.toastThin = false;
+  }
+  onBeforeUnmount(endVolume);
   return {
     state: state2,
+    startVolume,
+    changeVolume,
+    endVolume,
     onTouchstart,
     onTouchmove,
     onTouchend
@@ -18047,7 +18070,7 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek, seeking) {
+function useControls(props2, videoState, containerRef, gesture, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
@@ -18091,10 +18114,12 @@ function useControls(props2, videoState, seek, seeking) {
       hideTiming = null;
     }
   }
+  let removeProgressListeners;
   onBeforeUnmount(() => {
     if (hideTiming) {
       clearTimeout(hideTiming);
     }
+    removeProgressListeners == null ? void 0 : removeProgressListeners();
   });
   watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
     if (val) {
@@ -18109,54 +18134,185 @@ function useControls(props2, videoState, seek, seeking) {
     let originY;
     let moveOnce = true;
     let originProgress;
+    let trackWidth;
+    let trackLeft;
+    let mouseDragging = false;
+    let draggingTrack = false;
+    let draggingVideo = false;
+    let draggingVolume = false;
+    let suppressClick = false;
     const ball = ballRef.value;
-    function touchmove2(event) {
-      const toucher = event.targetTouches[0];
+    const progress = progressRef.value;
+    const container = containerRef.value;
+    function updateDrag(event) {
+      const toucher = event.type === "touchmove" ? event.targetTouches[0] : event;
       const pageX = toucher.pageX;
       const pageY = toucher.pageY;
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event);
+      if (pageX === originX && pageY === originY && moveOnce)
+        return;
+      if ((event.type === "touchmove" || mouseDragging && draggingVideo) && moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+        if (mouseDragging && (props2.pageGesture || props2.vslideGesture)) {
+          gesture.startVolume();
+          draggingVolume = true;
+          moveOnce = false;
+        } else {
+          if (mouseDragging)
+            mousecancel();
+          else
+            endDrag(event);
+          return;
+        }
+      }
+      if (draggingVolume) {
+        gesture.changeVolume(pageY - originY);
+        event.preventDefault();
+        event.stopPropagation();
         return;
       }
-      moveOnce = false;
-      const progressEl = progressRef.value;
-      const w = progressEl.offsetWidth;
-      let progress = originProgress + (pageX - originX) / w * 100;
-      if (progress < 0) {
-        progress = 0;
-      } else if (progress > 100) {
-        progress = 100;
+      if (mouseDragging && draggingVideo && !props2.enableProgressGesture) {
+        mousecancel();
+        return;
       }
-      videoState.progress = progress;
-      seeking == null ? void 0 : seeking(videoState.currentDuration * progress / 100);
+      if (moveOnce && pageX === originX)
+        return;
+      if (mouseDragging && moveOnce)
+        state2.controlsVisible = true;
+      moveOnce = false;
+      let progress2 = mouseDragging && draggingTrack ? (toucher.clientX - trackLeft) / trackWidth * 100 : originProgress + (pageX - originX) / trackWidth * 100;
+      if (progress2 < 0) {
+        progress2 = 0;
+      } else if (progress2 > 100) {
+        progress2 = 100;
+      }
+      if (!state2.seeking || progress2 !== videoState.progress) {
+        videoState.progress = progress2;
+        seeking == null ? void 0 : seeking(videoState.currentDuration * progress2 / 100);
+      }
       state2.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
-    function touchend(event) {
+    function endDrag(event) {
+      if (mouseDragging)
+        return;
       state2.controlsTouching = false;
       if (state2.touching) {
-        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
-        if (!moveOnce) {
+        ball.removeEventListener("touchmove", updateDrag, passiveOptions2);
+        if (state2.seeking) {
           event.preventDefault();
           event.stopPropagation();
-          seek(videoState.currentDuration * videoState.progress / 100);
+          if (event.type === "touchcancel")
+            resetProgress();
+          else
+            seek(videoState.currentDuration * videoState.progress / 100);
         }
+        state2.seeking = false;
         state2.touching = false;
       }
     }
-    ball.addEventListener("touchstart", (event) => {
+    function start(toucher, fromVideo = false) {
+      const rect = (fromVideo ? container : ball.parentElement).getBoundingClientRect();
+      trackWidth = rect.width;
+      if (!trackWidth)
+        return false;
+      trackLeft = rect.left;
+      suppressClick = false;
       state2.controlsTouching = true;
-      const toucher = event.targetTouches[0];
       originX = toucher.pageX;
       originY = toucher.pageY;
       originProgress = videoState.progress;
       moveOnce = true;
+      state2.seeking = false;
       state2.touching = true;
-      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
-    });
-    ball.addEventListener("touchend", touchend);
-    ball.addEventListener("touchcancel", touchend);
+      return true;
+    }
+    function touchstart2(event) {
+      if (state2.touching || !start(event.targetTouches[0]))
+        return;
+      ball.addEventListener("touchmove", updateDrag, passiveOptions2);
+    }
+    function releaseMouse() {
+      if (draggingVolume) {
+        gesture.endVolume();
+        draggingVolume = false;
+      }
+      mouseDragging = false;
+      window.removeEventListener("mousemove", mousemove, true);
+      window.removeEventListener("mouseup", mouseend, true);
+      window.removeEventListener("blur", mousecancel);
+    }
+    function mousestart(event) {
+      if (event.button !== 0 || state2.touching)
+        return;
+      suppressClick = false;
+      const target = event.target;
+      const fromVideo = !progress.contains(target);
+      if (fromVideo && (!props2.enableProgressGesture && !props2.pageGesture && !props2.vslideGesture || target.closest(".uni-video-bar, .uni-video-cover-play-button, .uni-video-slots")))
+        return;
+      if (!start(event, fromVideo))
+        return;
+      draggingTrack = !fromVideo && !ball.contains(target);
+      draggingVideo = fromVideo;
+      event.preventDefault();
+      event.stopPropagation();
+      mouseDragging = true;
+      window.addEventListener("mousemove", mousemove, {
+        capture: true,
+        passive: false
+      });
+      window.addEventListener("mouseup", mouseend, true);
+      window.addEventListener("blur", mousecancel);
+    }
+    function mousemove(event) {
+      if (!(event.buttons & 1)) {
+        mouseend(event);
+        return;
+      }
+      updateDrag(event);
+    }
+    function mouseend(event) {
+      if (event.type === "mouseup" && event.button !== 0)
+        return;
+      if (!moveOnce || event.pageX !== originX || event.pageY !== originY)
+        updateDrag(event);
+      suppressClick = !moveOnce;
+      releaseMouse();
+      endDrag(event);
+    }
+    function mousecancel() {
+      suppressClick = !moveOnce;
+      releaseMouse();
+      state2.controlsTouching = state2.touching = false;
+      resetProgress();
+    }
+    function resetProgress() {
+      if (state2.seeking) {
+        videoState.progress = originProgress;
+        seeking == null ? void 0 : seeking(videoState.currentDuration * originProgress / 100);
+        state2.seeking = false;
+      }
+    }
+    function click(event) {
+      if (!suppressClick)
+        return;
+      suppressClick = false;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    container.addEventListener("mousedown", mousestart);
+    container.addEventListener("click", click, true);
+    ball.addEventListener("touchstart", touchstart2);
+    ball.addEventListener("touchend", endDrag);
+    ball.addEventListener("touchcancel", endDrag);
+    removeProgressListeners = () => {
+      releaseMouse();
+      container.removeEventListener("mousedown", mousestart);
+      container.removeEventListener("click", click, true);
+      ball.removeEventListener("touchstart", touchstart2);
+      ball.removeEventListener("touchmove", updateDrag);
+      ball.removeEventListener("touchend", endDrag);
+      ball.removeEventListener("touchcancel", endDrag);
+    };
   });
   return {
     state: state2,
@@ -18278,7 +18434,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   }, id2, true);
 }
 function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
-  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching && controlsState.seeking);
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
@@ -18441,12 +18597,13 @@ function useVideoComponent(props2, {
     requestFullScreen,
     exitFullScreen
   } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const gesture = useGesture(props2, videoState, videoRef, fullscreenState);
   const {
     state: gestureState,
     onTouchstart,
     onTouchend,
     onTouchmove
-  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  } = gesture;
   const {
     state: controlsState,
     progressRef,
@@ -18455,7 +18612,7 @@ function useVideoComponent(props2, {
     toggleControls,
     autoHideEnd,
     autoHideStart
-  } = useControls(props2, videoState, seek, (currentTimeNew) => {
+  } = useControls(props2, videoState, containerRef, gesture, seek, (currentTimeNew) => {
     gestureState.currentTimeNew = currentTimeNew;
   });
   useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
@@ -18476,9 +18633,13 @@ function useVideoComponent(props2, {
     render: () => {
       return createVNode("div", {
         "ref": containerRef,
-        "class": "uni-video-container",
+        "class": {
+          "uni-video-container": true,
+          "uni-video-container-seekable": props2.enableProgressGesture || props2.pageGesture || props2.vslideGesture
+        },
         "onTouchstart": onTouchstart,
         "onTouchend": onTouchend,
+        "onTouchcancel": onTouchend,
         "onTouchmove": onTouchmove,
         "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
         "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
@@ -18556,13 +18717,15 @@ function useVideoComponent(props2, {
         "style": {
           left: videoState.progress + "%"
         },
+        "onClick": withModifiers(() => {
+        }, ["stop"]),
         "class": {
           "uni-video-ball": true,
           "uni-video-ball-progressing": progressing.value
         }
       }, [createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+      }, null)], 14, ["onClick"])], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(videoState.currentDuration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
         "class": {
@@ -18619,7 +18782,7 @@ function useVideoComponent(props2, {
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+      }, [slots.default && slots.default()])], 42, ["onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
     }
   };
 }

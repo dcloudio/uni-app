@@ -2410,7 +2410,7 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
-let UniCustomEvent$2 = class UniCustomEvent extends CustomEvent {
+let UniCustomEvent$1 = class UniCustomEvent extends CustomEvent {
 };
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -8000,12 +8000,12 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -8199,7 +8199,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
     const rootRef = Vue.ref(null);
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.timeStamp = 0;
         const target = rootRef.value;
@@ -8209,12 +8209,12 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent4 {
+    class UniFormSubmitEvent extends UniCustomEvent3 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent4 {
+    class UniFormResetEvent extends UniCustomEvent3 {
       constructor() {
         super("reset", {});
       }
@@ -10582,12 +10582,12 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent4 {
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -10885,12 +10885,12 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["activeend"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent4 {
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -11210,12 +11210,12 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   emits: ["change"],
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -11272,12 +11272,12 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-let UniCustomEvent$1 = class UniCustomEvent2 {
+class UniCustomEvent2 {
   constructor(type, detail) {
     this.detail = detail;
   }
-};
-class UniSliderChangeEvent extends UniCustomEvent$1 {
+}
+class UniSliderChangeEvent extends UniCustomEvent2 {
   constructor(value) {
     super("change", { value });
   }
@@ -11926,33 +11926,27 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniCustomEvent3 {
-  constructor(type, detail) {
-    this.type = type;
-    this.detail = detail;
-  }
-}
-class UniSwiperChangeEvent extends UniCustomEvent3 {
+class UniSwiperChangeEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
       detail.currentItemId = currentItemId;
     }
-    super("change", detail);
+    super("change", { detail });
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent3 {
+class UniSwiperTransitionEvent extends UniCustomEvent$1 {
   constructor(dx, dy) {
-    super("transition", { dx, dy });
+    super("transition", { detail: { dx, dy } });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent3 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
       detail.currentItemId = currentItemId;
     }
-    super("animationfinish", detail);
+    super("animationfinish", { detail });
   }
 }
 function parsePxRpx(margin) {
@@ -12623,12 +12617,12 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniSwitchChangeEvent extends UniCustomEvent4 {
+    class UniSwitchChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -13001,7 +12995,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 const _t0$5 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
 const _t1$1 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
-const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ', 1);
+const _t2 = Vue.template('<div><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ', 1);
 const _t3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
@@ -13107,9 +13101,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
         state.gestureType = "stop";
         return;
       }
-      changeToastThin();
-      state.gestureType = "volume";
-      state.volumeOld = video.volume;
+      startVolume();
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -13124,9 +13116,16 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
-      video.currentTime = state.currentTimeNew;
+      if (event.type === "touchcancel") {
+        state.currentTimeNew = state.currentTimeOld;
+      } else {
+        video.currentTime = state.currentTimeNew;
+      }
     }
-    state.gestureType = "none";
+    if (state.gestureType === "volume")
+      endVolume();
+    else
+      state.gestureType = "none";
   }
   function changeProgress(x) {
     const duration = videoState.currentDuration;
@@ -13155,8 +13154,25 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       state.volumeNew = value;
     }
   }
+  function startVolume() {
+    changeToastThin();
+    state.gestureType = "volume";
+    state.volumeOld = videoRef.value.volume;
+    state.volumeNew = state.volumeOld;
+  }
+  function endVolume() {
+    state.gestureType = "none";
+    if (changeToastThinTimer != null)
+      clearTimeout(changeToastThinTimer);
+    changeToastThinTimer = null;
+    clearChangeShowToast();
+    state.toastThin = false;
+  }
   return {
     state,
+    startVolume,
+    changeVolume,
+    endVolume,
     onTouchstart,
     onTouchmove,
     onTouchend
@@ -13367,7 +13383,7 @@ function useVideo(props2, attrs2, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek, seeking) {
+function useControls(props2, videoState, containerRef, gesture, seek, seeking) {
   const progressRef = Vue.ref(null);
   const ballRef = Vue.ref(null);
   const centerPlayBtnShow = Vue.computed(() => props2.showCenterPlayBtn && !videoState.start);
@@ -13510,7 +13526,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useSubscribe();
 }
 function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
-  const progressing = Vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  const progressing = Vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching && controlsState.seeking);
   Vue.watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
@@ -13640,8 +13656,9 @@ function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
   const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
   const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
   const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek);
+  const gesture = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = gesture;
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, containerRef, gesture, seek);
   useContext();
   const progressing = useProgressing(videoState, gestureState, controlsState);
   return {
@@ -13683,6 +13700,7 @@ function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
         const _n31 = Vue.next(_n30);
         Vue.on(_n0, "touchstart", onTouchstart);
         Vue.on(_n0, "touchend", onTouchend);
+        Vue.on(_n0, "touchcancel", onTouchend);
         Vue.on(_n0, "touchmove", onTouchmove);
         Vue.on(
           _n0,
@@ -13717,6 +13735,8 @@ function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
         setNodes(_x4, () => formatTime(videoState.currentTime));
         Vue.on(_n5, "click", Vue.withModifiers(clickProgress, ["stop"]));
         Vue.applyVShow(_n5, () => props2.showProgress);
+        Vue.on(_n8, "click", Vue.withModifiers(() => {
+        }, ["stop"]));
         Vue.applyVShow(_n10, () => props2.showProgress);
         const _x10 = Vue.txt(_n10);
         setNodes(_x10, () => formatTime(videoState.currentDuration));
@@ -13734,6 +13754,7 @@ function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
           return _n02;
         })());
         Vue.renderEffect(() => {
+          Vue.setClassName(_n0, 1 | (props2.enableProgressGesture || props2.pageGesture || props2.vslideGesture ? 2 : 0), [" uni-video-container", " uni-video-container-seekable"]);
           Vue.setDynamicProps(_n1, [
             {
               style: { "object-fit": props2.objectFit },
@@ -16757,7 +16778,7 @@ exports.UniCheckboxElement = UniCheckboxElement;
 exports.UniCheckboxElementImpl = UniCheckboxElement;
 exports.UniCheckboxGroupElement = UniCheckboxGroupElement;
 exports.UniCheckboxGroupElementImpl = UniCheckboxGroupElement;
-exports.UniCustomEvent = UniCustomEvent$2;
+exports.UniCustomEvent = UniCustomEvent$1;
 exports.UniEditorElement = UniEditorElement;
 exports.UniEditorElementImpl = UniEditorElement;
 exports.UniElement = UniElement2;

@@ -2326,7 +2326,7 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
-let UniCustomEvent$2 = class UniCustomEvent extends CustomEvent {
+let UniCustomEvent$1 = class UniCustomEvent extends CustomEvent {
 };
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -8962,12 +8962,12 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -9200,7 +9200,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
     const rootRef = ref(null);
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.timeStamp = 0;
         const target = rootRef.value;
@@ -9210,12 +9210,12 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent4 {
+    class UniFormSubmitEvent extends UniCustomEvent3 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent4 {
+    class UniFormResetEvent extends UniCustomEvent3 {
       constructor() {
         super("reset", {});
       }
@@ -10503,26 +10503,26 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, options) {
         this.detail = options.detail;
       }
     }
-    class UniPickerCancelEvent extends UniCustomEvent4 {
+    class UniPickerCancelEvent extends UniCustomEvent3 {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent4 {
+    class UniPickerChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent4 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -11781,12 +11781,12 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent4 {
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -12067,12 +12067,12 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent4 {
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -12376,12 +12376,12 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -12441,12 +12441,12 @@ _sfc_main$7.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props2, ctx) : void 0;
 };
-let UniCustomEvent$1 = class UniCustomEvent2 {
+class UniCustomEvent2 {
   constructor(type, detail) {
     this.detail = detail;
   }
-};
-class UniSliderChangeEvent extends UniCustomEvent$1 {
+}
+class UniSliderChangeEvent extends UniCustomEvent2 {
   constructor(value) {
     super("change", { value });
   }
@@ -13068,33 +13068,27 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/sticky-section/sticky-section.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-class UniCustomEvent3 {
-  constructor(type, detail) {
-    this.type = type;
-    this.detail = detail;
-  }
-}
-class UniSwiperChangeEvent extends UniCustomEvent3 {
+class UniSwiperChangeEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
       detail.currentItemId = currentItemId;
     }
-    super("change", detail);
+    super("change", { detail });
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent3 {
+class UniSwiperTransitionEvent extends UniCustomEvent$1 {
   constructor(dx, dy) {
-    super("transition", { dx, dy });
+    super("transition", { detail: { dx, dy } });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent3 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
       detail.currentItemId = currentItemId;
     }
-    super("animationfinish", detail);
+    super("animationfinish", { detail });
   }
 }
 function parsePxRpx(margin) {
@@ -14579,9 +14573,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
         state.gestureType = "stop";
         return;
       }
-      changeToastThin();
-      state.gestureType = "volume";
-      state.volumeOld = video.volume;
+      startVolume();
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -14596,9 +14588,16 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
-      video.currentTime = state.currentTimeNew;
+      if (event.type === "touchcancel") {
+        state.currentTimeNew = state.currentTimeOld;
+      } else {
+        video.currentTime = state.currentTimeNew;
+      }
     }
-    state.gestureType = "none";
+    if (state.gestureType === "volume")
+      endVolume();
+    else
+      state.gestureType = "none";
   }
   function changeProgress(x) {
     const duration = videoState.currentDuration;
@@ -14627,8 +14626,26 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       state.volumeNew = value;
     }
   }
+  function startVolume() {
+    changeToastThin();
+    state.gestureType = "volume";
+    state.volumeOld = videoRef.value.volume;
+    state.volumeNew = state.volumeOld;
+  }
+  function endVolume() {
+    state.gestureType = "none";
+    if (changeToastThinTimer != null)
+      clearTimeout(changeToastThinTimer);
+    changeToastThinTimer = null;
+    clearChangeShowToast();
+    state.toastThin = false;
+  }
+  onBeforeUnmount(endVolume);
   return {
     state,
+    startVolume,
+    changeVolume,
+    endVolume,
     onTouchstart,
     onTouchmove,
     onTouchend
@@ -14840,7 +14857,7 @@ function useVideo(props2, attrs, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek, seeking) {
+function useControls(props2, videoState, containerRef, gesture, seek, seeking) {
   const progressRef = ref(null);
   const ballRef = ref(null);
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
@@ -14884,10 +14901,12 @@ function useControls(props2, videoState, seek, seeking) {
       hideTiming = null;
     }
   }
+  let removeProgressListeners;
   onBeforeUnmount(() => {
     if (hideTiming) {
       clearTimeout(hideTiming);
     }
+    removeProgressListeners == null ? void 0 : removeProgressListeners();
   });
   watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
     if (val) {
@@ -14902,54 +14921,185 @@ function useControls(props2, videoState, seek, seeking) {
     let originY;
     let moveOnce = true;
     let originProgress;
+    let trackWidth;
+    let trackLeft;
+    let mouseDragging = false;
+    let draggingTrack = false;
+    let draggingVideo = false;
+    let draggingVolume = false;
+    let suppressClick = false;
     const ball = ballRef.value;
-    function touchmove(event) {
-      const toucher = event.targetTouches[0];
+    const progress = progressRef.value;
+    const container = containerRef.value;
+    function updateDrag(event) {
+      const toucher = event.type === "touchmove" ? event.targetTouches[0] : event;
       const pageX = toucher.pageX;
       const pageY = toucher.pageY;
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event);
+      if (pageX === originX && pageY === originY && moveOnce)
+        return;
+      if ((event.type === "touchmove" || mouseDragging && draggingVideo) && moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+        if (mouseDragging && (props2.pageGesture || props2.vslideGesture)) {
+          gesture.startVolume();
+          draggingVolume = true;
+          moveOnce = false;
+        } else {
+          if (mouseDragging)
+            mousecancel();
+          else
+            endDrag(event);
+          return;
+        }
+      }
+      if (draggingVolume) {
+        gesture.changeVolume(pageY - originY);
+        event.preventDefault();
+        event.stopPropagation();
         return;
       }
-      moveOnce = false;
-      const progressEl = progressRef.value;
-      const w = progressEl.offsetWidth;
-      let progress = originProgress + (pageX - originX) / w * 100;
-      if (progress < 0) {
-        progress = 0;
-      } else if (progress > 100) {
-        progress = 100;
+      if (mouseDragging && draggingVideo && !props2.enableProgressGesture) {
+        mousecancel();
+        return;
       }
-      videoState.progress = progress;
-      seeking == null ? void 0 : seeking(videoState.currentDuration * progress / 100);
+      if (moveOnce && pageX === originX)
+        return;
+      if (mouseDragging && moveOnce)
+        state.controlsVisible = true;
+      moveOnce = false;
+      let progress2 = mouseDragging && draggingTrack ? (toucher.clientX - trackLeft) / trackWidth * 100 : originProgress + (pageX - originX) / trackWidth * 100;
+      if (progress2 < 0) {
+        progress2 = 0;
+      } else if (progress2 > 100) {
+        progress2 = 100;
+      }
+      if (!state.seeking || progress2 !== videoState.progress) {
+        videoState.progress = progress2;
+        seeking == null ? void 0 : seeking(videoState.currentDuration * progress2 / 100);
+      }
       state.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
-    function touchend(event) {
+    function endDrag(event) {
+      if (mouseDragging)
+        return;
       state.controlsTouching = false;
       if (state.touching) {
-        ball.removeEventListener("touchmove", touchmove, passiveOptions2);
-        if (!moveOnce) {
+        ball.removeEventListener("touchmove", updateDrag, passiveOptions2);
+        if (state.seeking) {
           event.preventDefault();
           event.stopPropagation();
-          seek(videoState.currentDuration * videoState.progress / 100);
+          if (event.type === "touchcancel")
+            resetProgress();
+          else
+            seek(videoState.currentDuration * videoState.progress / 100);
         }
+        state.seeking = false;
         state.touching = false;
       }
     }
-    ball.addEventListener("touchstart", (event) => {
+    function start(toucher, fromVideo = false) {
+      const rect = (fromVideo ? container : ball.parentElement).getBoundingClientRect();
+      trackWidth = rect.width;
+      if (!trackWidth)
+        return false;
+      trackLeft = rect.left;
+      suppressClick = false;
       state.controlsTouching = true;
-      const toucher = event.targetTouches[0];
       originX = toucher.pageX;
       originY = toucher.pageY;
       originProgress = videoState.progress;
       moveOnce = true;
+      state.seeking = false;
       state.touching = true;
-      ball.addEventListener("touchmove", touchmove, passiveOptions2);
-    });
-    ball.addEventListener("touchend", touchend);
-    ball.addEventListener("touchcancel", touchend);
+      return true;
+    }
+    function touchstart(event) {
+      if (state.touching || !start(event.targetTouches[0]))
+        return;
+      ball.addEventListener("touchmove", updateDrag, passiveOptions2);
+    }
+    function releaseMouse() {
+      if (draggingVolume) {
+        gesture.endVolume();
+        draggingVolume = false;
+      }
+      mouseDragging = false;
+      window.removeEventListener("mousemove", mousemove, true);
+      window.removeEventListener("mouseup", mouseend, true);
+      window.removeEventListener("blur", mousecancel);
+    }
+    function mousestart(event) {
+      if (event.button !== 0 || state.touching)
+        return;
+      suppressClick = false;
+      const target = event.target;
+      const fromVideo = !progress.contains(target);
+      if (fromVideo && (!props2.enableProgressGesture && !props2.pageGesture && !props2.vslideGesture || target.closest(".uni-video-bar, .uni-video-cover-play-button, .uni-video-slots")))
+        return;
+      if (!start(event, fromVideo))
+        return;
+      draggingTrack = !fromVideo && !ball.contains(target);
+      draggingVideo = fromVideo;
+      event.preventDefault();
+      event.stopPropagation();
+      mouseDragging = true;
+      window.addEventListener("mousemove", mousemove, {
+        capture: true,
+        passive: false
+      });
+      window.addEventListener("mouseup", mouseend, true);
+      window.addEventListener("blur", mousecancel);
+    }
+    function mousemove(event) {
+      if (!(event.buttons & 1)) {
+        mouseend(event);
+        return;
+      }
+      updateDrag(event);
+    }
+    function mouseend(event) {
+      if (event.type === "mouseup" && event.button !== 0)
+        return;
+      if (!moveOnce || event.pageX !== originX || event.pageY !== originY)
+        updateDrag(event);
+      suppressClick = !moveOnce;
+      releaseMouse();
+      endDrag(event);
+    }
+    function mousecancel() {
+      suppressClick = !moveOnce;
+      releaseMouse();
+      state.controlsTouching = state.touching = false;
+      resetProgress();
+    }
+    function resetProgress() {
+      if (state.seeking) {
+        videoState.progress = originProgress;
+        seeking == null ? void 0 : seeking(videoState.currentDuration * originProgress / 100);
+        state.seeking = false;
+      }
+    }
+    function click(event) {
+      if (!suppressClick)
+        return;
+      suppressClick = false;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    container.addEventListener("mousedown", mousestart);
+    container.addEventListener("click", click, true);
+    ball.addEventListener("touchstart", touchstart);
+    ball.addEventListener("touchend", endDrag);
+    ball.addEventListener("touchcancel", endDrag);
+    removeProgressListeners = () => {
+      releaseMouse();
+      container.removeEventListener("mousedown", mousestart);
+      container.removeEventListener("click", click, true);
+      ball.removeEventListener("touchstart", touchstart);
+      ball.removeEventListener("touchmove", updateDrag);
+      ball.removeEventListener("touchend", endDrag);
+      ball.removeEventListener("touchcancel", endDrag);
+    };
   });
   return {
     state,
@@ -15069,7 +15219,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   }, id);
 }
 function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
-  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching && controlsState.seeking);
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
@@ -15199,8 +15349,9 @@ function useVideoComponent(props2, { emit: emit2, attrs, slots }) {
   const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs, trigger);
   const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
   const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
+  const gesture = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = gesture;
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, containerRef, gesture, seek, (currentTimeNew) => {
     gestureState.currentTimeNew = currentTimeNew;
   });
   useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
@@ -15223,7 +15374,10 @@ function useVideoComponent(props2, { emit: emit2, attrs, slots }) {
         const _cache = createVNodeCache("f414baeb");
         return openBlock(), createBlock("div", {
           ref: containerRef,
-          class: "uni-video-container"
+          class: {
+            "uni-video-container": true,
+            "uni-video-container-seekable": props2.enableProgressGesture || props2.pageGesture || props2.vslideGesture
+          }
         }, [
           createVNode("video", mergeProps({
             ref: videoRef,
@@ -18644,7 +18798,7 @@ export {
   UniCheckboxElement as UniCheckboxElementImpl,
   UniCheckboxGroupElement,
   UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
-  UniCustomEvent$2 as UniCustomEvent,
+  UniCustomEvent$1 as UniCustomEvent,
   UniEditorElement,
   UniEditorElement as UniEditorElementImpl,
   UniElement2 as UniElement,

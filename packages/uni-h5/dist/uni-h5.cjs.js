@@ -8921,9 +8921,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
         state.gestureType = "stop";
         return;
       }
-      changeToastThin();
-      state.gestureType = "volume";
-      state.volumeOld = video.volume;
+      startVolume();
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -8938,9 +8936,16 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
-      video.currentTime = state.currentTimeNew;
+      if (event.type === "touchcancel") {
+        state.currentTimeNew = state.currentTimeOld;
+      } else {
+        video.currentTime = state.currentTimeNew;
+      }
     }
-    state.gestureType = "none";
+    if (state.gestureType === "volume")
+      endVolume();
+    else
+      state.gestureType = "none";
   }
   function changeProgress(x) {
     const duration = videoState.currentDuration;
@@ -8969,8 +8974,25 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       state.volumeNew = value;
     }
   }
+  function startVolume() {
+    changeToastThin();
+    state.gestureType = "volume";
+    state.volumeOld = videoRef.value.volume;
+    state.volumeNew = state.volumeOld;
+  }
+  function endVolume() {
+    state.gestureType = "none";
+    if (changeToastThinTimer != null)
+      clearTimeout(changeToastThinTimer);
+    changeToastThinTimer = null;
+    clearChangeShowToast();
+    state.toastThin = false;
+  }
   return {
     state,
+    startVolume,
+    changeVolume,
+    endVolume,
     onTouchstart,
     onTouchmove,
     onTouchend
@@ -9187,7 +9209,7 @@ function useVideo(props2, attrs, trigger) {
     onTimeUpdate
   };
 }
-function useControls(props2, videoState, seek, seeking) {
+function useControls(props2, videoState, containerRef, gesture, seek, seeking) {
   const progressRef = vue.ref(null);
   const ballRef = vue.ref(null);
   const centerPlayBtnShow = vue.computed(() => props2.showCenterPlayBtn && !videoState.start);
@@ -9332,7 +9354,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useSubscribe();
 }
 function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
-  const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+  const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching && controlsState.seeking);
   vue.watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
@@ -9495,12 +9517,13 @@ function useVideoComponent(props2, {
     requestFullScreen,
     exitFullScreen
   } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const gesture = useGesture(props2, videoState, videoRef, fullscreenState);
   const {
     state: gestureState,
     onTouchstart,
     onTouchend,
     onTouchmove
-  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  } = gesture;
   const {
     state: controlsState,
     progressRef,
@@ -9509,7 +9532,7 @@ function useVideoComponent(props2, {
     toggleControls,
     autoHideEnd,
     autoHideStart
-  } = useControls(props2, videoState, seek);
+  } = useControls(props2, videoState, containerRef, gesture, seek);
   useContext();
   const progressing = useProgressing(videoState, gestureState, controlsState);
   return {
@@ -9528,9 +9551,13 @@ function useVideoComponent(props2, {
     render: () => {
       return vue.createVNode("div", {
         "ref": containerRef,
-        "class": "uni-video-container",
+        "class": {
+          "uni-video-container": true,
+          "uni-video-container-seekable": props2.enableProgressGesture || props2.pageGesture || props2.vslideGesture
+        },
         "onTouchstart": onTouchstart,
         "onTouchend": onTouchend,
+        "onTouchcancel": onTouchend,
         "onTouchmove": onTouchmove,
         "onFullscreenchange": vue.withModifiers(onFullscreenChange, ["stop"]),
         "onWebkitfullscreenchange": vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
@@ -9608,13 +9635,15 @@ function useVideoComponent(props2, {
         "style": {
           left: videoState.progress + "%"
         },
+        "onClick": vue.withModifiers(() => {
+        }, ["stop"]),
         "class": {
           "uni-video-ball": true,
           "uni-video-ball-progressing": progressing.value
         }
       }, [vue.createVNode("div", {
         "class": "uni-video-inner"
-      }, null)], 6)], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
+      }, null)], 14, ["onClick"])], 2)], 8, ["onClick"]), [[vue.vShow, props2.showProgress]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-video-duration"
       }, [formatTime(videoState.currentDuration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
@@ -9671,7 +9700,7 @@ function useVideoComponent(props2, {
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+      }, [slots.default && slots.default()])], 42, ["onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
     }
   };
 }

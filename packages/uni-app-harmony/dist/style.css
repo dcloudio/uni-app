@@ -2219,6 +2219,10 @@ uni-video[hidden] {
   z-index: 999;
 }
 
+.uni-video-container-seekable {
+  cursor: pointer;
+}
+
 .uni-video-video {
   width: 100%;
   height: 100%;
@@ -2240,6 +2244,7 @@ uni-video[hidden] {
 }
 
 .uni-video-slots {
+  cursor: auto;
   position: absolute;
   left: 0;
   top: 0;
