@@ -233,7 +233,7 @@
     }
   }
 
-  function onItemKeydown(event : KeyboardEvent, item : UTSJSONObject, index : number) {
+  function onItemKeydown(event : KeyboardEvent, item : Record<string, any>, index : number) {
     const key = event.key as string
     const total = dataPicker.currentDataList.length
     if (key == 'Enter' || key == ' ') {
@@ -264,7 +264,7 @@
     }
     emit('change', {detail: {value: nodes}})
   }
-  dataPicker.emitNodeClick = (nodeData : UTSJSONObject) => {
+  dataPicker.emitNodeClick = (nodeData : Record<string, any>) => {
     nextTick(() => {
       if (dataPicker.selectedNodes.length > 1) {
         listView?.value!.scrollTo(0, 0)
@@ -273,7 +273,7 @@
     emit('nodeclick', nodeData)
   }
 
-  const onNodeClick = function (nodeData : UTSJSONObject) {
+  const onNodeClick = function (nodeData : Record<string, any>) {
     dataPicker.onNodeClick(nodeData)
   }
 

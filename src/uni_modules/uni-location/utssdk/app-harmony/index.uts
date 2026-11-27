@@ -226,7 +226,6 @@ export {
 export {
     GetLocation,
     GetLocationFail,
-    GetLocationFailImpl,
     GetLocationOptions,
     GetLocationSuccess,
     IGetLocationFail,

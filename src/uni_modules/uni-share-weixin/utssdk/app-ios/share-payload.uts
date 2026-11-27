@@ -1,0 +1,283 @@
+import { UTSiOS } from 'DCloudUTSFoundation'
+import { UIImage } from 'UIKit'
+import { CGRect, CGSize } from 'CoreFoundation'
+import { URL, Data } from 'Foundation'
+import { ShareWeixinError, ShareWeixinErrorCode } from '../unierror.uts'
+import { shareError } from './share-error.uts'
+
+const TITLE_MAX_BYTES = 512
+const SUMMARY_MAX_BYTES = 1024
+const THUMB_MAX_BYTES = 32 * 1024
+
+// 只负责构造 SDK 请求，不负责请求准入、终结或派发业务回调。
+export class SharePayload {
+	private runOnMain : (task : () => void) => void
+
+	constructor(runOnMain : (task : () => void) => void) {
+		this.runOnMain = runOnMain
+	}
+
+	validate(options : ShareOptions) : ShareWeixinError | null {
+		if (options.title != null && this.getByteLength(options.title!) > TITLE_MAX_BYTES) {
+			return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, `title字段不能超过 ${TITLE_MAX_BYTES} 个字节`)
+		}
+		if (options.summary != null && this.getByteLength(options.summary!) > SUMMARY_MAX_BYTES) {
+			return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, `summary字段不能超过 ${SUMMARY_MAX_BYTES} 个字节`)
+		}
+		const type = options.type ?? 0
+		switch (type) {
+			case 0:
+				if (options.href == null || options.href!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '分享的网页地址不能为空')
+				break
+			case 1:
+				if (options.summary == null || options.summary!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '分享的内容不能为空')
+				break
+			case 2:
+				if (options.imageUrl == null || options.imageUrl!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '图片地址不能为空')
+				break
+			case 3:
+				return shareError(ShareWeixinErrorCode.TYPE_NOT_SUPPORT.rawValue)
+			case 4:
+				if (options.mediaUrl == null || options.mediaUrl!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '分享的视频地址不能为空')
+				break
+			case 5:
+				if (options.miniProgram == null || options.miniProgram!.id == null || options.miniProgram!.id!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '需要填写小程序的原始ID')
+				if (options.imageUrl == null || options.imageUrl!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '小程序分享必须提供缩略图')
+				break
+			default:
+				return shareError(ShareWeixinErrorCode.TYPE_NOT_FOUND.rawValue)
+		}
+		return null
+	}
+
+	prepare(options : ShareOptions, canContinue : () => boolean, success : (request : SendMessageToWXReq) => void, fail : (error : ShareWeixinError) => void) {
+		if (!canContinue()) return
+		const type = options.type ?? 0
+		if (type == 1) {
+			const request = new SendMessageToWXReq()
+			request.bText = true
+			request.text = options.summary!
+			request.scene = this.scene(options)
+			success(request)
+			return
+		}
+		if (options.imageUrl != null && options.imageUrl!.length > 0) {
+			this.loadImage(options.imageUrl!, canContinue, (data : Data) => {
+				if (!canContinue()) return
+				const thumb = this.createThumbDataFromData(data)
+				if (!canContinue()) return
+				if (thumb == null || thumb!.count > THUMB_MAX_BYTES) {
+					fail(shareError(ShareWeixinErrorCode.GET_THUMB_IMAGE_ERROR.rawValue))
+					return
+				}
+				success(this.mediaRequest(options, type, data, thumb))
+			}, fail)
+		} else {
+			success(this.mediaRequest(options, type, null, null))
+		}
+	}
+
+	private scene(options : ShareOptions) : Int32 {
+		return Int32(options.scene == 'WXSceneTimeline' ? 1 : 0)
+	}
+
+	private mediaRequest(options : ShareOptions, type : number, image : Data | null, thumb : Data | null) : SendMessageToWXReq {
+		const message = new WXMediaMessage()
+		message.title = options.title ?? ''
+		message.description = options.summary ?? ''
+		message.thumbData = thumb
+		switch (type) {
+			case 2:
+				const imageObject = new WXImageObject()
+				imageObject.imageData = image!
+				message.mediaObject = imageObject
+				break
+			case 4:
+				const videoObject = new WXVideoObject()
+				videoObject.videoUrl = options.mediaUrl!
+				message.mediaObject = videoObject
+				break
+			case 5:
+				const miniProgram = new WXMiniProgramObject()
+				miniProgram.userName = options.miniProgram!.id!
+				miniProgram.path = options.miniProgram!.path
+				miniProgram.webpageUrl = options.miniProgram!.webUrl ?? options.href ?? ''
+				miniProgram.hdImageData = thumb!
+				// 本次状态管理调整保持现有 miniProgramType 行为不变。
+				message.mediaObject = miniProgram
+				break
+			default:
+				const webpage = new WXWebpageObject()
+				webpage.webpageUrl = options.href!
+				message.mediaObject = webpage
+				break
+		}
+		const request = new SendMessageToWXReq()
+		request.bText = false
+		request.scene = this.scene(options)
+		request.message = message
+		return request
+	}
+
+	private loadImage(path : string, canContinue : () => boolean, success : (data : Data) => void, fail : (error : ShareWeixinError) => void) {
+		const realPath = UTSiOS.convert2AbsFullPath(path)
+		if (!realPath.startsWith('http://') && !realPath.startsWith('https://')) {
+			if (!canContinue()) return
+			const data = this.loadLocalImageData(realPath)
+			if (!canContinue()) return
+			if (data == null) {
+				fail(shareError(ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR.rawValue, '读取图片数据失败'))
+			} else {
+				success(data!)
+			}
+			return
+		}
+		uni.downloadFile({
+			url: realPath,
+			success: (result : DownloadFileSuccess) => {
+				this.runOnMain(() => {
+					if (!canContinue()) return
+					if (result.tempFilePath.length == 0) {
+						fail(shareError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR.rawValue, '下载后未返回临时文件路径'))
+						return
+					}
+					const data = this.loadLocalImageData(result.tempFilePath)
+					if (!canContinue()) return
+					if (data == null) {
+						fail(shareError(ShareWeixinErrorCode.LOAD_LOCAL_FILEPATH_ERROR.rawValue, '读取下载后的图片失败'))
+					} else {
+						success(data!)
+					}
+				})
+			},
+			fail: (error : DownloadFileFail) => {
+				this.runOnMain(() => {
+					if (canContinue()) fail(shareError(ShareWeixinErrorCode.DOWNLOAD_IMAGE_ERROR.rawValue, error.errMsg))
+				})
+			}
+		})
+	}
+
+	private loadLocalImageData(path : string) : Data | null {
+		return UTSiOS.try(Data(contentsOf = new URL(fileURLWithPath = path)), '?')
+	}
+
+	private getByteLength(value : string) : Int {
+		const data = value.data(using = String.Encoding.utf8)
+		return data == null ? Int(value.length) : Int(data!.count)
+	}
+	private createThumbDataFromData(imageData : Data) : Data | null {
+		const image = new UIImage(data = imageData)
+		if (image == null) {
+			return imageData
+		}
+		const thumbData = this.compressThumbData(image!, imageData)
+		return thumbData ?? imageData
+	}
+
+	private compressThumbData(image : UIImage, fallbackData : Data) : Data | null {
+		if (fallbackData.count <= THUMB_MAX_BYTES) {
+			return fallbackData
+		}
+
+		let fpersent : CGFloat = CGFloat(THUMB_MAX_BYTES) / CGFloat(fallbackData.count)
+		let resizedImage = this.resizeImageByPercent(image, fpersent)
+		let initialImage = resizedImage ?? image
+		const qualityLevels = new Array<CGFloat>()
+		qualityLevels.push(0.5)
+		qualityLevels.push(0.4)
+		qualityLevels.push(0.3)
+		qualityLevels.push(0.2)
+		qualityLevels.push(0.1)
+		let thumbData = this.compressThumbImageUntilLimit(initialImage, qualityLevels)
+		return thumbData
+	}
+
+	private compressImageWithQuality(image : UIImage, quality : CGFloat) : Data | null {
+		return image.jpegData(compressionQuality = quality)
+	}
+
+	private compressThumbImageUntilLimit(image : UIImage, qualityLevels : Array<CGFloat>) : Data | null {
+		let workingImage = image
+		let bestData : Data | null = null
+		for (item in qualityLevels) {
+			const data = this.compressImageWithQuality(workingImage, item)
+			if (data == null) {
+				continue
+			}
+			if (bestData == null || data!.count < bestData!.count) {
+				bestData = data
+			}
+			if (data!.count <= THUMB_MAX_BYTES) {
+				return data
+			}
+		}
+
+		let resizeCount = 0
+		while (resizeCount < 8) {
+			const resizedImage = this.resizeImage(workingImage, 0.8)
+			if (resizedImage == null) {
+				break
+			}
+			workingImage = resizedImage!
+			resizeCount = resizeCount + 1
+			for (item in qualityLevels) {
+				const data = this.compressImageWithQuality(workingImage, item)
+				if (data == null) {
+					continue
+				}
+				if (bestData == null || data!.count < bestData!.count) {
+					bestData = data
+				}
+				if (data!.count <= THUMB_MAX_BYTES) {
+					return data
+				}
+			}
+		}
+
+		return bestData
+	}
+
+	private resizeImageByPercent(image : UIImage, percent : CGFloat) : UIImage | null {
+		let width = image.size.width * percent
+		let height = image.size.height * percent
+		let targetSize = this.normalizeThumbSize(width, height)
+		return this.resizeImageToSize(image, targetSize.width, targetSize.height)
+	}
+
+	private normalizeThumbSize(width : CGFloat, height : CGFloat) : CGSize {
+		let targetWidth = width
+		let targetHeight = height
+		const minSize : CGFloat = 128.0
+		if (targetWidth < 128 || targetHeight < 128) {
+			if (targetHeight > targetWidth) {
+				targetHeight = (minSize / targetWidth) * targetHeight
+				targetWidth = minSize
+			} else if (targetHeight < targetWidth) {
+				targetWidth = (minSize / targetHeight) * targetWidth
+				targetHeight = minSize
+			}
+		}
+		return CGSize(width = targetWidth, height = targetHeight)
+	}
+
+	private resizeImage(image : UIImage, ratio : CGFloat) : UIImage | null {
+		const width = image.size.width * ratio
+		const height = image.size.height * ratio
+		if (width < 1 || height < 1) {
+			return image
+		}
+		return this.resizeImageToSize(image, width, height)
+	}
+
+	private resizeImageToSize(image : UIImage, width : CGFloat, height : CGFloat) : UIImage | null {
+		const size = CGSize(width = width, height = height)
+		UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+		image.draw(in = CGRect(x = 0, y = 0, width = width, height = height))
+		const resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		return resizedImage
+	}
+
+
+}

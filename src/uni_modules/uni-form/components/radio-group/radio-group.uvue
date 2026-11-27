@@ -24,19 +24,11 @@
     value : string
   }
 
-  // #ifdef WEB
-  class UniCustomEvent<T> {
-    detail : T
-    constructor(type : string, detail : T) {
-      // this.type = type
-      this.detail = detail
-    }
-  }
-  // #endif
-
   class UniRadioGroupChangeEvent extends UniCustomEvent<UniRadioGroupChangeEventDetail> {
     constructor(value : string) {
-      super('change', { value } as UniRadioGroupChangeEventDetail)
+      super('change', {
+        detail: { value } as UniRadioGroupChangeEventDetail
+      } as UniCustomEventOptions<UniRadioGroupChangeEventDetail>)
     }
   }
 

@@ -1,0 +1,116 @@
+import { Bundle, NSUserActivity, ProcessInfo, Thread, URL } from 'Foundation'
+import { DispatchQueue } from 'Dispatch'
+import { ShareWeixinError, ShareWeixinErrorCode } from '../unierror.uts'
+import { shareError } from './share-error.uts'
+import { ShareSession, ShareSessionHost } from './share-session.uts'
+import { SharePayload } from './share-payload.uts'
+
+function enqueueMain(task : () => void) {
+	DispatchQueue.main.async(execute = task)
+}
+
+function runOnMain(task : () => void) {
+	if (Thread.isMainThread) task()
+	else enqueueMain(task)
+}
+
+export class WeixinBridge implements WXApiDelegate {
+	static instance = new WeixinBridge()
+	private session : ShareSession
+	private payload : SharePayload
+	private registered : boolean = false
+
+	constructor() {
+		const host : ShareSessionHost = {
+			now: () : number => Number(ProcessInfo.processInfo.systemUptime * 1000),
+			setTimer: (delay : number, task : () => void) : number => {
+				return setTimeout(() => { runOnMain(task) }, delay)
+			},
+			clearTimer: (id : number) => { clearTimeout(id) },
+			dispatch: (task : () => void) => { enqueueMain(task) }
+		}
+		this.session = new ShareSession(host)
+		this.payload = new SharePayload((task : () => void) => { runOnMain(task) })
+	}
+
+	registerApp() : boolean {
+		const appId = this.applicationSetting('appid')
+		const link = this.applicationSetting('universalLink')
+		if (appId == null || appId!.length == 0 || link == null || link!.length == 0) return false
+		this.registered = WXApi.registerApp(appId!, universalLink = link!)
+		return this.registered
+	}
+
+	isWXAppInstalled() : boolean {
+		return WXApi.isWXAppInstalled()
+	}
+
+	share(options : ShareOptions) {
+		runOnMain(() => { this.startShare(options) })
+	}
+
+	private startShare(options : ShareOptions) {
+		const validation = this.validate(options)
+		if (validation != null) {
+			this.session.reject(options, validation!)
+			return
+		}
+		const id = this.session.begin(options)
+		if (id == null) return
+		this.payload.prepare(options, () : boolean => this.session.canPrepare(id!), (request : SendMessageToWXReq) => {
+			if (!this.session.startSubmitting(id!)) return
+			WXApi.send(request, completion = (accepted : boolean) => {
+				runOnMain(() => { this.session.onSubmitted(id!, accepted) })
+			})
+		}, (error : ShareWeixinError) => {
+			this.session.failPreparation(id!, error)
+		})
+	}
+
+	private validate(options : ShareOptions) : ShareWeixinError | null {
+		if (!this.isWXAppInstalled()) return shareError(ShareWeixinErrorCode.WEI_XIN_APP_MAYBE_NOT_INSTALL.rawValue)
+		const appId = this.applicationSetting('appid')
+		if (appId == null || appId!.length == 0) return shareError(ShareWeixinErrorCode.APP_ID_NOT_FOUND.rawValue)
+		const link = this.applicationSetting('universalLink')
+		if (link == null || link!.length == 0) return shareError(ShareWeixinErrorCode.PARAMETERS_INVALID.rawValue, '未配置 universalLink')
+		const error = this.payload.validate(options)
+		if (error != null) return error
+		if (!this.registered && !this.registerApp()) return shareError(ShareWeixinErrorCode.SEND_REQUEST_FAILED.rawValue, '微信 SDK 注册失败')
+		return null
+	}
+
+	handleOpen(url : URL) : boolean {
+		// 链接到达或被接收不代表分享结果，不能因此取消截止时间。
+		return WXApi.handleOpen(url, delegate = this)
+	}
+
+	handleOpenUniversalLink(activity : NSUserActivity | null) : boolean {
+		if (activity == null) return false
+		return WXApi.handleOpenUniversalLink(activity!, delegate = this)
+	}
+
+	onBackground() {
+		runOnMain(() => { this.session.onBackground() })
+	}
+
+	onForeground() {
+		// 必须在 onShow 触发的新分享进入 begin() 前记录返回状态。
+		runOnMain(() => { this.session.onForeground() })
+	}
+
+	onResp(response : BaseResp) {
+		// 登录或支付响应不能取消或结束分享请求。
+		if (!(response instanceof SendMessageToWXResp)) return
+		const code = Int(response.errCode)
+		const message = response.errStr ?? ''
+		runOnMain(() => { this.session.onShareResponse(code, message) })
+	}
+
+	private applicationSetting(key : string) : string | null {
+		const info = Bundle.main.infoDictionary
+		if (info == null) return null
+		const wechat = info!['WeChat'] as Map<string, any> | null
+		if (wechat == null) return null
+		return wechat![key] as string | null
+	}
+}

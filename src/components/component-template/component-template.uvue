@@ -83,7 +83,7 @@
       class="component-template-field" :class="index == properties.length - 1 ? 'component-template-field-last' : ''">
       <text v-if="description(attribute.description) != ''" class="uni-h4">{{ description(attribute.description) }}</text>
       <text v-if="unsupportedOf(attribute) != ''" class="uni-comment">不支持的平台：{{ unsupportedOf(attribute) }}</text>
-      <form-item :type="typeOf(attribute)" :control-id="id(attribute.name)" :label="attribute.name"
+      <form-item :class="id(attribute.name + '-form-item')" :type="typeOf(attribute)" :control-id="id(attribute.name)" :label="attribute.name"
         :model-value="valueOf(attribute)" :options="optionsOf(attribute)" :min="controlOf(attribute).min"
         :max="controlOf(attribute).max" :step="controlOf(attribute).step" :live="controlOf(attribute).live"
         @update:modelValue="updateValue(attribute.name, $event)" />

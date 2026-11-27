@@ -90,6 +90,44 @@ function onRangeChange(value : any) {
 - 两个日历的年月互不联动，可以各自翻月；切换月份不会改变已选区间。
 - `change` 只在开始与结束日期同时存在时触发，参数为 `{ start, end }`；选完结束日期后自动关闭。开启 `confirm` 后改为点击确定才提交并关闭。
 
+## 返回值类型
+
+`returnType` 控制 `v-model`、`update` 事件与 `change` 事件中的日期值格式：
+
+- `string`（默认）：返回 `YYYY-MM-DD` 字符串。
+- `timestamp`：返回当天零点的毫秒时间戳。
+
+```html
+<uni-calendar-picker
+  v-model="selectedTimestamp"
+  returnType="timestamp"
+  placeholder="请选择日期"
+  @change="onChange" />
+```
+
+```ts
+const selectedTimestamp = ref(0)
+
+function onChange(value : any) {
+  console.log('选中时间戳：', value as number)
+}
+```
+
+组件传入值同时支持 `YYYY-MM-DD` 字符串和毫秒时间戳；清空时始终返回空字符串。
+
+## 范围分隔文字
+
+范围模式下触发区默认按语言自动适配首尾日期分隔文字（简体/繁体中文为 `至`、英文为 `to`、法文为 `à`、拉丁文为 `ad`，其余语言回退英文），可通过 `rangeSeparator` 自定义分隔文字，并通过 `range-separator-class` 定制分隔文字的样式。
+
+```html
+<uni-calendar-picker
+  range
+  v-model:range-start="rangeStart"
+  v-model:range-end="rangeEnd"
+  range-separator="至"
+  range-separator-class="my-range-separator" />
+```
+
 ## 确认模式
 
 `confirm` 为 `true` 时弹层不会在选择后立即关闭，适合需要"预览 + 确定"两步操作的场景：
@@ -180,7 +218,11 @@ function onRangeChange(value : any) {
 
 | 区域 | 外部样式类 |
 | --- | --- |
-| 触发区（含触发文字与箭头容器） | `input-class` |
+| 触发区（含触发文字与箭头容器） | `field-class` |
+| 触发区结果文字 | `result-text-class` |
+| 触发区占位文字 | `placeholder-class` |
+| 触发区右侧箭头 | `arrow-class` |
+| 范围首尾日期分隔文字 | `range-separator-class` |
 | 弹层面板 | `pop-class` |
 | 遮罩 | `mask-class` |
 | 关闭按钮（确认模式下为取消文字） | `cancel-class` |

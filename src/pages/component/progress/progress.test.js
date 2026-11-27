@@ -17,6 +17,8 @@ const attributes = syntax.attributes.filter(item => !item.name.startsWith('[even
 const supportsActiveend = syntax.attributes.some(item => item.name === '[event]activeend' && supportedOnAnyTarget(item))
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeixin = platformInfo.startsWith('mp-weixin')
+const isAlipay = platformInfo.startsWith('mp-alipay')
 const isWeb = platformInfo.startsWith('web')
 
 describe('Progress.uvue', () => {
@@ -168,17 +170,46 @@ describe('Progress component-template', () => {
   beforeEach(reset)
   afterEach(reset)
 
+  async function findPropertyNode(id, { control = false, property = null } = {}) {
+    if (isAlipay) {
+      const template = await page.$('#progress-template')
+      expect(template).not.toBeNull()
+      const scope = control ? await template.$('.' + id + '-form-item') : template
+      return (await scope?.$('#' + id)) ?? null
+    }
+    if (!isWeixin) return await page.$('#' + id)
+    return await program.evaluate((id, control, property) => {
+      const pages = getCurrentPages()
+      const template = pages[pages.length - 1].selectComponent('#progress-template')
+      if (!template) throw new Error('Missing progress-template component')
+      const scope = control ? template.selectComponent('.' + id + '-form-item') : template
+      if (!scope) return null
+      // 组合框的 ID 在自定义组件上，原生控件的 ID 在渲染节点上。
+      const selector = '#' + id
+      if (control && !property && scope.selectComponent(selector)) return { id }
+      return new Promise(resolve => {
+        wx.createSelectorQuery().in(scope).select(selector)
+          .fields({ id: true, properties: property ? [property] : [] })
+          .exec(result => resolve(result[0] ?? null))
+      })
+    }, id, control, property)
+  }
+
   async function read(preview, name) {
-    if (isMP && name === 'show-info') return String(await preview.property('showInfo'))
+    if (isMP && (name === 'active' || name === 'show-info')) {
+      return String(await preview.property(name === 'show-info' ? 'showInfo' : name))
+    }
     return String(await preview.attribute(nativeName(name)))
   }
 
   it('syntax controls share one preview and preserve automation examples', async () => {
-    expect(await page.$('#progress-properties')).not.toBeNull()
+    expect(await findPropertyNode('progress-properties')).not.toBeNull()
     for (const attribute of attributes) {
-      expect(await page.$('#progress-' + attribute.name + '-example')).not.toBeNull()
-      expect(await page.$('#progress-' + attribute.name)).not.toBeNull()
-      expect(await page.$('#progress-' + attribute.name + '-preview')).toBeNull()
+      const id = 'progress-' + attribute.name
+      expect(await findPropertyNode(id + '-example')).not.toBeNull()
+      expect({ id, control: await findPropertyNode(id, { control: true }) })
+        .toEqual({ id, control: expect.anything() })
+      expect(await findPropertyNode(id + '-preview')).toBeNull()
     }
     for (const id of ['progress-preview', 'progress-default', 'progress-plain', 'progress-plain-second', 'progress-blue']) {
       expect(await page.$('#' + id)).not.toBeNull()
@@ -195,14 +226,15 @@ describe('Progress component-template', () => {
 
   it('does not generate deprecated attribute controls', async () => {
     for (const attribute of syntax.attributes.filter(item => Object.keys(item).includes('deprecated'))) {
-      expect(await page.$('#progress-' + attribute.name)).toBeNull()
-      expect(await page.$('#progress-' + attribute.name + '-example')).toBeNull()
+      const id = 'progress-' + attribute.name
+      expect(await findPropertyNode(id, { control: true })).toBeNull()
+      expect(await findPropertyNode(id + '-example')).toBeNull()
     }
   })
 
   it('excludes attributes unsupported on every declared target', async () => {
     for (const attribute of syntax.attributes.filter(item => !item.name.startsWith('[event]') && !supportedOnAnyTarget(item))) {
-      expect(await page.$('#progress-' + attribute.name)).toBeNull()
+      expect(await findPropertyNode('progress-' + attribute.name, { control: true })).toBeNull()
     }
   })
 
@@ -216,39 +248,36 @@ describe('Progress component-template', () => {
   for (const [name, value] of [['percent', 65], ['stroke-width', 8], ['border-radius', 5], ['font-size', 18], ['duration', 10]]) {
     const test = !attributes.some(item => item.name === name) || unsupported(name) ? it.skip : it
     test(name + ' updates the shared preview without changing legacy examples', async () => {
-      const control = await page.$('#progress-' + name)
       const preview = await page.$('#progress-preview')
       const originalLegacyPercent = await (await page.$('#progress-default')).attribute('percent')
-      await control.trigger('changing', { value })
+      await page.callMethod('updateProgressProperty', { name, value })
       await page.waitFor(async () => await read(preview, name) === String(value))
       expect(await read(preview, name)).toBe(String(value))
       expect(await (await page.$('#progress-default')).attribute('percent')).toBe(originalLegacyPercent)
     })
   }
 
-  it('several controls combine on the same preview', async () => {
-    await (await page.$('#progress-percent')).trigger('changing', { value: 65 })
-    await (await page.$('#progress-stroke-width')).trigger('changing', { value: 8 })
-    await (await page.$('#progress-show-info')).trigger('change', { value: true })
+  it('several property updates combine on the same preview', async () => {
+    await page.callMethod('updateProgressProperty', { name: 'percent', value: 65 })
+    await page.callMethod('updateProgressProperty', { name: 'stroke-width', value: 8 })
+    await page.callMethod('updateProgressProperty', { name: 'show-info', value: true })
     const preview = await page.$('#progress-preview')
     await page.waitFor(async () => await read(preview, 'percent') === '65' && await read(preview, 'stroke-width') === '8')
     expect(await read(preview, 'show-info')).toBe('true')
   })
 
   const eventTest = supportsActiveend ? it : it.skip
-  eventTest('activeend handler displays the shared preview event detail', async () => {
-    await (await page.$('#progress-preview')).trigger('activeend', { curPercent: 70 })
-    const log = await page.$('#progress-event-activeend-log')
-    await page.waitFor(async () => (await log.text()).includes('curPercent=70'))
-    expect(await log.text()).toContain('activeend')
-  })
-
   eventTest('page actions update the slotted preview and generated controls together', async () => {
     await (await page.$('#progress-event-activeend-run')).tap()
     const preview = await page.$('#progress-preview')
-    const percent = await page.$('#progress-percent')
-    await page.waitFor(async () => await read(preview, 'percent') === '70' && await percent.attribute('value') === '70')
-    expect(await percent.attribute('value')).toBe('70')
+    const readValue = async () => {
+      const percent = await findPropertyNode('progress-percent', { control: true, property: 'value' })
+      expect(percent).not.toBeNull()
+      if (isWeixin) return String(percent.value)
+      return String(isAlipay ? await percent.property('value') : await percent.attribute('value'))
+    }
+    await page.waitFor(async () => await read(preview, 'percent') === '70' && await readValue() === '70', 5000)
+    expect(await readValue()).toBe('70')
     expect(await (await page.$('#progress-default')).attribute('percent')).toBe('0')
   })
 

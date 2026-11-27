@@ -509,6 +509,9 @@
 	// #endif
 
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID
+	const isDarkTheme = useFormThemeIsDark()
+	// #endif
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -518,9 +521,25 @@
 		return typeof value == 'string' ? value : ''
 	})
 	// #endif
-	// #ifdef APP-ANDROID || APP-IOS
-	watch(selectionColor, (value: string) => {
+	// #ifdef APP-ANDROID
+	const resolvedSelectionColor = computed(() : string => {
+		return selectionColor.value || (isDarkTheme.value ? '#14324e' : '#c9d8ea')
+	})
+	watch(resolvedSelectionColor, (value : string) => {
 		inputView?.updateSelectionColor(value)
+	})
+	// #endif
+	// #ifdef APP-IOS
+	watch(selectionColor, (value : string) => {
+		inputView?.updateSelectionColor(value)
+	})
+	// #endif
+	// #ifdef APP-ANDROID
+	const selectionHandleColor = computed(() : string => {
+		return isDarkTheme.value ? '#146ee0' : '#156fdf'
+	})
+	watch(selectionHandleColor, (value : string) => {
+		inputView?.updateSelectionHandleColor(value)
 	})
 	// #endif
 
@@ -539,7 +558,8 @@
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
 		inputView?.updateColor(valueColor.value)
-		inputView?.updateSelectionColor(selectionColor.value)
+		inputView?.updateSelectionColor(resolvedSelectionColor.value)
+		inputView?.updateSelectionHandleColor(selectionHandleColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))
@@ -705,7 +725,6 @@
 		inputView?.updateCursorSpacing(newValue)
 	})
 	// 光标色：优先 cursor-color 属性，其次 CSS caret-color，都未设置时使用主题默认色
-	const isDarkTheme = useFormThemeIsDark()
 	const resolvedCursorColor = computed(() : string => {
 		if (props.cursorColor != '') {
 			return props.cursorColor

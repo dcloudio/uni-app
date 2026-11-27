@@ -124,11 +124,11 @@
     inputClickCount: 0
   })
 
-  function buildCityList() : Array<UTSJSONObject> {
+  function buildCityList() : Array<Record<string, any>> {
     const cityNames : Array<string> = ['北京市', '上海市', '广州市', '深圳市', '杭州市', '成都市', '武汉市', '西安市', '南京市', '重庆市']
-    const list : Array<UTSJSONObject> = []
+    const list : Array<Record<string, any>> = []
     cityNames.forEach((name : string, index : number) => {
-      const item : UTSJSONObject = {
+      const item : Record<string, any> = {
         text: name,
         value: `${index + 1}`
       }
@@ -137,18 +137,18 @@
     return list
   }
 
-  function buildClassDataTree() : Array<UTSJSONObject> {
-    const tree : Array<UTSJSONObject> = []
+  function buildClassDataTree() : Array<Record<string, any>> {
+    const tree : Array<Record<string, any>> = []
     for (let i = 1; i <= 10; i++) {
-      const children : Array<UTSJSONObject> = []
+      const children : Array<Record<string, any>> = []
       for (let j = 1; j <= 50; j++) {
-        const child : UTSJSONObject = {
+        const child : Record<string, any> = {
           text: `${i}.${j}班`,
           value: `${i}-${j}`
         }
         children.push(child)
       }
-      const node : UTSJSONObject = {
+      const node : Record<string, any> = {
         text: `${i}年级`,
         value: `${i}-0`,
         children: children
@@ -158,18 +158,18 @@
     return tree
   }
 
-  function buildMappedTree() : Array<UTSJSONObject> {
-    const tree : Array<UTSJSONObject> = []
+  function buildMappedTree() : Array<Record<string, any>> {
+    const tree : Array<Record<string, any>> = []
     for (let i = 1; i <= 3; i++) {
-      const children : Array<UTSJSONObject> = []
+      const children : Array<Record<string, any>> = []
       for (let j = 1; j <= 5; j++) {
-        const child : UTSJSONObject = {
+        const child : Record<string, any> = {
           name: `${i}.${j}班`,
           id: `${i}-${j}`
         }
         children.push(child)
       }
-      const node : UTSJSONObject = {
+      const node : Record<string, any> = {
         name: `${i}年级`,
         id: `${i}-0`,
         children: children
@@ -179,7 +179,7 @@
     return tree
   }
 
-  function nodeText(node : UTSJSONObject) : string {
+  function nodeText(node : Record<string, any>) : string {
     const text = node['text']
     if (text != null) {
       return text as string
@@ -188,7 +188,7 @@
     return name != null ? name as string : ''
   }
 
-  function nodeValue(node : UTSJSONObject) : string {
+  function nodeValue(node : Record<string, any>) : string {
     const value = node['value']
     if (value != null) {
       return value as string
@@ -197,19 +197,19 @@
     return id != null ? id as string : ''
   }
 
-  function formatNodes(nodes : Array<UTSJSONObject>) : string {
+  function formatNodes(nodes : Array<Record<string, any>>) : string {
     if (nodes.length == 0) {
       return '空'
     }
     const parts : Array<string> = []
-    nodes.forEach((node : UTSJSONObject) => {
+    nodes.forEach((node : Record<string, any>) => {
       parts.push(`${nodeText(node)}(${nodeValue(node)})`)
     })
     return parts.join(' / ')
   }
 
   function onnodeclick(e : any) {
-    const node = e as UTSJSONObject
+    const node = e as Record<string, any>
     eventState.lastEvent = 'nodeclick'
     eventState.nodeClick = `${nodeText(node)}(${nodeValue(node)})`
     console.log('nodeclick', node)
@@ -228,7 +228,7 @@
   }
 
   function onchange(e : any) {
-    const nodes = e.detail.value as Array<UTSJSONObject>
+    const nodes = e.detail.value as Array<Record<string, any>>
     eventState.lastEvent = 'change'
     eventState.changeValue = formatNodes(nodes)
     console.log('onchange', nodes)

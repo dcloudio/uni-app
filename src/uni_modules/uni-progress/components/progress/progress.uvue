@@ -206,23 +206,15 @@
     }
   })
 
-  // #ifdef WEB
-  class UniCustomEvent<T> {
-    detail: T
-    constructor(type: string, detail: T) {
-      // this.type = type
-      this.detail = detail
-    }
-  }
-  // #endif
-
   type UniProgressActiveendEventDetail = {
     curPercent: number
   }
 
   class UniProgressActiveendEvent extends UniCustomEvent<UniProgressActiveendEventDetail> {
     constructor(type: string, curPercent: number) {
-      super(type, { curPercent } as UniProgressActiveendEventDetail)
+      super(type, {
+        detail: { curPercent } as UniProgressActiveendEventDetail
+      } as UniCustomEventOptions<UniProgressActiveendEventDetail>)
     }
   }
 

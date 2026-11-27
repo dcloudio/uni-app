@@ -1,0 +1,240 @@
+import { ShareWeixinError, ShareWeixinErrorCode } from '../unierror.uts'
+import { localShareError, shareError } from './share-error.uts'
+
+const PREPARING : Int = 0
+const SUBMITTING : Int = 1
+const WAITING_RESULT : Int = 2
+const INITIAL_FOREGROUND : Int = 0
+const AWAY : Int = 1
+const RETURNED_PENDING : Int = 2
+
+export type ShareSessionPolicy = {
+	prepareTimeout : number
+	submitTimeout : number
+	requestTimeout : number
+}
+
+// 这些时间仅表示本地等待预算，不保证微信会在期限内返回；前台停留不会延长总期限。
+export const SHARE_SESSION_POLICY : ShareSessionPolicy = {
+	prepareTimeout: 30000,
+	submitTimeout: 10000,
+	requestTimeout: 120000
+}
+
+export type ShareSessionHost = {
+	now : () => number
+	setTimer : (delay : number, task : () => void) => number
+	clearTimer : (id : number) => void
+	// 必须入队异步执行，不能原地调用；这样过期恢复可以先接收 B，再通知 A。
+	dispatch : (task : () => void) => void
+}
+
+class ShareRequest {
+	id : Int
+	options : ShareOptions
+	phase : Int = PREPARING
+	hardDeadline : number
+	phaseDeadline : number
+	location : Int = INITIAL_FOREGROUND
+	departedAfterSubmit : boolean = false
+
+	constructor(id : Int, options : ShareOptions, now : number, policy : ShareSessionPolicy) {
+		this.id = id
+		this.options = options
+		this.hardDeadline = now + policy.requestTimeout
+		this.phaseDeadline = now + policy.prepareTimeout
+	}
+}
+
+// 该类统一管理请求准入、终结和业务回调。
+// 所有入口均由 WeixinBridge 或定时器宿主在主队列调用。
+export class ShareSession {
+	private host : ShareSessionHost
+	private policy : ShareSessionPolicy
+	private current : ShareRequest | null = null
+	private sequence : Int = 0
+	private timerId : number = -1
+	private timerGeneration : Int = 0
+	private isForeground : boolean = true
+
+	constructor(host : ShareSessionHost, policy : ShareSessionPolicy = SHARE_SESSION_POLICY) {
+		this.host = host
+		this.policy = policy
+	}
+
+	begin(options : ShareOptions) : Int | null {
+		this.expireIfNeeded()
+		const previous = this.current
+		if (previous != null) {
+			if (this.isForeground && previous!.phase != PREPARING && previous!.location == RETURNED_PENDING) {
+				// 只有明确的新分享意图才结束旧请求，单纯返回前台不会结束等待。
+				// finish() 会延迟派发回调，因此可先接收 B，再允许 A 的回调重入。
+				this.finish(previous!.id, localShareError('已发起新的分享，停止等待上次结果，请在微信中确认'))
+			} else {
+				this.reject(options, localShareError('分享正在准备或提交，请稍后重试'))
+				return null
+			}
+		}
+		this.sequence = this.sequence + 1
+		const request = new ShareRequest(this.sequence, options, this.host.now(), this.policy)
+		this.current = request
+		this.scheduleCheck()
+		return request.id
+	}
+
+	reject(options : ShareOptions, error : ShareWeixinError) {
+		// 被拒绝的调用不持有也不修改正在执行的请求。
+		this.deliver(options, error)
+	}
+
+	canPrepare(id : Int) : boolean {
+		this.expireIfNeeded()
+		const request = this.current
+		return request != null && request!.id == id && request!.phase == PREPARING
+	}
+
+	failPreparation(id : Int, error : ShareWeixinError) {
+		if (this.canPrepare(id)) this.finish(id, error)
+	}
+
+	startSubmitting(id : Int) : boolean {
+		if (!this.canPrepare(id)) return false
+		if (!this.isForeground) {
+			this.finish(id, localShareError('App 已进入后台，请返回前台后重新分享'))
+			return false
+		}
+		const request = this.current!
+		// 调用 SDK 前先更新状态，因为进入后台或 onResp 可能早于发送完成回调。
+		request.phase = SUBMITTING
+		request.phaseDeadline = this.host.now() + this.policy.submitTimeout
+		request.location = INITIAL_FOREGROUND
+		request.departedAfterSubmit = false
+		this.scheduleCheck()
+		return true
+	}
+
+	onSubmitted(id : Int, accepted : boolean) {
+		this.expireIfNeeded()
+		const request = this.current
+		if (request == null || request!.id != id || (request!.phase != SUBMITTING && request!.phase != WAITING_RESULT)) return
+		if (!accepted) {
+			this.finish(id, shareError(ShareWeixinErrorCode.SEND_REQUEST_FAILED.rawValue, '调用微信分享失败'))
+			return
+		}
+		if (request!.phase == WAITING_RESULT) return
+		request!.phase = WAITING_RESULT
+		request!.phaseDeadline = request!.hardDeadline
+		// 保留发送完成回调之前已经记录的离开或返回状态。
+		this.scheduleCheck()
+	}
+
+	onBackground() {
+		this.expireIfNeeded()
+		this.isForeground = false
+		const request = this.current
+		if (request == null || request!.phase == PREPARING) return
+		request!.location = AWAY
+		request!.departedAfterSubmit = true
+		this.scheduleCheck()
+	}
+
+	onForeground() {
+		this.isForeground = true
+		const request = this.current
+		if (request != null && request!.phase != PREPARING && request!.location == AWAY) {
+			request!.location = RETURNED_PENDING
+		}
+		this.expireIfNeeded()
+		this.scheduleCheck()
+	}
+
+	onShareResponse(code : Int, message : string) {
+		// 即使响应早于延迟执行的定时器到达，也必须先按同一截止时间仲裁。
+		this.expireIfNeeded()
+		const request = this.current
+		if (request == null || request!.phase == PREPARING) return
+		// 当前请求尚未在提交后离开 App 时，响应可能属于刚被接替的旧请求。
+		if (!request!.departedAfterSubmit) return
+		// SDK 响应没有 request id，只能尽力交给当前已提交请求；A 被接替或到期后的迟到响应
+		// 无法证明是否属于 B。
+		if (code == 0) {
+			this.finish(request!.id, null)
+		} else {
+			let text = message.length > 0 ? message : '微信返回未知错误'
+			if (code == -2) {
+				text = '用户取消分享'
+			} else if (code == -4) {
+				text = '分享被拒绝'
+			}
+			this.finish(request!.id, localShareError(text))
+		}
+	}
+
+	expireIfNeeded() {
+		const request = this.current
+		if (request == null || this.host.now() < this.nextDeadline(request!)) return
+		if (request!.phase == PREPARING) {
+			this.finish(request!.id, localShareError('分享内容准备超时'))
+		} else if (request!.phase == SUBMITTING) {
+			// send() 已经调用，缺少发送完成回调不能证明失败；继续保留可能到达的微信响应至总期限。
+			request!.phase = WAITING_RESULT
+			request!.phaseDeadline = request!.hardDeadline
+		} else {
+			// 请求交给微信后，到期只结束本地回调保留，并不能证明分享失败，因此不派发业务回调。
+			this.releaseSilently(request!.id)
+		}
+	}
+
+	private nextDeadline(request : ShareRequest) : number {
+		return Math.min(request.hardDeadline, request.phaseDeadline)
+	}
+
+	private scheduleCheck() {
+		this.cancelCheck()
+		const request = this.current
+		if (request == null) return
+		const id = request!.id
+		const generation = this.timerGeneration
+		const delay = Math.max(1, this.nextDeadline(request!) - this.host.now())
+		this.timerId = this.host.setTimer(delay, () => {
+			if (generation != this.timerGeneration || this.current == null || this.current!.id != id) return
+			this.timerId = -1
+			this.expireIfNeeded()
+			this.scheduleCheck()
+		})
+	}
+
+	private cancelCheck() {
+		this.timerGeneration = this.timerGeneration + 1
+		if (this.timerId != -1) this.host.clearTimer(this.timerId)
+		this.timerId = -1
+	}
+
+	private finish(id : Int, error : ShareWeixinError | null) {
+		const request = this.current
+		if (request == null || request!.id != id) return
+		this.current = null
+		this.cancelCheck()
+		this.deliver(request!.options, error)
+	}
+
+	private releaseSilently(id : Int) {
+		const request = this.current
+		if (request == null || request!.id != id) return
+		this.current = null
+		this.cancelCheck()
+	}
+
+	private deliver(options : ShareOptions, error : ShareWeixinError | null) {
+		this.host.dispatch(() => {
+			if (error != null) {
+				options.fail?.(error!)
+				options.complete?.(error!)
+			} else {
+				const result : ShareSuccess = {}
+				options.success?.(result)
+				options.complete?.(result)
+			}
+		})
+	}
+}

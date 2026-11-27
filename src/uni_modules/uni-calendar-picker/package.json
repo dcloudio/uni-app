@@ -1,7 +1,7 @@
 {
   "id": "uni-calendar-picker",
   "displayName": "uni-calendar-picker 日期选择",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "日期选择，包括单日选择和范围选择",
   "isExt": true,
   "extUrl": "https://ext.dcloud.net.cn/plugin?name=uni-calendar-picker",

@@ -7,6 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 describe('API-saveImageToPhotosAlbum', () => {
   if (isIOS || isWeb || isMP || isAppWebView) {
@@ -17,7 +18,7 @@ describe('API-saveImageToPhotosAlbum', () => {
   }
 
   // 系统弹窗「允许」按钮坐标（像素=逻辑坐标，与 getWindowInfo 返回值的坐标系一致）
-  const allowSaveButton = { x: 455, y: 710 }
+  const allowSaveButton = isPad ? { x: 455, y: 710 } : { x: 305, y: 555 }
 
   let page;
   beforeAll(async () => {

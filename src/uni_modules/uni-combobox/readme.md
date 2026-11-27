@@ -74,34 +74,30 @@ const value = ref('')
   v-model="value"
   field-class="demo-field"
   arrow-class="demo-arrow"
-  options-view-class="demo-options-view"
-  options-content-class="demo-options-content"
+  dropdown-class="demo-dropdown"
   option-text-class="demo-option-text"
   option-text-highlight-class="demo-option-highlight"
-  option-row-highlight-class="demo-option-row-highlight"
-  result-text-class="demo-result-text"
+  value-class="demo-result-text"
   placeholder-class="demo-placeholder-text"
 />
 ```
 
 - `field-class`：非弹出区域（选择框本体）。
 - `arrow-class`：右侧箭头。
-- `options-view-class`：候选浮层外层。
-- `options-content-class`：候选浮层内容区。
-- `option-text-class`：候选项文字。
-- `option-text-highlight-class`：高亮候选项文字。
-- `option-row-highlight-class`：高亮候选项整行。
-- `result-text-class`：单选模式的结果文字和占位文字。
+- `dropdown-class`：下拉浮层（滚动容器）。
+- `option-text-class`：候选项文字；也应用于空列表提示。
+- `option-text-highlight-class`：同时作用于高亮选项行和文字，可设置文字颜色、字重和整行背景；文字节点保持透明背景，避免重复叠加背景色。
+- `value-class`：单选模式的结果文字和占位文字。
 - `placeholder-class`：仅在单选模式未选中任何值时应用于占位文字。使用 `input` 插槽时，在插槽内的输入组件上设置 `placeholder-class`。
 
-浮层的定位、最大高度等布局由组件内部控制，外部样式类不应覆盖这些属性。
+候选项保留行容器，文字超出时省略，选中对勾独立显示在右侧。浮层的定位、最大高度以及候选项的布局由组件内部控制，外部样式类不应覆盖这些属性。
 
 ## 事件与组件方法
 
-`update:modelValue` 在值更新时触发，`selectchange` 仅在从候选项中选中时触发。
+`update:modelValue` 在值更新时触发，`selectChange` 仅在从候选项中选中时触发。
 
 ```html
-<uni-combobox ref="comboboxRef" :options="options" v-model="value" @selectchange="onSelectChange" />
+<uni-combobox ref="comboboxRef" :options="options" v-model="value" @selectChange="onSelectChange" />
 <button @click="open">打开候选</button>
 <button @click="close">关闭候选</button>
 <button @click="setValue">设置值并过滤</button>

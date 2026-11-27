@@ -19,6 +19,11 @@
 	</view>
 
 	<form @submit="onFormSubmit" @reset="onFormReset">
+		<view class="flex-row">
+			<button class="btn btn-submit" form-type="submit" type="primary" size="mini">Submit</button>
+			<button class="btn btn-reset" type="default" form-type="reset" size="mini">Reset</button>
+			<button class="btn btn-reset" type="default" size="mini" plain>plain</button>
+		</view>
 		<view class="uni-form-item">
 			<text class="title">姓名</text>
 			<input class="form-input" name="nickname" v-model="data.nickname" placeholder="请输入姓名" :maxlength="-1"
@@ -97,25 +102,22 @@
 		</view>
 		<view class="uni-form-item">
 			<text class="title">时间</text>
-			<view class="picker-view-wrap" :class="isDisabled ? 'picker-view-wrap--disabled' : ''">
+			<view class="picker-view-wrap">
 				<picker-view class="picker-view" name="time" :value="data.pickerViewTime" indicator-style="height:50px">
 					<picker-view-column>
 						<view class="picker-view-item" v-for="(item, index) in data.hours" :key="index">
-							<text class="picker-view-text">{{ item }}时</text>
+							<text>{{ item }}时</text>
 						</view>
 					</picker-view-column>
 					<picker-view-column>
 						<view class="picker-view-item" v-for="(item, index) in data.minutes" :key="index">
-							<text class="picker-view-text">{{ item }}分</text>
+							<text>{{ item }}分</text>
 						</view>
 					</picker-view-column>
 				</picker-view>
 			</view>
 		</view>
-		<view class="flex-row">
-			<button class="btn btn-submit" form-type="submit" type="primary" size="mini">Submit</button>
-			<button class="btn btn-reset" type="default" form-type="reset" size="mini">Reset</button>
-		</view>
+
 	</form>
 
 	<uni-forms-item label="number-box">
@@ -570,12 +572,6 @@
 		flex: 1;
 		min-width: 0;
 		padding: 8px;
-		/* background-color: #ffffff;
-		border-width: 1px;
-		border-style: solid;
-		border-color: #e5e5e5;
-		border-radius: 5px;
-		box-sizing: border-box; */
 	}
 
 	.picker-value {
@@ -583,25 +579,9 @@
 		font-size: 14px;
 	}
 
-	.picker-view-wrap {
-		width: 100%;
-		height: 180px;
-		/* background-color: #ffffff;
-		border-width: 1px;
-		border-style: solid;
-		border-color: #e5e5e5;
-		border-radius: 5px; */
-		overflow: hidden;
-		/* box-sizing: border-box; */
-	}
-
-	.picker-view-wrap--disabled {
-		/* opacity: 0.5; */
-	}
-
 	.picker-view {
 		width: 100%;
-		height: 180px;
+		height: 250px;
 	}
 
 	.picker-view-item {
@@ -613,10 +593,6 @@
 		justify-content: center;
 	}
 
-	.picker-view-text {
-		font-size: 14px;
-		/* color: #333333; */
-	}
 
 	.btn {
 		margin-right: 8px;

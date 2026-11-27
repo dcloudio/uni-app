@@ -41,23 +41,15 @@
     }
   })
 
-    // #ifdef WEB
-    class UniCustomEvent<T> {
-      detail : T
-      constructor(type : string, detail : T) {
-        // this.type = type
-        this.detail = detail
-      }
-    }
-    // #endif
-
   type UniCheckboxGroupChangeEventDetail = {
     value : Array<string>
   }
 
   class UniCheckboxGroupChangeEvent extends UniCustomEvent<UniCheckboxGroupChangeEventDetail> {
     constructor(value : Array<string>) {
-      super('change', { value } as UniCheckboxGroupChangeEventDetail)
+      super('change', {
+        detail: { value } as UniCheckboxGroupChangeEventDetail
+      } as UniCustomEventOptions<UniCheckboxGroupChangeEventDetail>)
     }
   }
 

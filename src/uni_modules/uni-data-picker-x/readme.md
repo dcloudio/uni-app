@@ -211,12 +211,12 @@
   const nodeClickValue = ref('暂无')
 
   function onChange(e: any) {
-    const nodes = e.detail.value as Array<UTSJSONObject>
+    const nodes = e.detail.value as Array<Record<string, any>>
     lastEvent.value = 'change'
-    changeValue.value = nodes.map((node: UTSJSONObject) => `${node['text']}(${node['value']})`).join(' / ')
+    changeValue.value = nodes.map((node: Record<string, any>) => `${node['text']}(${node['value']})`).join(' / ')
   }
 
-  function onNodeClick(node: UTSJSONObject) {
+  function onNodeClick(node: Record<string, any>) {
     lastEvent.value = 'nodeclick'
     nodeClickValue.value = `${node['text']}(${node['value']})`
   }

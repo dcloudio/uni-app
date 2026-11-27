@@ -38,7 +38,7 @@
 					v-model="comboboxForm.city"
 					:options="cityOptions"
 					field-class="city-combobox"
-					result-text-class="city-combobox-value"
+					value-class="city-combobox-value"
 					placeholder="请选择城市"
 				/>
 			</uni-forms-item>

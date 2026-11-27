@@ -841,7 +841,7 @@
 
   const onpickerviewchange = (e : any) => {
     dataPicker.selectedPaths = e.detail.value
-    const nodes = e.detail.value as Array<UTSJSONObject>
+    const nodes = e.detail.value as Array<Record<string, any>>
     if (nodes.length > 0) {
       emit('update:modelValue', nodes[nodes.length - 1][dataPicker.mappingValueName])
     }

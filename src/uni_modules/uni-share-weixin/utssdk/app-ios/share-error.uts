@@ -1,0 +1,13 @@
+import { ShareWeixinError, ShareWeixinErrorCode, SHARE_WEIXIN_UNI_ERROR_CODES } from '../unierror.uts'
+
+// 保持公开数值错误码和错误对象结构不变。
+export function shareError(code : Int, message : string | null = null) : ShareWeixinError {
+	const errorCode = code as ShareErrorCode
+	let text = SHARE_WEIXIN_UNI_ERROR_CODES.get(errorCode) ?? '微信分享错误'
+	if (message != null) text = text + ', ' + message!
+	return new ShareWeixinError(errorCode, text)
+}
+
+export function localShareError(message : string) : ShareWeixinError {
+	return shareError(ShareWeixinErrorCode.TYPE_SHARE_FAIL.rawValue, message)
+}

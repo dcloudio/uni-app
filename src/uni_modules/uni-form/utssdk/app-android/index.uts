@@ -629,6 +629,29 @@ function applyAndroidCursorDrawable(editText: EditText, cursorDrawable: Gradient
 	}
 }
 
+function applyAndroidSelectionHandleColor(editText: EditText, color: Int) {
+	if (Build.VERSION.SDK_INT < 29) return
+	try {
+		const centerHandle = editText.getTextSelectHandle()
+		if (centerHandle != null) {
+			centerHandle.mutate().setTint(color)
+			editText.setTextSelectHandle(centerHandle)
+		}
+		const leftHandle = editText.getTextSelectHandleLeft()
+		if (leftHandle != null) {
+			leftHandle.mutate().setTint(color)
+			editText.setTextSelectHandleLeft(leftHandle)
+		}
+		const rightHandle = editText.getTextSelectHandleRight()
+		if (rightHandle != null) {
+			rightHandle.mutate().setTint(color)
+			editText.setTextSelectHandleRight(rightHandle)
+		}
+	} catch (e: Exception) {
+		// Keep the system handle when the platform does not expose a tintable drawable.
+	}
+}
+
 
 /**
  * 键盘上推时"让出空间"的过渡时长（毫秒）。
@@ -2374,6 +2397,14 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.applyCursorColorIfNeeded()
 	}
 
+	updateSelectionHandleColor(value: string) {
+		if (this.editText == null) return
+		const color = parseAndroidColorValue(value)
+		if (color != null) {
+			applyAndroidSelectionHandleColor(this.editText!, color)
+		}
+	}
+
 	updateSelectionColor(value: string) {
 		this.editText?.setHighlightColor(parseAndroidColorValue(value) ?? this.defaultSelectionColor)
 	}
@@ -3557,6 +3588,14 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.cursorColorValue = value
 		if (this.editText == null) return
 		this.applyCursorColorIfNeeded()
+	}
+
+	updateSelectionHandleColor(value: string) {
+		if (this.editText == null) return
+		const color = parseAndroidColorValue(value)
+		if (color != null) {
+			applyAndroidSelectionHandleColor(this.editText!, color)
+		}
 	}
 
 	updateSelectionColor(value: string) {

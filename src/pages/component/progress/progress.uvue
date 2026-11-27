@@ -103,11 +103,11 @@
     data.curPercent = e.detail.curPercent
   }
 
-  defineExpose({ data, getEventCallbackNum, setEventCallbackNumTest, setProgress, clearProgress })
+  defineExpose({ data, getEventCallbackNum, setEventCallbackNumTest, setProgress, clearProgress, updateProgressProperty })
 </script>
 
 <template>
-  <component-template title="progress 属性与事件示例" :syntax="syntax" :model-value="progressProps"
+  <component-template id="progress-template" title="progress 属性与事件示例" :syntax="syntax" :model-value="progressProps"
     :controls="controls" :color-options="colorOptions" control-prefix="progress" @change="updateProgressProperty">
     <template #preview>
       <view class="uni-card">

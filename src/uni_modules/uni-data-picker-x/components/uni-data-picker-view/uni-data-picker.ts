@@ -18,7 +18,7 @@ export type SelectedItemType = {
 }
 
 export type GetCommandOptions = {
-  collection ?: UTSJSONObject,
+  collection ?: Record<string, any>,
   field ?: string,
   orderby ?: string,
   where ?: any,
@@ -27,7 +27,7 @@ export type GetCommandOptions = {
   pageSize ?: number,
   getCount ?: boolean,
   getTree ?: any,
-  getTreePath ?: UTSJSONObject,
+  getTreePath ?: Record<string, any>,
   startwith ?: string,
   limitlevel ?: number,
   groupby ?: string,
@@ -46,8 +46,8 @@ export const dataPickerProps = {
    * @default []
    */
   localdata: {
-    type: Array as PropType<Array<UTSJSONObject>>,
-    default: [] as Array<UTSJSONObject>
+    type: Array as PropType<Array<Record<string, any>>>,
+    default: [] as Array<Record<string, any>>
   },
   /**
    * @description uniCloud 数据库集合名称，或表名数组
@@ -261,7 +261,7 @@ export const dataPickerProps = {
    * @description 自定义节点文字字段和值字段，例如 { text: 'name', value: 'id' }
    */
   defaultProps: {
-    type: Object as PropType<UTSJSONObject>,
+    type: Object as PropType<Record<string, any>>,
   },
   /**
    * @description 层级 tab 未选择时的占位文字
@@ -277,16 +277,16 @@ export const dataPickerProps = {
 export type DataPickerInstance = {
   loading : boolean
   error : UniCloudError | null
-  treeData : Array<UTSJSONObject>
+  treeData : Array<Record<string, any>>
   selectedIndex : number
-  selectedNodes : Array<UTSJSONObject>
-  selectedPages : Array<Array<UTSJSONObject>>
+  selectedNodes : Array<Record<string, any>>
+  selectedPages : Array<Array<Record<string, any>>>
   selectedValue : string
-  selectedPaths : Array<UTSJSONObject>
+  selectedPaths : Array<Record<string, any>>
   pagination : PaginationType
   mappingTextName : string
   mappingValueName : string
-  currentDataList : Array<UTSJSONObject>
+  currentDataList : Array<Record<string, any>>
   isLocalData : boolean
   isCloudData : boolean
   isCloudDataList : boolean
@@ -297,21 +297,21 @@ export type DataPickerInstance = {
   hasCloudDataValue : boolean
   onPropsChange : () => void
   onTabSelect : (index : number) => void
-  onNodeClick : (nodeData : UTSJSONObject) => void
-  getChangeNodes : () => Array<UTSJSONObject>
+  onNodeClick : (nodeData : Record<string, any>) => void
+  getChangeNodes : () => Array<Record<string, any>>
   onFinish : () => void
-  emitNodeClick : (nodeData : UTSJSONObject) => void
+  emitNodeClick : (nodeData : Record<string, any>) => void
   loadData : () => void
   loadLocalData : () => void
   loadCloudDataList : () => void
   loadCloudDataTree : () => void
-  loadCloudDataNode : (nodeData : UTSJSONObject) => void
+  loadCloudDataNode : (nodeData : Record<string, any>) => void
   loadCloudDataPath : (callback ?: () => void) => void
 }
 
 // dataPicker props 参数类型
 export type DataPickerPropsType = {
-  localdata ?: Array<UTSJSONObject>
+  localdata ?: Array<Record<string, any>>
   collection ?: any
   field ?: string
   orderby ?: string
@@ -338,7 +338,7 @@ export type DataPickerPropsType = {
   multiple ?: boolean
   value ?: any
   modelValue ?: any
-  defaultProps ?: UTSJSONObject | null
+  defaultProps ?: Record<string, any> | null
   tabPlaceholder ?: string
 }
 
@@ -346,12 +346,12 @@ export type DataPickerPropsType = {
 export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance {
   const loading = ref(false)
   const error = ref<UniCloudError | null>(null)
-  const treeData = ref<Array<UTSJSONObject>>([])
+  const treeData = ref<Array<Record<string, any>>>([])
   const selectedIndex = ref(0)
-  const selectedNodes = ref<Array<UTSJSONObject>>([])
-  const selectedPages = ref<Array<Array<UTSJSONObject>>>([])
+  const selectedNodes = ref<Array<Record<string, any>>>([])
+  const selectedPages = ref<Array<Array<Record<string, any>>>>([])
   const selectedValue = ref('')
-  const selectedPaths = ref<Array<UTSJSONObject>>([])
+  const selectedPaths = ref<Array<Record<string, any>>>([])
   const pagination = ref({
     current: 1,
     size: 20,
@@ -362,7 +362,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     if (typeof value == 'string') {
       const valueString = value as string
       return (valueString.length > 0)
-    } else if (value instanceof UTSJSONObject) {
+    } else if (value != null && typeof value == 'object') {
       return true
     }
     return false
@@ -377,16 +377,16 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
 
   // 层级 tab 未选中时的占位节点，文字由外部 tabPlaceholder 属性传入。
   // 字段名需要与 default-props 的映射保持一致，否则层级 tab 会读取不到文字。
-  function createDefaultSelectedNode() : UTSJSONObject {
-    const node : UTSJSONObject = {}
+  function createDefaultSelectedNode() : Record<string, any> {
+    const node : Record<string, any> = {}
     node[mappingTextName.value] = props.tabPlaceholder
     node[mappingValueName.value] = ''
     return node
   }
 
-  const currentDataList = computed<Array<UTSJSONObject>>(() : Array<UTSJSONObject> => {
+  const currentDataList = computed<Array<Record<string, any>>>(() : Array<Record<string, any>> => {
     if (selectedIndex.value > selectedPages.value.length - 1) {
-      return [] as Array<UTSJSONObject>
+      return [] as Array<Record<string, any>>
     }
     return selectedPages.value[selectedIndex.value]
   })
@@ -443,7 +443,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     selectedIndex.value = index
   }
 
-  function onNodeClick(nodeData : UTSJSONObject) {
+  function onNodeClick(nodeData : Record<string, any>) {
     if (nodeData['disable'] as Boolean) {
       return
     }
@@ -470,10 +470,10 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     }
   }
 
-  function getChangeNodes() : Array<UTSJSONObject> {
-    const nodes : Array<UTSJSONObject> = []
-    selectedNodes.value.forEach((node : UTSJSONObject) => {
-      const newNode : UTSJSONObject = {}
+  function getChangeNodes() : Array<Record<string, any>> {
+    const nodes : Array<Record<string, any>> = []
+    selectedNodes.value.forEach((node : Record<string, any>) => {
+      const newNode : Record<string, any> = {}
       newNode[mappingTextName.value] = node[mappingTextName.value]
       newNode[mappingValueName.value] = node[mappingValueName.value]
       nodes.push(newNode)
@@ -483,7 +483,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
 
   function onFinish() { }
 
-  function emitNodeClick(_nodeData : UTSJSONObject) { }
+  function emitNodeClick(_nodeData : Record<string, any>) { }
 
   // 加载数据(自动判定环境)
   function loadData() {
@@ -506,7 +506,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     } else {
       // 回显 props 的 value 属性
       if (Array.isArray(dataValue.value)) {
-        const value = dataValue.value as Array<UTSJSONObject> || []
+        const value = dataValue.value as Array<Record<string, any>> || []
         selectedPaths.value = value.slice(0)
         pushSelectedTreeNodes(value, props.localdata)
       } else {
@@ -517,7 +517,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
 
   // 加载 Cloud 数据 (单列)
   function loadCloudDataList() {
-    loadCloudData(null, (data : Array<UTSJSONObject>) => {
+    loadCloudData(null, (data : Array<Record<string, any>>) => {
       treeData.value = data
       if (selectedPaths.value.length > 0) {
         pushSelectedTreeNodes(selectedPaths.value, data)
@@ -538,7 +538,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     if (checkIsNotNull(props.gettree)) {
       commandOptions.startwith = `${props.selfField}=='${dataValue.value as string}'`
     }
-    loadCloudData(commandOptions, (data : Array<UTSJSONObject>) => {
+    loadCloudData(commandOptions, (data : Array<Record<string, any>>) => {
       treeData.value = data
       if (selectedPaths.value.length > 0) {
         pushSelectedTreeNodes(selectedPaths.value, data)
@@ -549,12 +549,12 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
   }
 
   // 加载 Cloud 数据 (节点)
-  function loadCloudDataNode(nodeData : UTSJSONObject) {
+  function loadCloudDataNode(nodeData : Record<string, any>) {
     const commandOptions = {
       field: cloudDataPostField(),
       where: cloudDataNodeWhere()
     } as GetCommandOptions
-    loadCloudData(commandOptions, (data : Array<UTSJSONObject>) => {
+    loadCloudData(commandOptions, (data : Array<Record<string, any>>) => {
       nodeData['children'] = data
       if (data.length == 0) {
         nodeData['isleaf'] = true
@@ -600,13 +600,13 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
       }
     }
 
-    loadCloudData(command, (data : Array<UTSJSONObject>) => {
+    loadCloudData(command, (data : Array<Record<string, any>>) => {
       extractTreePath(data, selectedPaths.value)
       callback?.()
     })
   }
 
-  function loadCloudData(options ?: GetCommandOptions, callback ?: ((data : Array<UTSJSONObject>) => void)) {
+  function loadCloudData(options ?: GetCommandOptions, callback ?: ((data : Array<Record<string, any>>) => void)) {
     error.value = null
 
     try {
@@ -809,7 +809,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     return query.get(getOptions)
   }
 
-  function checkIsLeafNode(nodeData : UTSJSONObject) : boolean {
+  function checkIsLeafNode(nodeData : Record<string, any>) : boolean {
     if (selectedIndex.value >= props.limitlevel) {
       return true
     }
@@ -821,18 +821,18 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     return false
   }
 
-  function checkHasChildren(nodeData : UTSJSONObject) : boolean {
+  function checkHasChildren(nodeData : Record<string, any>) : boolean {
     const children = (nodeData['children'] as Array<any>) || ([] as Array<any>)
     return children.length > 0
   }
 
-  function pushSelectedNodes(nodes : Array<UTSJSONObject>) {
+  function pushSelectedNodes(nodes : Array<Record<string, any>>) {
     selectedNodes.value.push(createDefaultSelectedNode())
     selectedPages.value.push(nodes)
     selectedIndex.value = selectedPages.value.length - 1
   }
 
-  function trimSelectedNodes(nodeData : UTSJSONObject) {
+  function trimSelectedNodes(nodeData : Record<string, any>) {
     selectedNodes.value.splice(selectedIndex.value)
     selectedNodes.value.push(nodeData)
 
@@ -840,7 +840,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
       selectedPages.value.splice(selectedIndex.value + 1)
     }
 
-    const children = (nodeData['children'] as Array<UTSJSONObject>) || ([] as Array<UTSJSONObject>)
+    const children = (nodeData['children'] as Array<Record<string, any>>) || ([] as Array<Record<string, any>>)
     if (children.length > 0) {
       selectedNodes.value.push(createDefaultSelectedNode())
       selectedPages.value.push(children)
@@ -849,22 +849,22 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     selectedIndex.value = selectedPages.value.length - 1
   }
 
-  function pushSelectedTreeNodes(paths : Array<UTSJSONObject>, nodes : Array<UTSJSONObject>) {
-    let children : Array<UTSJSONObject> = nodes
-    paths.forEach((node : UTSJSONObject) => {
-      const findNode = children.find((item : UTSJSONObject) : boolean => {
+  function pushSelectedTreeNodes(paths : Array<Record<string, any>>, nodes : Array<Record<string, any>>) {
+    let children : Array<Record<string, any>> = nodes
+    paths.forEach((node : Record<string, any>) => {
+      const findNode = children.find((item : Record<string, any>) : boolean => {
         return (item[mappingValueName.value] == node[mappingValueName.value])
       })
       if (findNode != null) {
         selectedPages.value.push(children)
         selectedNodes.value.push(node)
-        children = (findNode['children'] as Array<UTSJSONObject>) || ([] as Array<UTSJSONObject>)
+        children = (findNode['children'] as Array<Record<string, any>>) || ([] as Array<Record<string, any>>)
       }
     })
     selectedIndex.value = selectedPages.value.length - 1
   }
 
-  function extractTreePath(nodes : Array<UTSJSONObject>, result : Array<UTSJSONObject>) {
+  function extractTreePath(nodes : Array<Record<string, any>>, result : Array<Record<string, any>>) {
     if (nodes.length == 0) {
       return
     }
@@ -872,7 +872,7 @@ export function useDataPicker(props : DataPickerPropsType) : DataPickerInstance 
     const node = nodes[0]
     result.push(node)
 
-    const children = node['children'] as Array<UTSJSONObject>
+    const children = node['children'] as Array<Record<string, any>>
     if (Array.isArray(children) && children!.length > 0) {
       extractTreePath(children!, result)
     }

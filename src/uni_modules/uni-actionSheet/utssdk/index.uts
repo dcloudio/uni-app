@@ -73,7 +73,5 @@ export {
   ShowActionSheetComplete,
   ShowActionSheetOptions,
   ShowActionSheet,
-  ShowActionSheetSuccessImpl,
-  ShowActionSheetFailImpl,
   HideActionSheet,
 } from './interface.uts'

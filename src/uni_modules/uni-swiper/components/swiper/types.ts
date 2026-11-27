@@ -1,13 +1,3 @@
-// #ifdef WEB
-class UniCustomEvent<T> {
-	detail: T
-	constructor(type: string, detail: T) {
-		this.type = type
-		this.detail = detail
-	}
-}
-// #endif
-
 export type UniSwiperChangeEventDetail = { current: number; source: string; currentItemId?: string; }
 export class UniSwiperChangeEvent extends UniCustomEvent<UniSwiperChangeEventDetail> {
 	constructor(current: number, source: string, currentItemId: string | null) {
@@ -15,14 +5,14 @@ export class UniSwiperChangeEvent extends UniCustomEvent<UniSwiperChangeEventDet
 		if (currentItemId != null) {
 			detail.currentItemId = currentItemId
 		}
-		super('change', detail)
+		super('change', {detail})
 	}
 }
 
 export type UniSwiperTransitionEventDetail = { dx: number; dy: number }
 export class UniSwiperTransitionEvent extends UniCustomEvent<UniSwiperTransitionEventDetail> {
 	constructor(dx: number, dy: number) {
-		super('transition', { dx, dy } as UniSwiperTransitionEventDetail)
+		super('transition', { detail: { dx, dy } as UniSwiperTransitionEventDetail })
 	}
 }
 
@@ -33,7 +23,7 @@ export class UniSwiperAnimationFinishEvent extends UniCustomEvent<UniSwiperAnima
 		if (currentItemId != null) {
 			detail.currentItemId = currentItemId
 		}
-		super('animationfinish', detail)
+		super('animationfinish', {detail})
 	}
 }
 

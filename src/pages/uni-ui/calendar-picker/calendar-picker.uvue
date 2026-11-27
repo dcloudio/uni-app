@@ -8,12 +8,21 @@
 
 	<!-- 自定义样式（单选） -->
 	<text class="uni-h4">自定义样式（单选）</text>
-	<text class="uni-info">通过 externalClass 定制单选外观：input-class 触发区、pop-class 弹层、mask-class 遮罩、cancel-class 关闭按钮、day-class
-		日期、day-selected-class 选中态。</text>
+	<text class="uni-info">通过 externalClass 定制单选外观：field-class 触发区、result-text-class 结果文字、placeholder-class 占位文字、arrow-class
+		右侧箭头、pop-class 弹层、mask-class 遮罩、cancel-class 关闭按钮、day-class 日期、day-selected-class 选中态。</text>
 	<uni-calendar-picker v-model="data.styleDate" placeholder="自定义样式" title="自定义样式"
-		input-class="custom-input" pop-class="custom-pop" mask-class="custom-mask" cancel-class="custom-cancel"
+		field-class="custom-field" result-text-class="custom-result-text" placeholder-class="custom-placeholder"
+		arrow-class="custom-picker-arrow" pop-class="custom-pop" mask-class="custom-mask" cancel-class="custom-cancel"
 		day-class="custom-day" day-selected-class="custom-selected" @change="onSingleChange" />
 	<text class="uni-log">单选值：{{ data.styleDate.length > 0 ? data.styleDate : '未选择' }}</text>
+
+	<!-- 时间戳返回值 -->
+	<text class="uni-h4">时间戳返回值</text>
+	<text class="uni-info">returnType 为 timestamp 时，v-model、update 事件与 change 事件的日期值均为毫秒时间戳；传入值同时支持 YYYY-MM-DD
+		字符串和毫秒时间戳。</text>
+	<uni-calendar-picker v-model="data.timestampDate" returnType="timestamp" placeholder="请选择日期" title="选择日期"
+		@change="onTimestampChange" />
+	<text class="uni-log">时间戳：{{ data.timestampDate > 0 ? data.timestampDate.toString() : '未选择' }}</text>
 
 	<!-- 范围选择 -->
 	<text class="uni-h4">范围选择</text>
@@ -27,10 +36,12 @@
 	<!-- 自定义样式（范围） -->
 	<text class="uni-h4">自定义样式（范围）</text>
 	<text class="uni-info">范围模式下可继续使用 year-month-class 年月标题、year-month-arrow-class 翻月箭头、week-class 星期行、week-item-class
-		星期项、range-class 区间中段、range-label-class 首尾标签、day-selected-class 首尾选中态等外部样式类；首尾选中态铺满整个单元格且不设圆角，由组件内置的首尾单侧圆角与区间中段连成整条。</text>
+		星期项、range-class 区间中段、range-label-class 首尾标签、day-selected-class 首尾选中态等外部样式类；首尾选中态铺满整个单元格且不设圆角，由组件内置的首尾单侧圆角与区间中段连成整条。range-separator
+		自定义触发区首尾日期之间的分隔文字，range-separator-class 定制其样式。</text>
 	<uni-calendar-picker range v-model:range-start="data.styledRangeStart" v-model:range-end="data.styledRangeEnd"
 		placeholder="请选择入住和离店日期" title="自定义范围样式" range-start-label="入住" range-end-label="离店"
-		year-month-class="custom-year-month" year-month-arrow-class="custom-arrow" week-class="custom-week"
+		range-separator="至" range-separator-class="custom-range-separator"
+		year-month-class="custom-year-month" year-month-arrow-class="custom-year-arrow" week-class="custom-week"
 		week-item-class="custom-week-item" range-class="custom-range" range-label-class="custom-range-label"
 		day-class="custom-day" day-selected-class="custom-range-selected" @change="onRangeChange" />
 	<text class="uni-log">范围：{{ rangeText(data.styledRangeStart, data.styledRangeEnd) }}</text>
@@ -164,6 +175,7 @@
 	type Data = {
 		basicDate : string
 		styleDate : string
+		timestampDate : number
 		rangeStart : string
 		rangeEnd : string
 		styledRangeStart : string
@@ -229,6 +241,7 @@
 	const data = reactive<Data>({
 		basicDate: '',
 		styleDate: '',
+		timestampDate: 0,
 		rangeStart: '',
 		rangeEnd: '',
 		styledRangeStart: '',
@@ -268,6 +281,10 @@
 
 	function onSingleChange(value : any) {
 		logEvent(`change：${value as string}`)
+	}
+
+	function onTimestampChange(value : any) {
+		logEvent(`change：${value as number}`)
 	}
 
 	function onRangeChange(value : any) {
@@ -437,8 +454,13 @@
 		font-weight: bold;
 	}
 
-	.custom-arrow {
+	.custom-year-arrow {
 		color: #7c3aed;
+	}
+
+	.custom-range-separator {
+		color: #7c3aed;
+		font-weight: bold;
 	}
 
 	.custom-week {
@@ -478,9 +500,22 @@
 	}
 
 	/* externalClass 自定义样式（单选） */
-	.custom-input {
+	.custom-field {
 		border-color: #7c3aed;
 		border-radius: 16px;
+	}
+
+	.custom-result-text {
+		color: #7c3aed;
+		font-weight: bold;
+	}
+
+	.custom-placeholder {
+		color: #a78bfa;
+	}
+
+	.custom-picker-arrow {
+		color: #7c3aed;
 	}
 
 	.custom-pop {
@@ -541,6 +576,26 @@
 		}
 
 		.custom-preview-text {
+			color: #a78bfa;
+		}
+
+		.custom-field {
+			border-color: #a78bfa;
+		}
+
+		.custom-result-text {
+			color: #a78bfa;
+		}
+
+		.custom-placeholder {
+			color: #c4b5fd;
+		}
+
+		.custom-picker-arrow {
+			color: #a78bfa;
+		}
+
+		.custom-range-separator {
 			color: #a78bfa;
 		}
 	}

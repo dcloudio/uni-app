@@ -299,7 +299,7 @@ defineExpose({
     let fastScrollOffset = 0
     let lastScrollTimestamp = 0
     let lastScrollOffset = 0
-    let maxItemSize = 100
+    let maxItemSize = store.defaultItemSize
     // Web 原生滚动与 JS 渲染、布局并不同步；缓冲缩到 0 可能使 item 更频繁地回收、重建，
     // 缩小已就绪内容的覆盖范围，放大快速滚动时出现空白的风险。
     // 因此快滚、scroll-into-view 等阶段也始终保留双向缓冲，大小为历史最大实测 item 高度的倍数。
@@ -317,8 +317,7 @@ defineExpose({
     let pendingScrollId = props.scrollIntoView
     let targetOffset = -1
     let itemSizeChangedCompensation = 0
-    let sizeChangeAnchorKey : string | undefined
-    let sizeChangeAnchorOffset = 0
+    let sizeChangeAnchor : { key : string; offset : number } | undefined
 
     provide('__uni_recycle_view_instance', getCurrentInstance())
     provide('__uni_recycle_state_map', new Map<string, Map<string, unknown>>())
@@ -342,6 +341,7 @@ defineExpose({
     }
 
     function updateList(newList : string[]) {
+        resetItemSizeChangeCompensation()
         if (listDataStatus === 0 && newList.length) listDataStatus = 1
         else if (listDataStatus === 1) listDataStatus = 2
         keys = newList
@@ -378,10 +378,10 @@ defineExpose({
         }
         item.size = height
         store.rebuildItemOffsetsFrom(item.index + 1)
-        if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
-            const anchor = store.keyItemMap.get(sizeChangeAnchorKey)
+        if (sizeChangeAnchor && !scrollTarget && (scrolling || shouldAnchorToBottom())) {
+            const anchor = store.keyItemMap.get(sizeChangeAnchor.key)
             if (anchor)
-                itemSizeChangedCompensation = anchor.offset - sizeChangeAnchorOffset
+                itemSizeChangedCompensation = anchor.offset - sizeChangeAnchor.offset
         }
         queueLayout()
     }
@@ -389,6 +389,19 @@ defineExpose({
     function syncDefaultItemSize(height : number) {
         if (height > 0)
             sectionMap.forEach(section => section.applyDefaultItemSize(height))
+    }
+
+    function shouldAnchorToBottom() {
+        return props.initialScrollBottom && maintainInitialScrollBottom &&
+            listDataStatus === 1 && !sectionMap.size && !scrolling
+    }
+
+    function resetItemSizeChangeCompensation() {
+        sizeChangeAnchor = undefined
+        itemSizeChangedCompensation = 0
+        if (scrollElement.value)
+            realScrollOffset = scrollOffset = Math.max(0, scrollElement.value.scrollTop)
+        fastScrollOffset = 0
     }
 
     function queueLayout() {
@@ -436,6 +449,7 @@ defineExpose({
             }
         }
         if (scrollTarget) {
+            resetItemSizeChangeCompensation()
             pendingScrollId = ''
             maintainInitialScrollBottom = false
             targetOffset = -1
@@ -466,9 +480,26 @@ defineExpose({
     function updateRenderList() {
         const element = scrollElement.value!
         const sections = linkSection()
-        if (placeholderElement.value)
-            placeholderElement.value.style.height = `${sections.length ? 0 : store.contentSize}px`
         resolveScrollTarget(sections)
+        const anchorToBottom = shouldAnchorToBottom()
+        let compensatedScrollTop : number | undefined
+        if (anchorToBottom && headerSize + store.contentSize > size) {
+            // 内容超过一屏时，用末项承接分批测量的尺寸变化。
+            const last = store.list[store.list.length - 1]
+            if (sizeChangeAnchor?.key !== last.key) {
+                sizeChangeAnchor = { key: last.key, offset: last.offset - itemSizeChangedCompensation }
+            }
+        } else if (!scrolling && sizeChangeAnchor) {
+            if (itemSizeChangedCompensation !== 0)
+                compensatedScrollTop = Math.max(0, realScrollOffset + itemSizeChangedCompensation)
+            sizeChangeAnchor = undefined
+            itemSizeChangedCompensation = 0
+        }
+        const placeholderSize = sections.length ? 0 : store.contentSize - itemSizeChangedCompensation
+        if (placeholderElement.value)
+            placeholderElement.value.style.height = `${placeholderSize}px`
+        // 先更新占位和已挂载项，再根据浏览器实际可滚动范围定位。
+        store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation)
         if (scrollTarget) {
             const { key, section } = scrollTarget
             const item = store.keyItemMap.get(key)
@@ -482,22 +513,17 @@ defineExpose({
                 // 与 cpp setScrollIntoViewKey 一致，定位目标时遵循开发者 scroll-with-animation 设置。
                 scrollToOffset(targetOffset, true)
             }
-        } else if (!sections.length && !scrolling) {
-            if (
-                props.initialScrollBottom &&
-                maintainInitialScrollBottom &&
-                listDataStatus === 1
-            ) {
-                scrollToOffset(
-                    Math.max(element.scrollHeight, headerSize + store.contentSize) - size,
-                )
-            } else if (props.scrollAnchoring && anchorKey) {
-                const anchor = store.keyItemMap.get(anchorKey)
-                if (anchor) {
-                    scrollToOffset(realScrollOffset + anchor.offset - anchorOffset)
-                    anchorOffset = anchor.offset
-                } else anchorKey = undefined
-            }
+        } else if (anchorToBottom) {
+            scrollToOffset(Math.max(0, element.scrollHeight - element.clientHeight))
+        } else if (compensatedScrollTop !== undefined) {
+            scrollToOffset(compensatedScrollTop)
+        } else if (!sections.length && !scrolling && props.scrollAnchoring && anchorKey) {
+            const anchor = store.keyItemMap.get(anchorKey)
+            if (anchor) {
+                const delta = anchor.offset - anchorOffset
+                if (delta !== 0) scrollToOffset(realScrollOffset + delta)
+                anchorOffset = anchor.offset
+            } else anchorKey = undefined
         }
         const min = Math.max(
             0,
@@ -514,7 +540,6 @@ defineExpose({
             cachedSize +
             itemSizeChangedCompensation -
             0.2
-        store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation)
         updateRenderInfo(...store.getRenderRange(min, max))
         for (const section of sections) {
             section.onScrollContextUpdate({
@@ -530,18 +555,17 @@ defineExpose({
     function updateScrollAnchorItem() {
         anchorKey = undefined
         if (!props.scrollAnchoring || realScrollOffset <= 0 || sectionMap.size) return
-        const offset = realScrollOffset - headerSize
-        const [index] = store.getRenderRange(offset, offset)
-        const item = store.list[index]
+        const offset = realScrollOffset - headerSize + itemSizeChangedCompensation
+        const item = store.list[store.firstItemIndexAt(offset, true)]
         if (item) {
             anchorKey = item.key
-            anchorOffset = item.offset
+            anchorOffset = item.offset - itemSizeChangedCompensation
         }
     }
 
-    function onScroll(e: UniScrollEvent) {
+    function onScroll() {
         const element = scrollElement.value!
-        const offset = Math.max(0, e.detail.scrollTop)
+        let offset = Math.max(0, element.scrollTop)
         if (
             offset < element.scrollHeight - size - 0.2 &&
             Math.abs(offset - realScrollOffset) > 0.2
@@ -550,16 +574,20 @@ defineExpose({
         if (!scrolling) {
             scrolling = true
             anchorKey = undefined
-            const item = store.list[renderRange.value[0] + renderRange.value[1] - 1]
-            sizeChangeAnchorKey = item && item.key
-            sizeChangeAnchorOffset = item ? item.offset : 0
+            if (!sizeChangeAnchor && itemSizeChangedCompensation === 0) {
+                // 仅补偿视口上沿之前的尺寸变化，缓冲区内后续项的测量不应推动视口。
+                const start = Math.max(0, offset - headerSize - fastScrollOffset)
+                const item = store.list[store.firstItemIndexAt(start, false)]
+                if (item) sizeChangeAnchor = { key: item.key, offset: item.offset }
+            }
         }
-        if (offset === 0 || offset >= store.contentSize - size)
-            itemSizeChangedCompensation = 0
-        if (offset + itemSizeChangedCompensation < 0) {
-            itemSizeChangedCompensation = 0
+        if (offset > 0 && offset + itemSizeChangedCompensation < 0) {
             scrollToOffset(0)
-            return
+            offset = 0
+        }
+        if (offset === 0) {
+            sizeChangeAnchor = undefined
+            itemSizeChangedCompensation = 0
         }
         const timestamp = Date.now()
         const elapsed = timestamp - lastScrollTimestamp
@@ -592,10 +620,6 @@ defineExpose({
         clearTimeout(scrollEndTimer)
         if (!scrolling) return
         scrolling = false
-        if (itemSizeChangedCompensation)
-            scrollToOffset(realScrollOffset + itemSizeChangedCompensation)
-        itemSizeChangedCompensation = 0
-        sizeChangeAnchorKey = undefined
         scrollOffset = realScrollOffset
         fastScrollOffset = 0
         lastScrollTimestamp = 0
@@ -606,8 +630,14 @@ defineExpose({
 
     const resizeObserver = new ResizeObserver(entries => {
         for (const entry of entries) {
-            if (entry.target === scrollElement.value) size = entry.contentRect.height
-            else if (entry.target === headerElement.value)
+            if (entry.target === scrollElement.value) {
+                const height = entry.target.clientHeight
+                if (size > 0 && height !== size) {
+                    maintainInitialScrollBottom = false
+                    resetItemSizeChangeCompensation()
+                }
+                size = height
+            } else if (entry.target === headerElement.value)
                 headerSize = entry.borderBoxSize[0].blockSize
         }
         queueLayout()

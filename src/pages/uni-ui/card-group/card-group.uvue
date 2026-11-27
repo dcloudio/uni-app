@@ -1,0 +1,128 @@
+<template>
+	<text class="uni-card-title">基本信息</text>
+	<view class="uni-card">
+		<uni-forms-item label="姓名" label-class="label-class" class="forms-item forms-item-split" >
+			<input placeholder="必填" style="text-align: right;font-size: 14px;"/>
+		</uni-forms-item>
+		<uni-forms-item label="性别" label-class="label-class" class="forms-item forms-item-split" >
+			<view style="flex: 1;flex-direction: row;justify-content: flex-end;">
+				<uni-data-checkbox mode="button" :localdata="refSex" ></uni-data-checkbox>
+			</view>
+		</uni-forms-item>
+		<uni-forms-item label="是否党员" label-class="label-class" class="forms-item forms-item-split">
+			<view style="flex: 1;flex-direction: row;justify-content: flex-end;"><switch/>
+			</view>
+		</uni-forms-item>
+		<uni-forms-item label="出生日期" label-class="label-class" class="forms-item forms-item-split">
+			<view style="flex: 1;flex-direction: row;justify-content: flex-end;">
+				<uni-calendar-picker placeholder="选择日期"  field-class="bare"></uni-calendar-picker>
+			</view>
+		</uni-forms-item>
+		<uni-forms-item label="籍贯" label-class="label-class" class="forms-item">
+			<view style="flex: 1;flex-direction: row;justify-content: flex-end;">
+				<uni-data-picker input-class="bare" placeholder="选择城市" popup-title="请选择城市" tab-placeholder="请选择" :preload="true"
+    :step-searh="true" self-field="code" parent-field="parent_code" collection="opendb-city-china" orderby="value asc"
+    :page-size="50" field="code as value, name as text, eq(type, 2) as isleaf" :limitlevel="10" v-model="address">
+				</uni-data-picker>
+			</view>
+		</uni-forms-item>
+	</view>
+
+	<view class="uni-card">
+		<uni-forms-item label="easyinput" label-class="label-class" class="forms-item forms-item-split" >
+			<uni-easyinput placeholder="带清楚按钮" class="bare" input-class="text-right" placeholder-class="text-right" clearable></uni-easyinput>
+		</uni-forms-item>
+		<uni-forms-item label="combobox" label-class="label-class" class="forms-item forms-item-split" >
+			<uni-combobox placeholder="仅选择，不可输入" 	field-class="bare" placeholder-class="text-right" value-class="text-right" :options="refOptions"></uni-combobox>
+		</uni-forms-item>
+		<uni-forms-item class="forms-item" >
+			<view class="uni-row row" style="height: 32px;">
+				<uni-icons type="sound-slash" style="font-size: 20px;" ></uni-icons>
+				<slider style="flex: 1;" :value="5" :min="0" :max="10"></slider>
+				<uni-icons type="sound" style="font-size: 20px;"></uni-icons>
+			</view>
+		</uni-forms-item>
+	</view>
+
+	<text class="uni-card-title">外观（假的）</text>
+	<view class="uni-card">
+		<uni-forms-item class="forms-item-big-height" >
+			<radio-group name="gender" class="flex-row">
+				<view class="uni-row" style="justify-content: space-evenly;">
+					<view style="align-items: center;">
+						<text style="padding-bottom: 8px;">light</text>
+						<radio value="0" :checked="dark == '0'" style="margin-right: 0px;"/>
+					</view>
+					<view style="align-items: center;">
+						<text style="padding-bottom: 8px;">dark</text>
+						<radio value="1" :checked="dark == '1'" style="margin-right: 0px;"/>
+					</view>
+				</view>
+			</radio-group>
+		</uni-forms-item>
+	</view>
+	<view class="uni-row row">
+		<button size="mini">按钮</button> <button size="mini" plain>镂空按钮</button>
+	</view>
+</template>
+
+<script setup lang="ts">
+	let refSex = [
+		{ text: '男', value: '1' },
+		{ text: '女', value: '2' }
+	]
+	const address = ref('110101')
+	const refOptions = [
+		'选项1',
+		'选项2',
+		'选项3'
+	]
+	const dark = ref('0')
+</script>
+
+<style>
+	page{
+		background-color: var(--uni-page-include-card-group-bg);
+		padding: 8px 16px;
+	}
+	.uni-card-title {
+		margin: 4px 4px 0px 16px;
+		color: var(--uni-secondary-text);
+		font-size: 14px;
+	}
+	.uni-card {
+		margin: 8px 0px;
+	  padding: 4px 16px;
+	  border-radius: 12px;
+	  background-color: var(--uni-card-group-bg, #ffffff);
+	}
+	.label-class{
+		font-size: 14px;
+		width:100%;
+	}
+	.forms-item{
+		padding: 4px 0px;
+		height: 44px;
+		justify-content: center;
+	}
+	.forms-item-big-height{
+		height: 96px;
+		padding: 4px 0px;
+		justify-content: center;
+	}
+	.forms-item-split{
+		border-bottom: 0.5px solid var(--uni-separator);
+	}
+	.bare{
+		background-color: transparent;
+		border: none;
+	}
+	.text-right{
+		text-align: right;
+	}
+	.row{
+		/* 垂直居中 */
+		align-items: center;
+		gap: 8px;
+	}
+</style>

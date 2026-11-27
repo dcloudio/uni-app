@@ -8,9 +8,17 @@
 			<!-- #endif -->
 		>
 			<slot :start="committedStart" :end="committedEnd" :text="displayText">
-				<view class="uni-field-default" :class="[props.inputClass, props.disabled ? 'cp-trigger-disabled' : '']">
-					<text flatten class="uni-result-text"
-						:class="hasDisplayValue ? (props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value') : 'cp-trigger-placeholder'">{{ displayText }}</text>
+				<view class="uni-field-default" :class="[props.fieldClass, props.disabled ? 'cp-trigger-disabled' : '']">
+					<view v-if="hasBothRangeValues" class="cp-result-range" flatten>
+						<text flatten class="cp-result-range-text"
+							:class="[props.resultTextClass, props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value']">{{ committedStart }}</text>
+						<text flatten class="cp-range-separator"
+							:class="[props.rangeSeparatorClass, props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value']">{{ rangeSeparatorText }}</text>
+						<text flatten class="cp-result-range-text"
+							:class="[props.resultTextClass, props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value']">{{ committedEnd }}</text>
+					</view>
+					<text v-else flatten class="uni-result-text"
+						:class="[props.resultTextClass, hasDisplayValue ? (props.disabled ? 'cp-trigger-value-disabled' : 'cp-trigger-value') : 'cp-trigger-placeholder', hasDisplayValue ? '' : props.placeholderClass]">{{ displayText }}</text>
 					<text class="uni-down-arrow-iconfont" :class="props.arrowClass">{{'\uE601'}}</text>
 					<!-- <view class="uni-arrow-wrap" flatten>
 						<view class="uni-arrow" flatten></view>
@@ -219,13 +227,13 @@ type CalendarDayExtra = {
 
 type CalendarRange = {
 	/**
-	 * @description 范围开始日期，格式 YYYY-MM-DD
+	 * @description 范围开始日期，格式 YYYY-MM-DD 或毫秒时间戳
 	 */
-	start : string
+	start : string | number
 	/**
-	 * @description 范围结束日期，格式 YYYY-MM-DD
+	 * @description 范围结束日期，格式 YYYY-MM-DD 或毫秒时间戳
 	 */
-	end : string
+	end : string | number
 }
 
 type PickerLocaleMessages = {
@@ -237,6 +245,10 @@ type PickerLocaleMessages = {
 	 * @description 取消按钮文字
 	 */
 	cancel : string
+	/**
+	 * @description 范围首尾日期之间的分隔文字
+	 */
+	separator : string
 }
 
 type Props = {
@@ -258,8 +270,8 @@ type Props = {
 	 */
 	range ?: boolean
 	/**
-	 * @description 单选值，格式 YYYY-MM-DD，支持 v-model；range 为 true 时忽略
-	 * @default ""
+	 * @description 返回值类型。string 返回 YYYY-MM-DD 字符串；timestamp 返回毫秒时间戳
+	 * @default "string"
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.35"},
@@ -273,9 +285,9 @@ type Props = {
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	modelValue ?: string
+	returnType ?: string
 	/**
-	 * @description 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start
+	 * @description 范围模式下首尾日期之间的分隔文字，未设置时按语言自动适配
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
@@ -290,9 +302,9 @@ type Props = {
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	rangeStart ?: string
+	rangeSeparator ?: string
 	/**
-	 * @description 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end
+	 * @description 单选值，格式 YYYY-MM-DD 或毫秒时间戳，支持 v-model；range 为 true 时忽略
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
@@ -307,7 +319,41 @@ type Props = {
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	rangeEnd ?: string
+	modelValue ?: string | number
+	/**
+	 * @description 范围开始日期，格式 YYYY-MM-DD 或毫秒时间戳，支持 v-model:range-start
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeStart ?: string | number
+	/**
+	 * @description 范围结束日期，格式 YYYY-MM-DD 或毫秒时间戳，支持 v-model:range-end
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeEnd ?: string | number
 	/**
 	 * @description 未选择日期时的占位文字，组件不提供内置文案
 	 * @default ""
@@ -325,6 +371,23 @@ type Props = {
 	 * }
 	 */
 	placeholder ?: string
+	/**
+	 * @description 未选择日期时占位文字的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	placeholderClass ?: string.ClassString
 	/**
 	 * @description 弹层标题文字，组件不提供内置文案
 	 * @default ""
@@ -562,7 +625,58 @@ type Props = {
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	inputClass ?: string.ClassString
+	fieldClass ?: string.ClassString
+	/**
+	 * @description 触发区结果文字的自定义样式类，仅在使用默认触发区时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	resultTextClass ?: string.ClassString
+	/**
+	 * @description 触发区右侧箭头的自定义样式类，仅在使用默认触发区时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	arrowClass ?: string.ClassString
+	/**
+	 * @description 范围模式首尾日期分隔文字的自定义样式类，仅在使用默认触发区时生效
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {"unixVaporVer": "5.35"},
+	 *     "ios": {"unixVaporVer": "5.35"},
+	 *     "harmony": {"unixVaporVer": "5.35"}
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {"unixVer": "5.35"},
+	 *     "alipay": {"unixVer": "5.35"}
+	 *   },
+	 *   "web": {"unixVer": "5.35"}
+	 * }
+	 */
+	rangeSeparatorClass ?: string.ClassString
 	/**
 	 * @description 弹层关闭按钮的样式类
 	 * @default ""
@@ -754,10 +868,13 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
 	range: false,
+	returnType: 'string',
+	rangeSeparator: '',
 	modelValue: '',
 	rangeStart: '',
 	rangeEnd: '',
 	placeholder: '',
+	placeholderClass: '',
 	title: '',
 	locale: '',
 	weekStart: -1,
@@ -771,7 +888,10 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	popClass: '',
 	maskClass: '',
-	inputClass: '',
+	fieldClass: '',
+	resultTextClass: '',
+	arrowClass: '',
+	rangeSeparatorClass: '',
 	cancelClass: '',
 	previewResultClass: '',
 	previewResultTextClass: '',
@@ -788,7 +908,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
 	/**
 	 * @description 单选值变化时触发，用于 v-model 双向绑定
-	 * @param date 选中的日期，格式 YYYY-MM-DD
+	 * @param date 选中的日期，returnType 为 string 时格式 YYYY-MM-DD，为 timestamp 时毫秒时间戳
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.35"},
@@ -802,10 +922,10 @@ const emit = defineEmits<{
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	'update:modelValue': [date: string]
+	'update:modelValue': [date: string | number]
 	/**
 	 * @description 范围开始日期变化时触发，用于 v-model:range-start 双向绑定
-	 * @param date 范围开始日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @param date 范围开始日期，returnType 为 string 时格式 YYYY-MM-DD，为 timestamp 时毫秒时间戳，清空时为空字符串
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.35"},
@@ -819,10 +939,10 @@ const emit = defineEmits<{
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	'update:rangeStart': [date: string]
+	'update:rangeStart': [date: string | number]
 	/**
 	 * @description 范围结束日期变化时触发，用于 v-model:range-end 双向绑定
-	 * @param date 范围结束日期，格式 YYYY-MM-DD，清空时为空字符串
+	 * @param date 范围结束日期，returnType 为 string 时格式 YYYY-MM-DD，为 timestamp 时毫秒时间戳，清空时为空字符串
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.35"},
@@ -836,10 +956,10 @@ const emit = defineEmits<{
 	 *   "web": {"unixVer": "5.35"}
 	 * }
 	 */
-	'update:rangeEnd': [date: string]
+	'update:rangeEnd': [date: string | number]
 	/**
-	 * @description 选择完成时触发；单选模式参数为日期字符串，范围模式参数为包含 start、end 的对象
-	 * @param value 单选为日期字符串，范围选择为 { start, end } 对象
+	 * @description 选择完成时触发；单选模式参数为日期值，范围模式参数为包含 start、end 的对象
+	 * @param value 单选为日期值，范围选择为 { start, end } 对象；returnType 为 timestamp 时日期值为毫秒时间戳
 	 * @uniPlatform {
 	 *   "app": {
 	 *     "android": {"unixVaporVer": "5.35"},
@@ -921,7 +1041,11 @@ defineOptions({
 	externalClasses: [
 		'pop-class',
 		'mask-class',
-		'input-class',
+		'field-class',
+		'result-text-class',
+		'placeholder-class',
+		'arrow-class',
+		'range-separator-class',
 		'cancel-class',
 		'preview-result-class',
 		'preview-result-text-class',
@@ -973,30 +1097,35 @@ const pickerLocaleMessages = computed<PickerLocaleMessages>(() : PickerLocaleMes
 	if (key == 'zh-hans') {
 		return {
 			confirm: '确定',
-			cancel: '取消'
+			cancel: '取消',
+			separator: '至'
 		}
 	}
 	if (key == 'zh-hant') {
 		return {
 			confirm: '確定',
-			cancel: '取消'
+			cancel: '取消',
+			separator: '至'
 		}
 	}
 	if (key == 'fr') {
 		return {
 			confirm: 'Confirmer',
-			cancel: 'Annuler'
+			cancel: 'Annuler',
+			separator: ' à '
 		}
 	}
 	if (key == 'la') {
 		return {
 			confirm: 'Confirma',
-			cancel: 'Annulla'
+			cancel: 'Annulla',
+			separator: ' ad '
 		}
 	}
 	return {
 		confirm: 'Confirm',
-		cancel: 'Cancel'
+		cancel: 'Cancel',
+		separator: ' to '
 	}
 })
 
@@ -1006,6 +1135,14 @@ const confirmText = computed<string>(() : string => {
 
 const cancelText = computed<string>(() : string => {
 	return pickerLocaleMessages.value.cancel
+})
+
+// 未显式传入 rangeSeparator 时，按语言自动适配范围分隔文字
+const rangeSeparatorText = computed<string>(() : string => {
+	if (props.rangeSeparator.length > 0) {
+		return props.rangeSeparator
+	}
+	return pickerLocaleMessages.value.separator
 })
 
 // 紧凑弹层模式：0 = 普通，1 = 纯文本紧凑（单元格 36），2 = 三段式紧凑（单元格 44）
@@ -1035,8 +1172,18 @@ function normalizePickerLocaleKey(language : string) : string {
 	return 'en'
 }
 
-function normalizeDate(value : string) : string {
-	if (value == null || value.length < 10) {
+function normalizeDate(value : string | number | null) : string {
+	if (value == null) {
+		return ''
+	}
+	if (typeof value == 'number') {
+		if (isNaN(value) || value <= 0) {
+			return ''
+		}
+		const date = new Date(value)
+		return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`
+	}
+	if (value.length < 10) {
 		return ''
 	}
 	const parts = value.split('-')
@@ -1053,6 +1200,24 @@ function normalizeDate(value : string) : string {
 		return ''
 	}
 	return value
+}
+
+// 将内部 YYYY-MM-DD 日期转换为当天零点的毫秒时间戳
+function dateToTimestamp(date : string) : number {
+	const normalized = normalizeDate(date)
+	if (normalized.length == 0) {
+		return 0
+	}
+	const parts = normalized.split('-')
+	return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])).getTime()
+}
+
+// 按 returnType 转换对外返回值；空值始终返回空字符串
+function formatOutputValue(date : string) : string | number {
+	if (date.length == 0 || props.returnType != 'timestamp') {
+		return date
+	}
+	return dateToTimestamp(date)
 }
 
 function todayMonthKey() : string {
@@ -1176,12 +1341,16 @@ const hasDisplayValue = computed<boolean>(() : boolean => {
 	return committedDate.value.length > 0
 })
 
+const hasBothRangeValues = computed<boolean>(() : boolean => {
+	return props.range && committedStart.value.length > 0 && committedEnd.value.length > 0
+})
+
 const displayText = computed<string>(() : string => {
 	if (props.range) {
 		const start = committedStart.value
 		const end = committedEnd.value
 		if (start.length > 0 && end.length > 0) {
-			return start + ' ~ ' + end
+			return start + rangeSeparatorText.value + end
 		}
 		if (start.length > 0) {
 			return start
@@ -1636,8 +1805,8 @@ function onViewModelValueUpdate(date : string) {
 		return
 	}
 	committedDate.value = date
-	emit('update:modelValue', date)
-	emit('change', date)
+	emit('update:modelValue', formatOutputValue(date))
+	emit('change', formatOutputValue(date))
 	close()
 }
 
@@ -1647,7 +1816,7 @@ function onViewRangeStartUpdate(date : string) {
 		return
 	}
 	committedStart.value = date
-	emit('update:rangeStart', date)
+	emit('update:rangeStart', formatOutputValue(date))
 }
 
 function onViewRangeEndUpdate(date : string) {
@@ -1656,7 +1825,7 @@ function onViewRangeEndUpdate(date : string) {
 		return
 	}
 	committedEnd.value = date
-	emit('update:rangeEnd', date)
+	emit('update:rangeEnd', formatOutputValue(date))
 }
 
 function onRangeChange(start : string, end : string) {
@@ -1667,8 +1836,8 @@ function onRangeChange(start : string, end : string) {
 		return
 	}
 	const value : CalendarRange = {
-		start: start,
-		end: end
+		start: formatOutputValue(start),
+		end: formatOutputValue(end)
 	}
 	emit('change', value)
 	close()
@@ -1681,20 +1850,20 @@ function onConfirmClick() {
 		const end = rangeEnd.value
 		if (start != committedStart.value || end != committedEnd.value) {
 			const value : CalendarRange = {
-				start: start,
-				end: end
+				start: formatOutputValue(start),
+				end: formatOutputValue(end)
 			}
 			committedStart.value = start
 			committedEnd.value = end
-			emit('update:rangeStart', start)
-			emit('update:rangeEnd', end)
+			emit('update:rangeStart', formatOutputValue(start))
+			emit('update:rangeEnd', formatOutputValue(end))
 			emit('change', value)
 		}
 	} else {
 		if (selectedDate.value != committedDate.value) {
 			committedDate.value = selectedDate.value
-			emit('update:modelValue', selectedDate.value)
-			emit('change', selectedDate.value)
+			emit('update:modelValue', formatOutputValue(selectedDate.value))
+			emit('change', formatOutputValue(selectedDate.value))
 		}
 	}
 	committed = true
@@ -1979,7 +2148,7 @@ watch(() : boolean => props.range, () => {
 	committedEnd.value = ''
 })
 
-watch(() : string => props.modelValue, (value : string) => {
+watch(() : string | number => props.modelValue, (value : string | number) => {
 	if (props.range) {
 		return
 	}
@@ -1991,7 +2160,7 @@ watch(() : string => props.modelValue, (value : string) => {
 	selectedDate.value = next
 })
 
-watch(() : string => props.rangeStart, (value : string) => {
+watch(() : string | number => props.rangeStart, (value : string | number) => {
 	const next = normalizeDate(value)
 	committedStart.value = next
 	if (next == rangeStart.value) {
@@ -2000,7 +2169,7 @@ watch(() : string => props.rangeStart, (value : string) => {
 	rangeStart.value = next
 })
 
-watch(() : string => props.rangeEnd, (value : string) => {
+watch(() : string | number => props.rangeEnd, (value : string | number) => {
 	const next = normalizeDate(value)
 	committedEnd.value = next
 	if (next == rangeEnd.value) {
@@ -2059,6 +2228,18 @@ defineExpose({
 		/* #endif */
 	}
 
+	/* 范围模式下分开渲染首尾日期与分隔文字，便于分别定制样式 */
+	.cp-result-range {
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		overflow: hidden;
+	}
+
+	.cp-result-range-text {
+		font-size: 14px;
+	}
+
 	.cp-trigger-value {
 		color: #333333;
 	}
@@ -2069,6 +2250,16 @@ defineExpose({
 
 	.cp-trigger-placeholder {
 		color: rgba(60, 60, 67, 0.30);
+	}
+
+	.cp-range-separator {
+		flex-shrink: 0;
+		margin-left: 4px;
+		margin-right: 4px;
+		font-size: 14px;
+		/* #ifdef uniVersion <5.41 */
+		color: #333333;
+		/* #endif */
 	}
 
 	/* .uni-arrow-wrap {
@@ -2341,7 +2532,7 @@ defineExpose({
 
 	@media (prefers-color-scheme: dark) {
 		.uni-field-default {
-			background-color: #3b3b3b;
+			background-color: #2c2c2c;
 			border-color: rgba(255, 255, 255, 0.18);
 		}
 

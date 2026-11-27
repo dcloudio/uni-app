@@ -36,16 +36,6 @@
         column : number
     }
 
-    // #ifdef WEB
-    class UniCustomEvent<T> {
-        detail : T
-        constructor(type : string, options : UniCustomEventOptions<T>) {
-            // this.type = type
-            this.detail = options.detail
-        }
-    }
-    // #endif
-
     /**
      * 取消事件触发
      */

@@ -17,7 +17,7 @@
 
 	<text class="uni-h4">input 插槽：可输入可选择</text>
 	<text class="uni-info">插槽提供 value、input、focus、disabled 四个参数，输入时按包含关系过滤候选。</text>
-	<uni-combobox :options="cityOptions" v-model="city" @selectchange="onCityChange">
+	<uni-combobox :options="cityOptions" v-model="city" @selectChange="onCityChange">
 		<template #input="{ value, input, focus, disabled }">
 			<input class="custom-input" placeholder-class="custom-placeholder" :value="value" :disabled="disabled"
 				:confirm-hold="true" placeholder="选择或输入城市" @focus="focus" @input="input" />
@@ -57,34 +57,24 @@
 	<uni-combobox :options="statusOptions" placeholder="请选择状态" v-model="arrowClassValue" arrow-class="demo-arrow" />
 	<text class="uni-log">当前选择：{{ arrowClassValue }}</text>
 
-	<text class="uni-h4">options-view-class：候选浮层样式</text>
-	<uni-combobox :options="cityOptions" placeholder="打开查看浮层样式" v-model="optionsViewClassValue"
-		options-view-class="demo-options-view" />
-	<text class="uni-log">当前选择：{{ optionsViewClassValue }}</text>
-
-	<text class="uni-h4">options-content-class：浮层内容样式</text>
-	<uni-combobox :options="cityOptions" placeholder="打开查看内容区样式" v-model="optionsContentClassValue"
-		options-content-class="demo-options-content" />
-	<text class="uni-log">当前选择：{{ optionsContentClassValue }}</text>
+	<text class="uni-h4">dropdown-class：候选浮层样式</text>
+	<uni-combobox :options="cityOptions" placeholder="打开查看浮层样式" v-model="dropdownClassValue"
+		dropdown-class="demo-dropdown" />
+	<text class="uni-log">当前选择：{{ dropdownClassValue }}</text>
 
 	<text class="uni-h4">option-text-class：候选项文字样式</text>
 	<uni-combobox :options="statusOptions" placeholder="打开查看候选文字" v-model="optionTextClassValue"
 		option-text-class="demo-option-text" />
 	<text class="uni-log">当前选择：{{ optionTextClassValue }}</text>
 
-	<text class="uni-h4">option-text-highlight-class：高亮项文字样式</text>
+	<text class="uni-h4">option-text-highlight-class：高亮项文字和背景样式</text>
 	<uni-combobox :options="cityOptions" v-model="optionTextHighlightClassValue"
 		option-text-highlight-class="demo-option-highlight" />
-	<text class="uni-log">打开后当前匹配项会使用高亮文字样式：{{ optionTextHighlightClassValue }}</text>
+	<text class="uni-log">打开后当前匹配项会同时使用高亮文字和背景样式：{{ optionTextHighlightClassValue }}</text>
 
-	<text class="uni-h4">option-row-highlight-class：高亮项背景样式</text>
-	<uni-combobox :options="cityOptions" v-model="optionRowHighlightValue"
-		options-content-class="demo-full-highlight-content" option-row-highlight-class="demo-option-row-highlight" />
-	<text class="uni-log">打开后当前选中项背景铺满候选区域并去除圆角：{{ optionRowHighlightValue }}</text>
-
-	<text class="uni-h4">result-text-class：单选结果文字样式</text>
-	<uni-combobox :options="gradeOptions" v-model="resultTextClassValue" result-text-class="demo-result-text" />
-	<text class="uni-log">当前选择：{{ resultTextClassValue }}</text>
+	<text class="uni-h4">value-class：单选结果文字样式</text>
+	<uni-combobox :options="gradeOptions" v-model="valueClassValue" value-class="demo-result-text" />
+	<text class="uni-log">当前选择：{{ valueClassValue }}</text>
 
 	<text class="uni-h4">大量候选</text>
 	<uni-combobox :options="largeOptions" placeholder="请选择编号" v-model="largeValue" />
@@ -95,9 +85,9 @@
 		@update:modelValue="onUpdateModelValue" />
 	<text class="uni-log">事件值：{{ updateEventText }}</text>
 
-	<text class="uni-h4">selectchange：从候选项选中时触发</text>
+	<text class="uni-h4">selectChange：从候选项选中时触发</text>
 	<uni-combobox :options="statusOptions" v-model="selectEventValue" placeholder="请选择状态"
-		@selectchange="onSelectChange" />
+		@selectChange="onSelectChange" />
 	<text class="uni-log">事件值：{{ selectEventText }}</text>
 
 	<text class="uni-h4">组件方法：setInputValue / openOptions / closeOptions</text>
@@ -120,12 +110,10 @@
 	const bareInputValue = ref<string>('')
 	const borderlessValue = ref<string>('')
 	const arrowClassValue = ref<string>('')
-	const optionsViewClassValue = ref<string>('')
-	const optionsContentClassValue = ref<string>('')
+	const dropdownClassValue = ref<string>('')
 	const optionTextClassValue = ref<string>('')
 	const optionTextHighlightClassValue = ref<string>('杭州')
-	const optionRowHighlightValue = ref<string>('杭州')
-	const resultTextClassValue = ref<string>('三年级')
+	const valueClassValue = ref<string>('三年级')
 	const updateEventValue = ref<string>('')
 	const updateEventText = ref<string>('未触发')
 	const selectEventValue = ref<string>('')
@@ -187,11 +175,11 @@
 
 	function onSelectChange(value : string) {
 		selectEventText.value = value
-		console.log('combobox selectchange:', value)
+		console.log('combobox selectChange:', value)
 	}
 
 	function onCityChange(value : string) {
-		console.log('city selectchange:', value)
+		console.log('city selectChange:', value)
 	}
 
 	function callOpenOptions() {
@@ -243,15 +231,10 @@
 		border-bottom-width: 2px;
 	}
 
-	.demo-options-view {
+	.demo-dropdown {
 		border-color: var(--tips-border-color, #2563eb);
 		border-width: 2px;
 		background-color: var(--tips-background-color, #eff6ff);
-	}
-
-	.demo-options-content {
-		padding-left: 12px;
-		padding-right: 12px;
 	}
 
 	.demo-option-text {
@@ -262,15 +245,6 @@
 	.demo-option-highlight {
 		color: var(--tips-color, #dc2626);
 		font-weight: bold;
-	}
-
-	.demo-full-highlight-content {
-		padding-left: 0;
-		padding-right: 0;
-	}
-
-	.demo-option-row-highlight {
-		border-radius: 0;
 		background-color: #dbeafe;
 	}
 
@@ -299,7 +273,7 @@
 			color: #5f5f5f;
 		}
 
-		.demo-option-row-highlight {
+		.demo-option-highlight {
 			background-color: #3b3b3b;
 		}
 	}

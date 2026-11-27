@@ -418,7 +418,7 @@ function initializeAndroidTextarea(editor, native, style) {
   assert.ok(rpx2px)
   for (const name of [
     'beginUpdateBatch', 'endUpdateBatch', 'updateAutoHeight', 'updateFontSize',
-    'updateCursorColor', 'updateLineHeight', 'updateLetterSpacing',
+    'updateCursorColor', 'updateSelectionColor', 'updateSelectionHandleColor', 'updateLineHeight', 'updateLetterSpacing',
     'updateFontWeight', 'updateFontStyle', 'updateFontFamily', 'updateTextAlign', 'updateDirection',
   ]) {
     native.view[name] = () => {}
@@ -434,6 +434,8 @@ function initializeAndroidTextarea(editor, native, style) {
     props: { autoHeight: false },
     instance: { rawProps: {} },
     resolvedCursorColor: { value: '' },
+    resolvedSelectionColor: { value: '' },
+    selectionHandleColor: { value: '' },
     uni: { rpx2px: value => value / 2 },
   }, { filename })
   ready()

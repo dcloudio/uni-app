@@ -31,21 +31,16 @@
 			v-else
 			class="uni-field-result"
 			:class="[
-				resultTextClass,
+				valueClass,
 				currentValue == '' ? 'uni-field-result--placeholder' : '',
 				disabled ? 'uni-field-result--disabled' : '',
 				currentValue == '' ? placeholderClass : ''
 			]"
 			flatten
 		>{{ displayText }}</text>
-		<!-- #ifdef uniVersion>=5.36 -->
-		<text class="uni-down-arrow-iconfont" :class="props.arrowClass">{{'\uE601'}}</text>
-		<!-- #endif -->
-		<!-- #ifdef uniVersion<5.36 -->
 		<view class="uni-combobox__arrow-wrap" @click.stop="toggleOptions">
 			<view class="uni-combobox__arrow" :class="[arrowClass, opened ? 'uni-combobox__arrow--open' : '']" flatten></view>
 		</view>
-		<!-- #endif -->
 		<view v-if="disabled" class="uni-combobox__disabled-mask"></view>
 	</view>
 	<!-- #ifdef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
@@ -62,7 +57,7 @@
 			ref="popupRef"
 			<!-- #endif -->
 			class="uni-dropdown"
-			:class="[optionsViewClass, optionsContentClass]"
+			:class="dropdownClass"
 			:style="optionsStyle"
 			:scroll-into-view="scrollIntoViewId"
 			@click.stop
@@ -81,17 +76,12 @@
 				:class="[
 					item == currentValue && currentValue != '' ? 'uni-combobox-pop__item--selected' : '',
 					index == highlightedIndex ? 'uni-combobox-pop__item--highlight' : '',
-					index == highlightedIndex ? optionRowHighlightClass : ''
+					index == highlightedIndex ? optionTextHighlightClass : ''
 				]"
 				@click.stop="selectOption(index)"
 			>
-				<text class="uni-combobox-pop__item-text" :class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']" flatten>{{ item }}</text>
-				<!-- #ifdef uniVersion>=5.36 -->
+				<text class="uni-combobox-pop__item-text" :class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']" style="background-color: transparent;" flatten>{{ item }}</text>
 				<text v-if="item == currentValue && currentValue != ''" class="uni-combobox-pop__check" :class="index == highlightedIndex ? 'uni-combobox-pop__check--highlight' : ''" flatten>{{'\uEA08'}}</text>
-				<!-- #endif -->
-				<!-- #ifdef uniVersion<5.36 -->
-				<text v-if="item == currentValue && currentValue != ''" class="uni-combobox-pop__check" :class="index == highlightedIndex ? 'uni-combobox-pop__check--highlight' : ''" flatten></text>
-				<!-- #endif -->
 			</view>
 		</scroll-view>
 	</teleport>
@@ -126,12 +116,10 @@ defineOptions({
 		'arrow-class',
 		'field-class',
 		'placeholder-class',
-		'options-view-class',
-		'options-content-class',
+		'dropdown-class',
 		'option-text-class',
 		'option-text-highlight-class',
-		'option-row-highlight-class',
-		'result-text-class'
+		'value-class'
 	]
 })
 
@@ -273,7 +261,7 @@ type Props = {
 	 */
 	arrowClass? : string.ClassString,
 	/**
-	 * @description 候选浮层外层自定义样式类
+	 * @description 下拉浮层自定义样式类
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
@@ -288,24 +276,7 @@ type Props = {
 	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
-	optionsViewClass? : string.ClassString,
-	/**
-	 * @description 候选浮层内容自定义样式类
-	 * @default ""
-	 * @uniPlatform {
-	 *   "app": {
-	 *     "android": {"unixVaporVer": "5.31"},
-	 *     "ios": {"unixVaporVer": "5.31"},
-	 *     "harmony": {"unixVaporVer": "5.31"}
-	 *   },
-	 *   "mp": {
-	 *     "weixin": {"unixVer": "5.31"},
-	 *     "alipay": {"unixVer": "5.31"}
-	 *   },
-	 *   "web": {"unixVer": "5.31"}
-	 * }
-	 */
-	optionsContentClass? : string.ClassString,
+	dropdownClass? : string.ClassString,
 	/**
 	 * @description 候选项文字自定义样式类
 	 * @default ""
@@ -324,7 +295,7 @@ type Props = {
 	 */
 	optionTextClass? : string.ClassString,
 	/**
-	 * @description 候选项高亮自定义样式类
+	 * @description 候选项高亮自定义样式类，同时作用于选项行和文字，可设置整行背景和文字样式
 	 * @default ""
 	 * @uniPlatform {
 	 *   "app": {
@@ -341,23 +312,6 @@ type Props = {
 	 */
 	optionTextHighlightClass? : string.ClassString,
 	/**
-	 * @description 候选项高亮行自定义样式类
-	 * @default ""
-	 * @uniPlatform {
-	 *   "app": {
-	 *     "android": {"unixVaporVer": "5.31"},
-	 *     "ios": {"unixVaporVer": "5.31"},
-	 *     "harmony": {"unixVaporVer": "5.31"}
-	 *   },
-	 *   "mp": {
-	 *     "weixin": {"unixVer": "5.31"},
-	 *     "alipay": {"unixVer": "5.31"}
-	 *   },
-	 *   "web": {"unixVer": "5.31"}
-	 * }
-	 */
-	optionRowHighlightClass? : string.ClassString,
-	/**
 	 * @description 单选模式结果文字自定义样式类
 	 * @default ""
 	 * @uniPlatform {
@@ -373,7 +327,7 @@ type Props = {
 	 *   "web": {"unixVer": "5.31"}
 	 * }
 	 */
-	resultTextClass? : string.ClassString
+	valueClass? : string.ClassString
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -385,12 +339,10 @@ const props = withDefaults(defineProps<Props>(), {
 	bare: false,
 	arrowClass: '',
 	fieldClass: '',
-	optionsViewClass: '',
-	optionsContentClass: '',
+	dropdownClass: '',
 	optionTextClass: '',
 	optionTextHighlightClass: '',
-	optionRowHighlightClass: '',
-	resultTextClass: ''
+	valueClass: ''
 })
 
 const emit = defineEmits<{
@@ -426,6 +378,10 @@ const emit = defineEmits<{
 	 *   },
 	 *   "web": {"unixVer": "5.31"}
 	 * }
+	 */
+	selectChange: [value : string],
+	/**
+	 * @internal
 	 */
 	selectchange: [value : string]
 }>()
@@ -1228,6 +1184,7 @@ function selectOption(index : number) {
 	const value = visibleOptions.value[index]
 	emitValue(value)
 	emit('selectchange', value)
+	emit('selectChange', value)
 	closeOptions()
 }
 
@@ -1328,24 +1285,6 @@ onBackPress(() : boolean => {
 </script>
 
 <style>
-/* #ifdef uniVersion>=5.36 */
-.uni-down-arrow-iconfont{
-	font-family: uni-icon;
-	transform: rotate(-90deg);
-	font-weight: bold;
-	font-size: 18px;
-}
-/* #endif */
-/* #ifdef uniVersion>=5.36 && WEB */
-/* .uni-down-arrow-iconfont:hover{
-	background-color: #f5f5f5;
-}
-@media (prefers-color-scheme: dark) {
-	.uni-down-arrow-iconfont:hover{
-		background-color: #1d1d1d;
-	}
-} */
-/* #endif */
 .uni-field-default {
 	position: relative;
 	flex-direction: row;
@@ -1391,10 +1330,9 @@ onBackPress(() : boolean => {
 .uni-field-result--placeholder {
 	color: rgba(60, 60, 67, 0.30);
 }
-/* #ifdef uniVersion <5.36 */
 .uni-combobox__arrow-wrap {
 	width: 28px;
-	height: 40px;
+	padding: 2px 0;
 	align-items: center;
 	justify-content: center;
 }
@@ -1402,13 +1340,12 @@ onBackPress(() : boolean => {
 .uni-combobox__arrow {
 	width: 6px;
 	height: 6px;
-	border-right: 1px solid #737373;
-	border-bottom: 1px solid #737373;
+	border-right: 1px solid rgb(0, 0, 0);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	transform: rotate(45deg);
 	transition-property: transform;
 	transition-duration: 150ms;
 }
-/* #endif */
 
 /* #ifdef MP */
 /* 触发器在遮罩上方，点击另一个组合框时直接切换。 */
@@ -1443,7 +1380,7 @@ onBackPress(() : boolean => {
 	display: flex;
 	width: 100%;
 	height: 36px;
-	padding: 0px 12px; /* 内层设padding,而不是外层设padding,以便让hover效果左右通满*/
+	padding: 0px 12px;
 	flex-direction: row;
 	align-items: center;
 	box-sizing: border-box;
@@ -1454,42 +1391,21 @@ onBackPress(() : boolean => {
 	min-width: 0;
 	line-height: 36px;
 	font-size: 14px;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.uni-down-arrow-iconfont {
-	color: #737373;
-}
-
 .uni-combobox-pop__check {
+	flex-shrink: 0;
 	color: #0a0a0a;
 	margin-left: 8px;
-	/* #ifdef uniVersion>=5.36 */
 	font-family: uni-icon;
 	font-size: 16px;
-	/* #endif */
-	/* #ifdef uniVersion<5.36 */
-	margin-right: 5px;
-	border-right-width: 2px;
-	border-right-style: solid;
-	border-right-color: #0a0a0a;
-	border-bottom-width: 2px;
-	border-bottom-style: solid;
-	border-bottom-color: #0a0a0a;
-	height: 12px;
-	width: 6px;
-	transform-origin: center;
-	transform: rotate(45deg);
-	/* #endif */
 }
 
 .uni-combobox-pop__check--highlight {
 	color: #171717;
-	/* #ifdef uniVersion<5.36 */
-	border-right-color: #171717;
-	border-bottom-color: #171717;
-	/* #endif */
 }
 
 .uni-combobox-pop__item--selected,
@@ -1558,7 +1474,7 @@ onBackPress(() : boolean => {
 
 @media (prefers-color-scheme: dark) {
 	.uni-field-default {
-		background-color: #3b3b3b;
+		background-color: #2C2C2C;
 		border-color: #373737;
 	}
 
@@ -1582,30 +1498,18 @@ onBackPress(() : boolean => {
 		color: #fafafa;
 	}
 
-	.uni-down-arrow-iconfont {
-		color: #a3a3a3;
-	}
-
 	.uni-combobox-pop__check,
 	.uni-combobox-pop__check--highlight {
 		color: #fafafa;
 	}
-
-	/* #ifdef uniVersion<5.36 */
-	.uni-combobox-pop__check,
-	.uni-combobox-pop__check--highlight {
-		border-right-color: #fafafa;
-		border-bottom-color: #fafafa;
-	}
-	/* #endif */
 
 	.uni-combobox-pop__empty {
 		color: #a1a1aa;
 	}
 
 	.uni-combobox__arrow {
-		border-right-color: #a3a3a3;
-		border-bottom-color: #a3a3a3;
+		border-right-color: rgba(255, 255, 255, 0.80);
+		border-bottom-color: rgba(255, 255, 255, 0.80);
 	}
 
 	.uni-dropdown {

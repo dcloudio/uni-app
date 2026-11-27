@@ -11,6 +11,7 @@
 | `form-item` | `components/form-item/form-item.uvue` |
 | `component-template` | `components/component-template/component-template.uvue` |
 | `enum-data-checkbox` | `components/enum-data-checkbox/enum-data-checkbox.uvue` |
+| `uni-card` | `components/uni-card/uni-card.uvue` |
 | `uni-forms-x` | `uni_modules/uni-forms-x` |
 | `uni-combobox` | `uni_modules/uni-combobox` |
 
@@ -18,20 +19,19 @@
 - `component-template` 只根据 syntaxdoc 语法生成属性控制项，不包含任何原生组件、动画、事件日志或组件名分支。真实组件由页面通过 preview 插槽提供，属性值及控制配置均由页面持有。
 - `enum-data-checkbox` 保留为项目组件，不迁移到 `uni_modules`。普通枚举配置继续使用它。
 - 不新增与 `uni_modules/uni-data-checkbox-x` 中底层 `uni-data-checkbox` 同名的表单封装。
-- 已删除 `uni-card`，卡片结构直接写在页面中；需要卡片样式时使用页面自己的 `.uni-card`，标题单独使用 `uni-h4`。
+- `uni-card` 统一外置分组标题和内容卡片。通过 `title` 设置标题，默认插槽放页面内容，`title` 插槽可替换标题；组件不管理页面的数据和事件。已有页面自己的 `.uni-card` 可保留，按需迁移。
 - `form-item`、`component-template` 使用项目组件目录，不声明为独立 uni-module。依赖的 `uni-forms-x` 和 `uni-combobox` 仍从现有 `uni_modules` 使用。
 
 ## 页面结构
 
 - 页面不增加只用于包裹内容的最外层 `view` 或 `scroll-view`。优先使用 `page` 选择器设置页面级样式。
-- 一个功能分组由外置标题和内容卡片组成。标题使用 `uni-h4`，不使用标题组件包裹：
+- 一个功能分组由外置标题和内容卡片组成。重复的分组结构使用 `uni-card`，默认标题与 `uni-h4` 保持一致的层级和间距：
 
   ```html
-  <text class="uni-h4">分组标题</text>
-  <view class="uni-card">分组内容</view>
+  <uni-card title="分组标题">分组内容</uni-card>
   ```
 
-- 卡片样式直接写在页面的 `.uni-card` 中，标题必须位于背景卡片外面。不要再使用 `uni-card` 组件。
+- 标题必须位于背景卡片外面。`uni-card` 通过 `title-class`、`content-class` 定制内部样式；页面中的 class、style 作用于整个组件，不通过后代选择器覆盖内部结构。
 - 页面底部安全区由 `common/uni.css` 的 `page` 规则处理：Web 使用 `page::after`，其他平台使用 `padding-bottom`。页面不要用 padding 简写覆盖该规则；需要页内间距时分别设置上、左、右 padding。
 - 不使用标题额外 class 或内联颜色；分组层级通过标题、卡片背景和间距表达。
 
@@ -57,6 +57,7 @@
   | 颜色等字符串候选 | `form-item type="combobox"` | `string` | label 在左，组合框填满右侧空间 |
 
 - `enum-data-checkbox` 通过 `items` 接收 `{ text, value, disabled? }` 选项，兼容旧的 name、label 文案；支持 `multiple` 和 `mode`，不要无条件添加 `icon="right"`。普通参数配置显式设置 `:show-toast="false"`。
+- 手写的平铺单选、多选可以继续使用 enum-data-checkbox；component-template 自动生成语法 values 属性时统一使用 combobox，不生成平铺枚举控件。
 - 可调节的数值优先使用 `<form-item type="slider">`，按属性语义设置 `min`、`max`、`step`。百分比、尺寸、时间等有限范围值不要使用输入框。
 - `form-item type="slider"` 默认在 `change` 时更新 `v-model`；需要拖动过程中实时更新时设置 `live`，此时组件会在 `changing` 时更新。
 - 颜色选择使用 `<form-item type="combobox">`，候选数组通过 `options` 提供；不要用输入框模拟颜色下拉。
@@ -212,14 +213,14 @@ progress 示例直接导入 `pages/component/progress/progress-syntax.json`，�
 
 ## 页面文字规范
 
-- 分组标题只使用 `uni-h4`。
+- 页面直接书写的分组标题使用 `uni-h4`；使用 `uni-card` 时通过 `title` 生成同层级标题，自定义 `title` 插槽时继续使用 `uni-h4`。
 - 备注、参数说明和平台限制使用 `uni-comment`。
 - 事件结果、接口返回值和运行日志使用 `uni-log`。
 - 不使用页面自定义的 `title`、`comment`、`log` class 替代这三个公共 class；需要特殊布局时另加业务 class，不改变文字语义 class。
 
 ## CSS 约束
 
-- 表单控件的样式放入 `components/form-item/form-item.uvue`；卡片样式直接放在页面的 `.uni-card` 中；全局文字语义 class、主题变量和页面安全区继续由 `common/uni.css` 管理。
+- 表单控件的样式放入 `components/form-item/form-item.uvue`；公共卡片样式放入 `components/uni-card/uni-card.uvue`，已有页面的 `.uni-card` 可按需迁移；全局文字语义 class、主题变量和页面安全区继续由 `common/uni.css` 管理。
 - App-UVue 跨端样式优先使用单一 class 选择器。避免标签、ID、后代和复合选择器覆盖组件内部样式。
 - 不用 `!important` 掩盖层叠问题，不通过增加无意义的容器解决间距问题。
 - 不给 `view` 设置文字颜色来期待所有子控件继承；颜色写在实际绘制文字的 `text`、`input`、`textarea` 或组件提供的文字 class 上。

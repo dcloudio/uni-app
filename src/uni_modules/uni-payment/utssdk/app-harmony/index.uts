@@ -43,7 +43,6 @@ export {
     RequestPaymentErrorCode,
     RequestPaymentFail,
     RequestPaymentFailCallback,
-    RequestPaymentFailImpl,
     RequestPaymentOptions,
     RequestPaymentSuccess,
     RequestPaymentSuccessCallback,

@@ -1,6 +1,21 @@
 重要!
+SDK2.1.0
+1. 支持从 Info.plist 的 LSApplicationQueriesSchemes 中移除 weixin，使用 weixinULAPI 检测微信是否安装。移除前，请将业务中的微信安装检测改为调用 [WXApi isWXAppInstalled]，并确认 WebView 自定义协议跳转及其他 SDK 不再依赖 canOpenURL 查询 weixin；仍有依赖时，请保留 weixin 配置。
+
+SDK2.0.9
+1. 修复 XCFramework 版 CocoaPods 集成在 Apple Silicon 模拟器上无法使用的问题（移除 podspec 中错误的 arm64 模拟器架构排除配置；SDK 功能与 2.0.8 一致）
+
+SDK2.0.8
+1. 修复一些已知问题
+
+SDK2.0.7
+1. 增加支付拉起全链路上报（PayReq、JointPayReq 的发起、拉起、回包信息上报）
+
+SDK2.0.6
+1. 将全局CFURLCreateStringByAddingPercentEscapes替换成stringByAddingPercentEncodingWithAllowedCharacters
+
 SDK2.0.5
-1. 支持模块化集成​：XCFramework 头文件引用改为标准化格式 #import <WechatOpenSDK/WXApi.h>，解决路径冲突并支持 Swift/ObjC 混合开发
+1. 优化XCFramework打包方式
 2. 修复openWXApp偶现失败的问题
 
 SDK2.0.4
