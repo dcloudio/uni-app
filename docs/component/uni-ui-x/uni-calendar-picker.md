@@ -236,35 +236,35 @@ Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | range | boolean | false | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 是否开启日期范围选择 |
-| modelValue | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 单选值，格式 YYYY-MM-DD，支持 v-model；range 为 true 时忽略 |
-| rangeStart | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start |
-| rangeEnd | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end |
+| model-value | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 单选值，格式 YYYY-MM-DD，支持 v-model；range 为 true 时忽略 |
+| range-start | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start |
+| range-end | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end |
 | placeholder | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 未选择日期时的占位文字，组件不提供内置文案 |
 | title | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 弹层标题文字，组件不提供内置文案 |
 | locale | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 语言标识，透传给日历视图 |
-| weekStart | number | -1 | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 一周起始日，透传给日历视图；-1 表示按语言自动适配 |
-| minDate | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 可选的最小日期，格式 YYYY-MM-DD，透传给日历视图 |
-| maxDate | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 可选的最大日期，格式 YYYY-MM-DD，透传给日历视图 |
+| week-start | number | -1 | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 一周起始日，透传给日历视图；-1 表示按语言自动适配 |
+| min-date | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 可选的最小日期，格式 YYYY-MM-DD，透传给日历视图 |
+| max-date | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 可选的最大日期，格式 YYYY-MM-DD，透传给日历视图 |
 | holidays | string\[\] | "() : string\[] => \[] as string\[]" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 节假日日期列表，格式 YYYY-MM-DD，透传给日历视图 |
-| dayExtras | CalendarDayExtra\[\] | "() : CalendarDayExtra\[] => \[] as CalendarDayExtra\[]" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日期附加文字列表，透传给日历视图 |
-| rangeStartLabel | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围开始日期上方的标签文字，透传给日历视图 |
-| rangeEndLabel | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围结束日期上方的标签文字，透传给日历视图 |
+| day-extras | CalendarDayExtra\[\] | "() : CalendarDayExtra\[] => \[] as CalendarDayExtra\[]" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日期附加文字列表，透传给日历视图 |
+| range-start-label | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围开始日期上方的标签文字，透传给日历视图 |
+| range-end-label | string | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围结束日期上方的标签文字，透传给日历视图 |
 | confirm | boolean | false | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 是否开启确认模式：弹层底部显示已选日期预览（范围模式分别显示开始与结束日期），左上角变为取消、右上角为确定；点击确定才提交选择并关闭弹层，点取消、遮罩、返回键等关闭方式不会提交选择 |
 | disabled | boolean | false | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 是否禁用触发区 |
-| popClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 弹层容器的样式类，作用于弹层根节点 |
-| maskClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 遮罩层的样式类 |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 默认触发区的样式类，仅在使用默认触发区时生效 |
-| cancelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 弹层关闭按钮的样式类 |
-| previewResultClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 确认模式底部预览结果区域的样式类，仅 confirm 为 true 时生效 |
-| previewResultTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 确认模式底部预览结果文字的样式类，仅 confirm 为 true 时生效 |
-| yearMonthClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历年月标题的样式类，透传给日历视图 |
-| yearMonthArrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历年月切换箭头的样式类，透传给日历视图 |
-| weekClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历星期标题行的样式类，透传给日历视图 |
-| weekItemClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历星期标题项的样式类，透传给日历视图 |
-| dayClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历日期单元格的样式类，透传给日历视图 |
-| daySelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历选中日期的样式类，透传给日历视图 |
-| rangeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围内中间日期的样式类，透传给日历视图 |
-| rangeLabelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围首尾标签容器的样式类，透传给日历视图 |
+| pop-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 弹层容器的样式类，作用于弹层根节点 |
+| mask-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 遮罩层的样式类 |
+| input-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 默认触发区的样式类，仅在使用默认触发区时生效 |
+| cancel-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 弹层关闭按钮的样式类 |
+| preview-result-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 确认模式底部预览结果区域的样式类，仅 confirm 为 true 时生效 |
+| preview-result-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 确认模式底部预览结果文字的样式类，仅 confirm 为 true 时生效 |
+| year-month-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历年月标题的样式类，透传给日历视图 |
+| year-month-arrow-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历年月切换箭头的样式类，透传给日历视图 |
+| week-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历星期标题行的样式类，透传给日历视图 |
+| week-item-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历星期标题项的样式类，透传给日历视图 |
+| day-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历日期单元格的样式类，透传给日历视图 |
+| day-selected-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 日历选中日期的样式类，透传给日历视图 |
+| range-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围内中间日期的样式类，透传给日历视图 |
+| range-label-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.35; 微信小程序: 5.35; 支付宝小程序: 5.35; Android(Vapor): 5.35; iOS(Vapor): 5.35; HarmonyOS(Vapor): 5.35 | 范围首尾标签容器的样式类，透传给日历视图 |
 | @update:modelValue | Event |   |   | 单选值变化时触发，用于 v-model 双向绑定 |
 | @update:rangeStart | Event |   |   | 范围开始日期变化时触发，用于 v-model:range-start 双向绑定 |
 | @update:rangeEnd | Event |   |   | 范围结束日期变化时触发，用于 v-model:range-end 双向绑定 |

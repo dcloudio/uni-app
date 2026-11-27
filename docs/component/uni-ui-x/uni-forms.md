@@ -378,21 +378,21 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | \[已废弃] 旧版表单数据属性，推荐使用 modelValue |
-| modelValue | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 表单数据，支持 v-model 双向绑定 |
+| model-value | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 表单数据，支持 v-model 双向绑定 |
 | model | object \| null | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | \[已废弃] 旧版表单数据属性，优先级高于 modelValue |
 | rules | object | "() : UniFormRules => ({})" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | DB Schema 风格校验规则，键为字段路径 |
 | schema | any | null | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建 |
-| errShowType | string | "toast" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 校验错误提示方式 |
-| validateTrigger | UniFormTrigger | "'submit' as UniFormTrigger" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 默认校验触发时机 |
-| labelPosition | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签位置 |
-| labelWidth | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局的标签宽度，数字按 px 处理 |
-| labelAlign | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字对齐方式 |
+| err-show-type | string | "toast" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 校验错误提示方式 |
+| validate-trigger | UniFormTrigger | "'submit' as UniFormTrigger" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 默认校验触发时机 |
+| label-position | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签位置 |
+| label-width | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局的标签宽度，数字按 px 处理 |
+| label-align | string | "left" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字对齐方式 |
 | border | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示字段分隔线 |
 | @validate | Function |   |   | 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组 |
 | @submit | Function |   |   | \[已废弃] 调用 submit 方法时触发，推荐使用 validate 方法 |
 | @update:modelValue | Event |   |   | 表单数据更新时触发，参数为更新后的表单数据 |
 
-#### errShowType 的属性描述
+#### err-show-type 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
@@ -400,7 +400,7 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | toast | 弹出第一条错误，并为失败项显示错误边框 |
 | modal | 弹窗显示第一条错误 |
 
-#### validateTrigger 的属性描述
+#### validate-trigger 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
@@ -408,14 +408,14 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | blur | 表单项失焦时触发 |
 | submit | 调用 validate 或 validateField 时触发 |
 
-#### labelPosition 的属性描述
+#### label-position 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
 | left | 标签与控件单行横排 |
 | top | 标签在控件上方，竖排显示 |
 
-#### labelAlign 的属性描述
+#### label-align 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
@@ -1196,20 +1196,20 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | required | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示红色必填标记；字段是否必填由 rules 决定 |
 | label | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字 |
 | description | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签下方的说明文字 |
-| showArrow | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否在单行横排布局的行尾显示向右箭头 |
-| labelWidth | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
-| labelAlign | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签文字对齐方式；不设置时跟随表单 |
-| labelPosition | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签位置；不设置时跟随表单 |
-| validateTrigger | UniFormTrigger |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前字段的校验触发时机；不设置时跟随表单 |
-| errorMessage | string \| boolean | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字的自定义样式类 |
-| descriptionClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签辅助说明的自定义样式类 |
-| requiredClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 必填标记的自定义样式类 |
-| contentClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
-| errorMessageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 控件下方错误文字的自定义样式类 |
-| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | toast 错误提示方式下表单项错误边框的自定义样式类 |
+| show-arrow | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否在单行横排布局的行尾显示向右箭头 |
+| label-width | string \| number | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签宽度，数字按 px 处理；不设置时跟随表单 |
+| label-align | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签文字对齐方式；不设置时跟随表单 |
+| label-position | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前项的标签位置；不设置时跟随表单 |
+| validate-trigger | UniFormTrigger |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前字段的校验触发时机；不设置时跟随表单 |
+| error-message | string \| boolean | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 覆盖组件内部错误信息；传入 false 时不显示错误文字 |
+| label-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签文字的自定义样式类 |
+| description-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 标签辅助说明的自定义样式类 |
+| required-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 必填标记的自定义样式类 |
+| content-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 单行横排布局中控件区域的自定义样式类，顶部布局不使用 |
+| error-message-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 控件下方错误文字的自定义样式类 |
+| error-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | toast 错误提示方式下表单项错误边框的自定义样式类 |
 
-#### labelAlign 的属性描述
+#### label-align 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
@@ -1217,14 +1217,14 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | center | 居中对齐 |
 | right | 右对齐 |
 
-#### labelPosition 的属性描述
+#### label-position 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
 | left | 标签与控件单行横排 |
 | top | 标签在控件上方，竖排显示 |
 
-#### validateTrigger 的属性描述
+#### validate-trigger 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |

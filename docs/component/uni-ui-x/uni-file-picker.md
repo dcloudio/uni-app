@@ -130,34 +130,34 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 ### 属性 
 | 名称 | 类型 | 默认值 | 描述 |
 | :- | :- | :- | :- |
-| modelValue | any\[] \| UTSJSONObject \| null | \[\] | 组件数据，支持 v-model，格式由 return-type 决定 |
+| model-value | any\[] \| UTSJSONObject \| null | \[\] | 组件数据，支持 v-model，格式由 return-type 决定 |
 | value | any\[] \| UTSJSONObject \| null | \[\] | 不使用 v-model 时传入的组件数据，格式由 return-type 决定 |
-| returnType | string | "array" | 限制 value 格式，array 时返回数组，object 时只能单选且会覆盖 |
-| autoUpload | boolean | true | 是否自动上传，false 时仅选择不触发上传 |
+| return-type | string | "array" | 限制 value 格式，array 时返回数组，object 时只能单选且会覆盖 |
+| auto-upload | boolean | true | 是否自动上传，false 时仅选择不触发上传 |
 | limit | string \| number | 9 | 最大选择个数 |
 | mode | string | "grid" | 选择图片后的文件列表样式，grid 宫格显示，list 列表显示 |
-| fileMediatype | string | "image" | 选择文件类型，image 只选图片，video 只选视频，all 选择任意文件，mix 同时选择图片和视频（仅 App） |
-| fileExtname | string \| string\[\] | "() : string\[] => \[] as string\[]" | 选择文件后缀，支持数组或逗号分隔字符串 |
+| file-mediatype | string | "image" | 选择文件类型，image 只选图片，video 只选视频，all 选择任意文件，mix 同时选择图片和视频（仅 App） |
+| file-extname | string \| string\[\] | "() : string\[] => \[] as string\[]" | 选择文件后缀，支持数组或逗号分隔字符串 |
 | title | string | "" | 组件标题，右侧显示上传计数 |
 | provider | string | "" | 上传服务商 |
 | dir | string | "" | 上传到云存储的目录 |
-| sourceType | string\[\] | "() : string\[] => \['album'] as string\[]" | 选择来源，album 从相册选择，camera 使用相机 |
-| sizeType | string\[\] | "() : string\[] => \['original', 'compressed'] as string\[]" | 是否压缩所选文件，original 原图 compressed 压缩图 |
-| albumMode | string | "system" | 相册选择模式，custom 自定义选择器 system 系统相册 |
+| source-type | string\[\] | "() : string\[] => \['album'] as string\[]" | 选择来源，album 从相册选择，camera 使用相机 |
+| size-type | string\[\] | "() : string\[] => \['original', 'compressed'] as string\[]" | 是否压缩所选文件，original 原图 compressed 压缩图 |
+| album-mode | string | "system" | 相册选择模式，custom 自定义选择器 system 系统相册 |
 | camera | string | "back" | 摄像头，front 前置 back 后置 |
-| maxDuration | number | 10 | 拍摄视频最长时长，单位秒 |
-| mediaType | string\[\] | "() : string\[] => \['image', 'video'] as string\[]" | chooseMedia 的媒体类型，image 图片 video 视频 mix 混合 |
+| max-duration | number | 10 | 拍摄视频最长时长，单位秒 |
+| media-type | string\[\] | "() : string\[] => \['image', 'video'] as string\[]" | chooseMedia 的媒体类型，image 图片 video 视频 mix 混合 |
 | compressed | boolean | false | 是否压缩所选视频 |
-| pageOrientation | string | "" | 屏幕方向，仅 Android 生效，auto 自动 portrait 竖屏 landscape 横屏 |
-| imageClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 图片宫格单元格的自定义样式类 |
-| listClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 文件列表区域的自定义样式类 |
-| titleClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标题的自定义样式类 |
-| countClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 右侧计数的自定义样式类 |
-| itemClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 列表项的自定义样式类 |
-| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 添加或选择按钮区域的自定义样式类 |
-| delIconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 删除按钮的自定义样式类 |
-| progressClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传进度条的自定义样式类 |
-| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传失败重试遮罩的自定义样式类 |
+| page-orientation | string | "" | 屏幕方向，仅 Android 生效，auto 自动 portrait 竖屏 landscape 横屏 |
+| image-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 图片宫格单元格的自定义样式类 |
+| list-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 文件列表区域的自定义样式类 |
+| title-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标题的自定义样式类 |
+| count-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 右侧计数的自定义样式类 |
+| item-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 列表项的自定义样式类 |
+| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 添加或选择按钮区域的自定义样式类 |
+| del-icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 删除按钮的自定义样式类 |
+| progress-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传进度条的自定义样式类 |
+| error-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 上传失败重试遮罩的自定义样式类 |
 | @select | Function |   | 选择文件后触发 |
 | @progress | Function |   | 文件上传时触发 |
 | @success | Function |   | 上传成功触发 |

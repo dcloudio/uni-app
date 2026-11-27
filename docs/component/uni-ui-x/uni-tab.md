@@ -122,8 +122,8 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| activeIndex | number |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 当前激活的选项卡索引 |
-| tabContentHeightFull | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | tab-content 的高度是否通到tab-bar下面 |
+| active-index | number |   | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 当前激活的选项卡索引 |
+| tab-content-height-full | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | tab-content 的高度是否通到tab-bar下面 |
 | @change | Event |   |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
 
 <!-- UTSCOMJSON.uni-tab.fileFormates -->
@@ -1240,8 +1240,8 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| badgeText | string | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的内容 |
-| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的样式类 |
+| badge-text | string | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的内容 |
+| badge-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | badge 的样式类 |
 
 <!-- UTSCOMJSON.uni-tab-item.fileFormates -->
 

@@ -354,31 +354,31 @@ Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| modelValue | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 选中日期，格式 YYYY-MM-DD，支持 v-model 双向绑定 |
+| model-value | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 选中日期，格式 YYYY-MM-DD，支持 v-model 双向绑定 |
 | date | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 初始显示的月份，格式 YYYY-MM 或 YYYY-MM-DD；为空时依次取 modelValue 所在月份、当前月份 |
-| minDate | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 可选的最小日期，格式 YYYY-MM-DD，早于该日期的日期不可点击 |
-| maxDate | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 可选的最大日期，格式 YYYY-MM-DD，晚于该日期的日期不可点击 |
+| min-date | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 可选的最小日期，格式 YYYY-MM-DD，早于该日期的日期不可点击 |
+| max-date | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 可选的最大日期，格式 YYYY-MM-DD，晚于该日期的日期不可点击 |
 | holidays | string\[\] | "() : string\[] => \[] as string\[]" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 节假日日期列表，格式 YYYY-MM-DD，命中的日期会高亮显示 |
 | locale | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 语言标识，如 zh-Hans、zh-Hant、en、fr、ja 等；为空时跟随系统语言 |
-| weekStart | number | -1 | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 一周的起始日，0 为周日、1 为周一，以此类推；-1 表示按语言自动适配 |
-| dayExtras | CalendarDayExtra\[\] | "() : CalendarDayExtra\[] => \[] as CalendarDayExtra\[]" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期附加文字列表，用于在日期数字上方、下方显示自定义文字，如农历、节日、入住/离店等；组件内部按日期建立一次索引，切换月份时不会重复构建；数据量很大时建议只传当前显示月份前后各一个月的数据，并整体替换数组以触发刷新 |
-| yearMonthClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 年月标题的自定义样式类 |
-| yearMonthArrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 年月标题左右箭头的自定义样式类 |
-| weekClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 星期标题行容器的自定义样式类 |
-| weekItemClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 星期标题项的自定义样式类 |
-| dayClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期单元格的自定义样式类，作用于所有日期 |
-| daySelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 选中日期的自定义样式类，用于覆盖默认选中样式 |
-| todayClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 今天日期的自定义样式类，用于覆盖默认今天高亮样式 |
-| dayTopClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期数字上方文字的自定义样式类 |
-| dayBottomClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期数字下方文字的自定义样式类 |
-| dayWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期单元格容器的自定义样式类，仅在传入 day-extras 时生效，可用于调整单元格高度等 |
+| week-start | number | -1 | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 一周的起始日，0 为周日、1 为周一，以此类推；-1 表示按语言自动适配 |
+| day-extras | CalendarDayExtra\[\] | "() : CalendarDayExtra\[] => \[] as CalendarDayExtra\[]" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期附加文字列表，用于在日期数字上方、下方显示自定义文字，如农历、节日、入住/离店等；组件内部按日期建立一次索引，切换月份时不会重复构建；数据量很大时建议只传当前显示月份前后各一个月的数据，并整体替换数组以触发刷新 |
+| year-month-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 年月标题的自定义样式类 |
+| year-month-arrow-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 年月标题左右箭头的自定义样式类 |
+| week-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 星期标题行容器的自定义样式类 |
+| week-item-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 星期标题项的自定义样式类 |
+| day-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期单元格的自定义样式类，作用于所有日期 |
+| day-selected-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 选中日期的自定义样式类，用于覆盖默认选中样式 |
+| today-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 今天日期的自定义样式类，用于覆盖默认今天高亮样式 |
+| day-top-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期数字上方文字的自定义样式类 |
+| day-bottom-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期数字下方文字的自定义样式类 |
+| day-wrap-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 日期单元格容器的自定义样式类，仅在传入 day-extras 时生效，可用于调整单元格高度等 |
 | range | boolean | false | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 是否开启日期范围选择。开启后忽略 model-value，改用 range-start / range-end |
-| rangeStart | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start |
-| rangeEnd | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end |
-| rangeStartLabel | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围开始日期上方显示的标签文字，未提供 range-start 插槽时生效；文案由使用者传入，组件不做国际化 |
-| rangeEndLabel | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围结束日期上方显示的标签文字，未提供 range-end 插槽时生效；文案由使用者传入，组件不做国际化 |
-| rangeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围中间日期（不含首尾）的样式类 |
-| rangeLabelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围首尾标签容器的样式类 |
+| range-start | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围开始日期，格式 YYYY-MM-DD，支持 v-model:range-start |
+| range-end | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围结束日期，格式 YYYY-MM-DD，支持 v-model:range-end |
+| range-start-label | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围开始日期上方显示的标签文字，未提供 range-start 插槽时生效；文案由使用者传入，组件不做国际化 |
+| range-end-label | string | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围结束日期上方显示的标签文字，未提供 range-end 插槽时生效；文案由使用者传入，组件不做国际化 |
+| range-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围中间日期（不含首尾）的样式类 |
+| range-label-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 范围首尾标签容器的样式类 |
 | compact | number | 0 | Web: 5.26; 微信小程序: 5.26; 支付宝小程序: 5.31; Android(Vapor): 5.26; iOS(Vapor): 5.26; HarmonyOS(Vapor): 5.26 | 紧凑模式：0 = 普通，1 = 纯文本布局紧凑（行高 36px），2 = 三段式单元格布局紧凑（单元格 44px）。用于窄屏下同时完整展示两个日历 |
 | @update:modelValue | Event |   |   | 选中日期变化时触发，用于 v-model 双向绑定 |
 | @change | Event |   |   | 点击选择日期时触发 |

@@ -198,7 +198,7 @@ Web(VDOM): 5.33; Web(Vapor): 5.41; 微信小程序: 5.33; 支付宝小程序: 5.
 | localdata | Array |   |
 | collection | string |   |
 | interval | number |   |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
 | @click | Function | 点击文字时触发；参数为 { index, data } |
 | @change | Function | 轮播切到新的一条时触发；参数为 { index, data }，仅回传索引与原始数据以降低高频开销 |
 
