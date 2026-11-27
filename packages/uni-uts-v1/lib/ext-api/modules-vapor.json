@@ -40,7 +40,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-actionSheet": {
     "uni": {
@@ -65,7 +66,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-ad-dom2": {
     "uni": {
@@ -92,7 +94,8 @@
     "easycom": [
       "ad"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-arrayBufferToBase64": {
     "uni": {
@@ -111,7 +114,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-authentication": {
     "uni": {
@@ -145,12 +149,14 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-barcode-scanning": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-base64ToArrayBuffer": {
     "uni": {
@@ -169,7 +175,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-bluetooth": {
     "uni": {
@@ -419,7 +426,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-calendar": {
     "uni": {
@@ -444,7 +452,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-camera": {
     "uni": {
@@ -462,7 +471,8 @@
     "easycom": [
       "camera"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-canvas-dom2": {
     "uni": {
@@ -481,7 +491,8 @@
     "easycom": [
       "canvas"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-chooseLocation": {
     "uni": {
@@ -497,7 +508,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-chooseMedia": {
     "uni": {
@@ -513,7 +525,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-clipboard": {
     "uni": {
@@ -538,7 +551,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-compass": {
     "uni": {
@@ -593,7 +607,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-convert2AbsFullPath": {
     "uni": {
@@ -620,7 +635,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-crash": {
     "uni": {
@@ -681,7 +697,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-createInnerAudioContext": {
     "uni": {
@@ -706,7 +723,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-createIntersectionObserver": {
     "uni": {
@@ -722,7 +740,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-createRequestPermissionListener": {
     "uni": {
@@ -737,7 +756,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-dialogPage": {
     "uni": {
@@ -764,14 +784,16 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-editor": {
     "components": [],
     "easycom": [
       "editor"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-event": {
     "uni": {
@@ -818,7 +840,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-exit": {
     "uni": {
@@ -834,7 +857,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-facialVerify": {
     "uni": {
@@ -859,7 +883,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -875,7 +900,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-form": {
     "components": [],
@@ -895,7 +921,8 @@
       "switch",
       "textarea"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getAccessibilityInfo": {
     "uni": {
@@ -910,7 +937,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getAppAuthorizeSetting": {
     "uni": {
@@ -926,7 +954,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getAppBaseInfo": {
     "uni": {
@@ -941,7 +970,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getBackgroundAudioManager": {
     "uni": {
@@ -957,7 +987,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-getDeviceInfo": {
     "uni": {
@@ -982,7 +1013,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getElementById": {
     "uni": {
@@ -1002,7 +1034,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getNetworkType": {
     "uni": {
@@ -1036,7 +1069,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-getProvider": {
     "uni": {
@@ -1061,7 +1095,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-getSystemInfo": {
     "uni": {
@@ -1092,7 +1127,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-getSystemSetting": {
     "uni": {
@@ -1108,7 +1144,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-gyroscope": {
     "uni": {
@@ -1163,7 +1200,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-install-wgt": {
     "uni": {
@@ -1178,7 +1216,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-installApk": {
     "uni": {
@@ -1193,7 +1232,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-keyboard": {
     "uni": {
@@ -1245,7 +1285,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-list-view": {
     "components": [],
@@ -1255,7 +1296,8 @@
       "sticky-header",
       "sticky-section"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-live-player": {
     "uni": {
@@ -1273,7 +1315,8 @@
     "easycom": [
       "live-player"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-live-pusher": {
     "uni": {
@@ -1291,14 +1334,16 @@
     "easycom": [
       "live-pusher"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-loading": {
     "components": [],
     "easycom": [
       "loading"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-location": {
     "uni": {
@@ -1380,7 +1425,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-location-amap": {
     "provider": {
@@ -1390,7 +1436,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-location-system": {
     "provider": {
@@ -1400,7 +1447,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-location-tencent": {
     "provider": {
@@ -1410,7 +1458,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-makePhoneCall": {
     "uni": {
@@ -1426,7 +1475,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-map-tencent": {
     "uni": {
@@ -1447,14 +1497,16 @@
     "easycom": [
       "map"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-match-media": {
     "components": [],
     "easycom": [
       "match-media"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-media": {
     "uni": {
@@ -1560,7 +1612,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-memory": {
     "uni": {
@@ -1585,7 +1638,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-modal": {
     "uni": {
@@ -1610,14 +1664,16 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-navigator": {
     "components": [],
     "easycom": [
       "navigator"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-network": {
     "uni": {
@@ -1660,7 +1716,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-oauth": {
     "uni": {
@@ -1694,7 +1751,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-oauth-apple": {
     "provider": {
@@ -1709,7 +1767,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-oauth-weixin": {
     "provider": {
@@ -1724,7 +1783,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-openAppAuthorizeSetting": {
     "uni": {
@@ -1739,7 +1799,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-openDocument": {
     "uni": {
@@ -1755,7 +1816,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-openLocation": {
     "uni": {
@@ -1771,14 +1833,16 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-page-container": {
     "components": [],
     "easycom": [
       "page-container"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-payment": {
     "uni": {
@@ -1797,7 +1861,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-payment-alipay": {
     "provider": {
@@ -1806,7 +1871,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-payment-wxpay": {
     "provider": {
@@ -1815,7 +1881,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-phoneContact": {
     "uni": {
@@ -1840,7 +1907,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-previewImage": {
     "uni": {
@@ -1863,7 +1931,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-privacy": {
     "uni": {
@@ -1930,14 +1999,16 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-progress": {
     "components": [],
     "easycom": [
       "progress"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-prompt": {
     "uni": {
@@ -1998,7 +2069,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-pullDownRefresh": {
     "uni": {
@@ -2029,7 +2101,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-push": {
     "uni": {
@@ -2099,52 +2172,62 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-fcm": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-gp": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-hms": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-honor": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-mainland": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-meizu": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-oppo": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-vivo": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-push-xiaomi": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-recorder": {
     "uni": {
@@ -2160,7 +2243,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-requestMerchantTransfer": {
     "uni": {
@@ -2179,7 +2263,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-requestSystemPermission": {
     "uni": {
@@ -2195,14 +2280,16 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-rich-text": {
     "components": [],
     "easycom": [
       "rich-text"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-rpx2px": {
     "uni": {
@@ -2218,7 +2305,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-scanCode": {
     "uni": {
@@ -2234,7 +2322,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-screenBrightness": {
     "uni": {
@@ -2268,7 +2357,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-secure-network": {
     "uni": {
@@ -2284,7 +2374,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-share": {
     "uni": {
@@ -2309,7 +2400,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-share-weixin": {
     "provider": {
@@ -2324,7 +2416,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-shareWithSystem": {
     "uni": {
@@ -2340,7 +2433,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-showLoading": {
     "uni": {
@@ -2371,7 +2465,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-sse": {
     "uni": {
@@ -2387,7 +2482,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-storage": {
     "uni": {
@@ -2484,7 +2580,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-swiper": {
     "components": [],
@@ -2492,7 +2589,8 @@
       "swiper",
       "swiper-item"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-theme": {
     "uni": {
@@ -2580,7 +2678,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-uasm": {
     "uni": {
@@ -2607,7 +2706,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": false
   },
   "uni-verify": {
     "uni": {
@@ -2632,7 +2732,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-vibrate": {
     "uni": {
@@ -2657,7 +2758,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-video": {
     "uni": {
@@ -2674,7 +2776,8 @@
     "easycom": [
       "video"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-virtualPayment": {
     "uni": {
@@ -2697,7 +2800,8 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-waterflow": {
     "components": [],
@@ -2705,7 +2809,8 @@
       "flow-item",
       "waterflow"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-web-view": {
     "uni": {
@@ -2732,7 +2837,8 @@
     "easycom": [
       "web-view"
     ],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-websocket": {
     "uni": {
@@ -2802,12 +2908,14 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-weixin-common": {
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   },
   "uni-zstd-decompress": {
     "uni": {
@@ -2822,6 +2930,7 @@
     },
     "components": [],
     "easycom": [],
-    "customElements": []
+    "customElements": [],
+    "treeShaking": true
   }
 }
