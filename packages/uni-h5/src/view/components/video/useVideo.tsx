@@ -151,9 +151,7 @@ function useGesture(
         state.gestureType = 'stop'
         return
       }
-      changeToastThin()
-      state.gestureType = 'volume'
-      state.volumeOld = video.volume
+      startVolume()
       if (!fullscreenState.fullscreen) {
         stop()
       }
@@ -171,9 +169,14 @@ function useGesture(
       state.gestureType === 'progress' &&
       state.currentTimeOld !== state.currentTimeNew
     ) {
-      video.currentTime = state.currentTimeNew
+      if (event.type === 'touchcancel') {
+        state.currentTimeNew = state.currentTimeOld
+      } else {
+        video.currentTime = state.currentTimeNew
+      }
     }
-    state.gestureType = 'none'
+    if (state.gestureType === 'volume') endVolume()
+    else state.gestureType = 'none'
   }
   function changeProgress(x: number) {
     const duration = videoState.currentDuration
@@ -202,8 +205,25 @@ function useGesture(
       state.volumeNew = value
     }
   }
+  function startVolume() {
+    changeToastThin()
+    state.gestureType = 'volume'
+    state.volumeOld = (videoRef.value as HTMLVideoElement).volume
+    state.volumeNew = state.volumeOld
+  }
+  function endVolume() {
+    state.gestureType = 'none'
+    if (changeToastThinTimer != null) clearTimeout(changeToastThinTimer)
+    changeToastThinTimer = null
+    clearChangeShowToast()
+    state.toastThin = false
+  }
+  onBeforeUnmount(endVolume)
   return {
     state,
+    startVolume,
+    changeVolume,
+    endVolume,
     onTouchstart,
     onTouchmove,
     onTouchend,
@@ -489,8 +509,17 @@ interface ControlsState {
   controlsVisible: boolean
 }
 function useControls(
-  props: { controls: any; showCenterPlayBtn: any; duration: any },
+  props: {
+    controls: any
+    showCenterPlayBtn: any
+    duration: any
+    enableProgressGesture: boolean | string
+    pageGesture: boolean | string
+    vslideGesture: boolean | string
+  },
   videoState: VideoState,
+  containerRef: HTMLRef,
+  gesture: ReturnType<typeof useGesture>,
   seek: Function,
   seeking?: (currentTimeNew: number) => void
 ) {
@@ -541,10 +570,12 @@ function useControls(
       hideTiming = null
     }
   }
+  let removeProgressListeners: (() => void) | undefined
   onBeforeUnmount(() => {
     if (hideTiming) {
       clearTimeout(hideTiming)
     }
+    removeProgressListeners?.()
   })
   watch(
     () => state.controlsShow && videoState.playing && !state.controlsTouching,
@@ -562,58 +593,209 @@ function useControls(
     let originY: number
     let moveOnce = true
     let originProgress: number
+    let trackWidth: number
+    let trackLeft: number
+    let mouseDragging = false
+    let draggingTrack = false
+    let draggingVideo = false
+    let draggingVolume = false
+    let suppressClick = false
     const ball = ballRef.value as HTMLElement
-    function touchmove(event: Event) {
-      const toucher = (event as TouchEvent).targetTouches[0]
+    const progress = progressRef.value as HTMLElement
+    const container = containerRef.value as HTMLElement
+    function updateDrag(event: Event) {
+      const toucher =
+        event.type === 'touchmove'
+          ? (event as TouchEvent).targetTouches[0]
+          : (event as MouseEvent)
       const pageX = toucher.pageX
       const pageY = toucher.pageY
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event)
+      // 按下只记录起点，实际移动后再显示进度或音量提示。
+      if (pageX === originX && pageY === originY && moveOnce) return
+      if (
+        (event.type === 'touchmove' || (mouseDragging && draggingVideo)) &&
+        moveOnce &&
+        Math.abs(pageX - originX) < Math.abs(pageY - originY)
+      ) {
+        if (mouseDragging && (props.pageGesture || props.vslideGesture)) {
+          gesture.startVolume()
+          draggingVolume = true
+          moveOnce = false
+        } else {
+          if (mouseDragging) mousecancel()
+          else endDrag(event)
+          return
+        }
+      }
+      if (draggingVolume) {
+        gesture.changeVolume(pageY - originY)
+        event.preventDefault()
+        event.stopPropagation()
         return
       }
+      if (mouseDragging && draggingVideo && !props.enableProgressGesture) {
+        mousecancel()
+        return
+      }
+      if (moveOnce && pageX === originX) return
+      // 与触摸手势一致，结束后由原有计时器延迟隐藏控制栏。
+      if (mouseDragging && moveOnce) state.controlsVisible = true
       moveOnce = false
-      const progressEl = progressRef.value as HTMLElement
-      const w = progressEl.offsetWidth
-      let progress = originProgress + ((pageX - originX) / w) * 100
+      let progress =
+        mouseDragging && draggingTrack
+          ? ((toucher.clientX - trackLeft) / trackWidth) * 100
+          : originProgress + ((pageX - originX) / trackWidth) * 100
       if (progress < 0) {
         progress = 0
       } else if (progress > 100) {
         progress = 100
       }
-      videoState.progress = progress
-      seeking?.((videoState.currentDuration * progress) / 100)
+      // 首次移动同步提示时间，后续相同进度不重复更新预览。
+      if (!state.seeking || progress !== videoState.progress) {
+        videoState.progress = progress
+        seeking?.((videoState.currentDuration * progress) / 100)
+      }
       state.seeking = true
       event.preventDefault()
       event.stopPropagation()
     }
-    function touchend(event: Event) {
+    function endDrag(event: Event) {
+      if (mouseDragging) return
       state.controlsTouching = false
       if (state.touching) {
         ball.removeEventListener(
           'touchmove',
-          touchmove,
+          updateDrag,
           passiveOptions as EventListenerOptions
         )
-        if (!moveOnce) {
+        if (state.seeking) {
           event.preventDefault()
           event.stopPropagation()
-          seek((videoState.currentDuration * videoState.progress) / 100)
+          if (event.type === 'touchcancel') resetProgress()
+          else seek((videoState.currentDuration * videoState.progress) / 100)
         }
+        state.seeking = false
         state.touching = false
       }
     }
-    ball.addEventListener('touchstart', (event) => {
+    function start(
+      toucher: { pageX: number; pageY: number },
+      fromVideo = false
+    ) {
+      // 每次拖动只读取一次区域尺寸，避免移动时反复触发布局计算。
+      const rect = (
+        fromVideo ? container : ball.parentElement!
+      ).getBoundingClientRect()
+      trackWidth = rect.width
+      if (!trackWidth) return false
+      trackLeft = rect.left
+      suppressClick = false
       state.controlsTouching = true
-      const toucher = event.targetTouches[0]
       originX = toucher.pageX
       originY = toucher.pageY
       originProgress = videoState.progress
       moveOnce = true
+      state.seeking = false
       state.touching = true
-      ball.addEventListener('touchmove', touchmove, passiveOptions)
-    })
-    ball.addEventListener('touchend', touchend)
-    ball.addEventListener('touchcancel', touchend)
+      return true
+    }
+    function touchstart(event: TouchEvent) {
+      if (state.touching || !start(event.targetTouches[0])) return
+      ball.addEventListener('touchmove', updateDrag, passiveOptions)
+    }
+    function releaseMouse() {
+      if (draggingVolume) {
+        gesture.endVolume()
+        draggingVolume = false
+      }
+      mouseDragging = false
+      window.removeEventListener('mousemove', mousemove, true)
+      window.removeEventListener('mouseup', mouseend, true)
+      window.removeEventListener('blur', mousecancel)
+    }
+    function mousestart(event: MouseEvent) {
+      if (event.button !== 0 || state.touching) return
+      suppressClick = false
+      const target = event.target as HTMLElement
+      const fromVideo = !progress.contains(target)
+      // 封面和弹幕也属于画面区域，仅排除按钮、控制栏和用户插槽。
+      if (
+        fromVideo &&
+        ((!props.enableProgressGesture &&
+          !props.pageGesture &&
+          !props.vslideGesture) ||
+          target.closest(
+            '.uni-video-bar, .uni-video-cover-play-button, .uni-video-slots'
+          ))
+      )
+        return
+      if (!start(event, fromVideo)) return
+      // 轨道按鼠标位置计算进度，圆点按拖动距离计算，避免按下时跳动。
+      draggingTrack = !fromVideo && !ball.contains(target)
+      draggingVideo = fromVideo
+      event.preventDefault()
+      event.stopPropagation()
+      mouseDragging = true
+      // 在窗口层跟踪，移出圆点或轨道后仍能继续拖动并处理松手。
+      window.addEventListener('mousemove', mousemove, {
+        capture: true,
+        passive: false,
+      })
+      window.addEventListener('mouseup', mouseend, true)
+      window.addEventListener('blur', mousecancel)
+    }
+    function mousemove(event: MouseEvent) {
+      // 多键操作或窗口外松开时，左键释放可能只表现为 buttons 变化。
+      if (!(event.buttons & 1)) {
+        mouseend(event)
+        return
+      }
+      updateDrag(event)
+    }
+    function mouseend(event: MouseEvent) {
+      if (event.type === 'mouseup' && event.button !== 0) return
+      // 快速松开时也应用最后的位置，不依赖最后一次 mousemove。
+      if (!moveOnce || event.pageX !== originX || event.pageY !== originY)
+        updateDrag(event)
+      suppressClick = !moveOnce
+      releaseMouse()
+      endDrag(event)
+    }
+    function mousecancel() {
+      suppressClick = !moveOnce
+      releaseMouse()
+      state.controlsTouching = state.touching = false
+      resetProgress()
+    }
+    function resetProgress() {
+      // 取消只恢复预览，不修改媒体的播放位置。
+      if (state.seeking) {
+        videoState.progress = originProgress
+        seeking?.((videoState.currentDuration * originProgress) / 100)
+        state.seeking = false
+      }
+    }
+    function click(event: Event) {
+      if (!suppressClick) return
+      suppressClick = false
+      // 拖动后的合成点击不能再次跳转或切换控制栏。
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    container.addEventListener('mousedown', mousestart)
+    container.addEventListener('click', click, true)
+    ball.addEventListener('touchstart', touchstart)
+    ball.addEventListener('touchend', endDrag)
+    ball.addEventListener('touchcancel', endDrag)
+    removeProgressListeners = () => {
+      releaseMouse()
+      container.removeEventListener('mousedown', mousestart)
+      container.removeEventListener('click', click, true)
+      ball.removeEventListener('touchstart', touchstart)
+      ball.removeEventListener('touchmove', updateDrag)
+      ball.removeEventListener('touchend', endDrag)
+      ball.removeEventListener('touchcancel', endDrag)
+    }
   })
   return {
     state,
@@ -774,7 +956,9 @@ function useProgressing(
   autoHideStart: () => void
 ) {
   const progressing = computed(
-    () => gestureState.gestureType === 'progress' || controlsState.touching
+    () =>
+      gestureState.gestureType === 'progress' ||
+      (controlsState.touching && controlsState.seeking)
   )
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val
@@ -955,12 +1139,8 @@ export function useVideoComponent(
     requestFullScreen,
     exitFullScreen,
   } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef)
-  const {
-    state: gestureState,
-    onTouchstart,
-    onTouchend,
-    onTouchmove,
-  } = useGesture(props, videoState, videoRef, fullscreenState)
+  const gesture = useGesture(props, videoState, videoRef, fullscreenState)
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = gesture
   const {
     state: controlsState,
     progressRef,
@@ -969,9 +1149,16 @@ export function useVideoComponent(
     toggleControls,
     autoHideEnd,
     autoHideStart,
-  } = useControls(props, videoState, seek, (currentTimeNew) => {
-    gestureState.currentTimeNew = currentTimeNew
-  })
+  } = useControls(
+    props,
+    videoState,
+    containerRef,
+    gesture,
+    seek,
+    (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew
+    }
+  )
   useContext(
     play,
     pause,
@@ -1007,9 +1194,16 @@ export function useVideoComponent(
       return (
         <div
           ref={containerRef}
-          class="uni-video-container"
+          class={{
+            'uni-video-container': true,
+            'uni-video-container-seekable':
+              props.enableProgressGesture ||
+              props.pageGesture ||
+              props.vslideGesture,
+          }}
           onTouchstart={onTouchstart}
           onTouchend={onTouchend}
+          onTouchcancel={onTouchend}
           onTouchmove={onTouchmove}
           // @ts-expect-error
           onFullscreenchange={withModifiers(onFullscreenChange, ['stop'])}
@@ -1095,6 +1289,7 @@ export function useVideoComponent(
                   <div
                     ref={ballRef}
                     style={{ left: videoState.progress + '%' }}
+                    onClick={withModifiers(() => {}, ['stop'])}
                     class={{
                       'uni-video-ball': true,
                       'uni-video-ball-progressing': progressing.value,

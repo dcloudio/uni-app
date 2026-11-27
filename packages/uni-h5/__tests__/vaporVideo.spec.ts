@@ -276,6 +276,8 @@ describe('Web Vapor Video 原生宿主', () => {
 
   beforeEach(() => jest.useFakeTimers())
   afterEach(() => {
+    // 结算用户交互回调，避免清空计时器后残留全局交互计数。
+    jest.advanceTimersByTime(0)
     apps.splice(0).forEach((app) => app.unmount())
     document.body.innerHTML = ''
     methods.clear()
@@ -330,6 +332,617 @@ describe('Web Vapor Video 原生宿主', () => {
       container: element.querySelector('.uni-video-container') as HTMLElement,
     }
   }
+
+  function mouse(type: string, x: number, options: MouseEventInit = {}) {
+    const event = new dom.window.MouseEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      clientX: x,
+      buttons: 1,
+      ...options,
+    })
+    Object.defineProperties(event, {
+      pageX: { value: x },
+      pageY: { value: options.clientY || 0 },
+    })
+    return event
+  }
+
+  function touch(type: string, x: number, y = 0) {
+    const event = new dom.window.Event(type, {
+      bubbles: true,
+      cancelable: true,
+    })
+    Object.defineProperty(event, 'targetTouches', {
+      value:
+        type === 'touchend' || type === 'touchcancel'
+          ? []
+          : [{ pageX: x, pageY: y }],
+    })
+    return event
+  }
+
+  function mockProgress(element: HTMLElement, video: HTMLVideoElement) {
+    const progress = element.querySelector(
+      '.uni-video-progress-container'
+    ) as HTMLElement
+    const ball = element.querySelector('.uni-video-ball') as HTMLElement
+    // JSDOM 没有布局与媒体元数据，手动提供尺寸和时长。
+    Object.defineProperty(progress, 'offsetWidth', { value: 224 })
+    const measure = jest
+      .spyOn(ball.parentElement!, 'getBoundingClientRect')
+      .mockReturnValue({ left: 50, width: 200 } as DOMRect)
+    Object.defineProperty(video, 'duration', { configurable: true, value: 100 })
+    video.dispatchEvent(new dom.window.Event('durationchange'))
+    return { progress, ball, measure }
+  }
+
+  async function checkMouseSeeking(
+    element: HTMLElement,
+    video: HTMLVideoElement
+  ) {
+    const { ball } = mockProgress(element, video)
+    video.currentTime = 20
+    video.dispatchEvent(new dom.window.Event('timeupdate'))
+    await vue.nextTick()
+
+    ball.dispatchEvent(mouse('mousedown', 100, { button: 2, buttons: 2 }))
+    window.dispatchEvent(mouse('mousemove', 200))
+    expect(video.currentTime).toBe(20)
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    // 触屏电脑的触摸结束事件不能中断正在进行的鼠标拖动。
+    ball.dispatchEvent(new dom.window.Event('touchend', { bubbles: true }))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('20%')
+    // 事件发到窗口，模拟鼠标已经移出圆点。
+    window.dispatchEvent(mouse('mousemove', 200))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('70%')
+    expect(video.currentTime).toBe(20)
+    window.dispatchEvent(mouse('mouseup', 220, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(80)
+
+    ball.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+    expect(video.currentTime).toBe(80)
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 110, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(85)
+    for (const [x, expected] of [
+      [500, 100],
+      [-200, 0],
+    ]) {
+      ball.dispatchEvent(mouse('mousedown', 100))
+      window.dispatchEvent(mouse('mousemove', x))
+      window.dispatchEvent(mouse('mouseup', x, { buttons: 0 }))
+      await vue.nextTick()
+      expect(video.currentTime).toBe(expected)
+    }
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    await vue.nextTick()
+    window.dispatchEvent(new dom.window.Event('blur'))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(0)
+    expect(ball.style.left).toBe('0%')
+    video.currentTime = 5
+    video.dispatchEvent(new dom.window.Event('timeupdate'))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('5%')
+  }
+
+  test('鼠标拖动支持预览、越界、最终位置和取消，松手后不重复跳转', async () => {
+    const { element, video } = mount()
+    await checkMouseSeeking(element, video)
+  })
+
+  test('仅按下或点击不显示进度提示，水平移动后才显示', async () => {
+    const { element, video, container } = mount({
+      showCenterPlayBtn: () => false,
+    })
+    mockProgress(element, video)
+    jest
+      .spyOn(container, 'getBoundingClientRect')
+      .mockReturnValue({ width: 400 } as DOMRect)
+    const toast = element.querySelector('.uni-video-toast') as HTMLElement
+    const setTime = jest.spyOn(video, 'currentTime', 'set')
+    await vue.nextTick()
+    video.dispatchEvent(mouse('mousedown', 100))
+    await vue.nextTick()
+    expect(toast.classList.contains('uni-video-toast-progress')).toBe(false)
+    window.dispatchEvent(mouse('mousemove', 100))
+    await vue.nextTick()
+    expect(toast.classList.contains('uni-video-toast-progress')).toBe(false)
+    window.dispatchEvent(mouse('mouseup', 100, { buttons: 0 }))
+    video.dispatchEvent(mouse('click', 100))
+    await vue.nextTick()
+    expect(toast.classList.contains('uni-video-toast-progress')).toBe(false)
+    expect(setTime).not.toHaveBeenCalled()
+
+    video.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    await vue.nextTick()
+    expect(toast.classList.contains('uni-video-toast-progress')).toBe(true)
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    await vue.nextTick()
+    expect(toast.classList.contains('uni-video-toast-progress')).toBe(false)
+    expect(setTime).toHaveBeenCalledTimes(1)
+  })
+
+  test('在进度边界开始拖动时，提示时间仍与当前进度一致', async () => {
+    const { element, video } = mount()
+    const { ball } = mockProgress(element, video)
+    video.currentTime = 100
+    video.dispatchEvent(new dom.window.Event('timeupdate'))
+    await vue.nextTick()
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 150))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('100%')
+    expect(
+      element.querySelector('.uni-video-toast-title-current-time').textContent
+    ).toBe('01:40')
+    window.dispatchEvent(mouse('mouseup', 150, { buttons: 0 }))
+    expect(video.currentTime).toBe(100)
+  })
+
+  test('仅上下移动圆点不会显示进度提示或提交跳转', async () => {
+    const { element, video } = mount()
+    const { ball } = mockProgress(element, video)
+    await vue.nextTick()
+    const setTime = jest.spyOn(video, 'currentTime', 'set')
+    ball.dispatchEvent(mouse('mousedown', 100, { clientY: 100 }))
+    window.dispatchEvent(mouse('mousemove', 100, { clientY: 50 }))
+    await vue.nextTick()
+    expect(element.querySelector('.uni-video-toast-progress')).toBeNull()
+    window.dispatchEvent(mouse('mouseup', 100, { clientY: 50, buttons: 0 }))
+    expect(setTime).not.toHaveBeenCalled()
+  })
+
+  test.each(['pageGesture', 'vslideGesture'])(
+    '%s 开启时鼠标纵向拖动调节音量，且不触发进度跳转',
+    async (prop) => {
+      const { element, video, container } = mount({
+        [prop]: () => true,
+        enableProgressGesture: () => false,
+        showCenterPlayBtn: () => false,
+      })
+      mockProgress(element, video)
+      jest
+        .spyOn(container, 'getBoundingClientRect')
+        .mockReturnValue({ width: 400 } as DOMRect)
+      video.volume = 0.5
+      await vue.nextTick()
+      const setTime = jest.spyOn(video, 'currentTime', 'set')
+      video.dispatchEvent(mouse('mousedown', 100, { clientY: 100 }))
+      await vue.nextTick()
+      expect(element.querySelector('.uni-video-toast-container')).toBeNull()
+      window.dispatchEvent(mouse('mousemove', 100, { clientY: 50 }))
+      await vue.nextTick()
+      expect(video.volume).toBe(0.75)
+      expect(element.querySelector('.uni-video-toast-draw').style.width).toBe(
+        '75%'
+      )
+      expect(element.querySelector('.uni-video-toast-progress')).toBeNull()
+      // 锁定纵向手势后，横向偏移也不能切换为快进。
+      window.dispatchEvent(mouse('mousemove', 200, { clientY: -100 }))
+      await vue.nextTick()
+      expect(video.volume).toBe(1)
+      window.dispatchEvent(mouse('mousemove', 100, { clientY: 300 }))
+      await vue.nextTick()
+      expect(video.volume).toBe(0)
+      window.dispatchEvent(mouse('mouseup', 100, { clientY: 200, buttons: 0 }))
+      await vue.nextTick()
+      expect(video.volume).toBe(0)
+      expect(element.querySelector('.uni-video-toast-container')).toBeNull()
+      expect(setTime).not.toHaveBeenCalled()
+      expect(jest.getTimerCount()).toBe(0)
+    }
+  )
+
+  test('鼠标音量拖动失焦后清理提示和计时器，下一次拖动仍正常', async () => {
+    const { element, video, container, app } = mount({
+      vslideGesture: () => true,
+    })
+    mockProgress(element, video)
+    jest
+      .spyOn(container, 'getBoundingClientRect')
+      .mockReturnValue({ width: 400 } as DOMRect)
+    video.volume = 0.5
+    await vue.nextTick()
+    for (const finish of ['blur', 'unmount']) {
+      video.dispatchEvent(mouse('mousedown', 100, { clientY: 100 }))
+      window.dispatchEvent(mouse('mousemove', 100, { clientY: 50 }))
+      await vue.nextTick()
+      expect(element.querySelector('.uni-video-toast-container')).not.toBeNull()
+      if (finish === 'blur') {
+        window.dispatchEvent(new dom.window.Event('blur'))
+        await vue.nextTick()
+        expect(element.querySelector('.uni-video-toast-container')).toBeNull()
+        expect(video.volume).toBe(0.75)
+      } else {
+        app.unmount()
+        apps.splice(apps.indexOf(app), 1)
+      }
+      expect(jest.getTimerCount()).toBe(0)
+    }
+  })
+
+  test.each(['touchend', 'touchcancel'])(
+    '触摸音量手势 %s 后清理提示和计时器',
+    async (end) => {
+      const { element, video } = mount({ vslideGesture: () => true })
+      mockProgress(element, video)
+      video.volume = 0.5
+      await vue.nextTick()
+      for (const [type, y] of [
+        ['touchstart', 100],
+        ['touchmove', 90],
+        ['touchmove', 50],
+        [end, 50],
+      ] as const) {
+        video.dispatchEvent(touch(type, 100, y))
+        await vue.nextTick()
+        if (type === 'touchmove') {
+          expect(
+            element.querySelector('.uni-video-toast-container')
+          ).not.toBeNull()
+          expect(element.querySelector('.uni-video-toast-progress')).toBeNull()
+        }
+      }
+      expect(video.volume).toBe(0.75)
+      expect(element.querySelector('.uni-video-toast-container')).toBeNull()
+      jest.advanceTimersByTime(0)
+      expect(jest.getTimerCount()).toBe(0)
+    }
+  )
+
+  test.each(['圆点', '画面'])(
+    '%s触摸拖动取消后恢复预览且不提交跳转',
+    async (source) => {
+      const { element, video } = mount()
+      const { ball } = mockProgress(element, video)
+      video.currentTime = 20
+      video.dispatchEvent(new dom.window.Event('timeupdate'))
+      await vue.nextTick()
+      const setTime = jest.spyOn(video, 'currentTime', 'set')
+      const target = source === '圆点' ? ball : video
+      for (const [type, x] of [
+        ['touchstart', 100],
+        ['touchmove', 150],
+        ['touchmove', 200],
+      ] as const) {
+        target.dispatchEvent(touch(type, x))
+        await vue.nextTick()
+      }
+      expect(parseFloat(ball.style.left)).toBeGreaterThan(20)
+      target.dispatchEvent(touch('touchcancel', 200))
+      await vue.nextTick()
+      expect(setTime).not.toHaveBeenCalled()
+      expect(ball.style.left).toBe('20%')
+      expect(element.querySelector('.uni-video-toast-progress')).toBeNull()
+    }
+  )
+
+  test('从轨道开始拖动支持预览，松手只跳转一次，随后仍可正常点击', async () => {
+    const { element, video } = mount()
+    const { progress, ball, measure } = mockProgress(element, video)
+    await vue.nextTick()
+    const setTime = jest.spyOn(video, 'currentTime', 'set')
+    // 轨道从 50 开始，宽度 200，按在 40% 并拖到 65%。
+    progress.dispatchEvent(mouse('mousedown', 130))
+    window.dispatchEvent(mouse('mousemove', 180))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('65%')
+    expect(video.currentTime).toBe(0)
+    window.dispatchEvent(mouse('mouseup', 180, { buttons: 0 }))
+    const click = mouse('click', 180)
+    Object.defineProperty(click, 'offsetX', { value: 130 })
+    progress.dispatchEvent(click)
+    expect(video.currentTime).toBe(65)
+    expect(setTime).toHaveBeenCalledTimes(1)
+    expect(measure).toHaveBeenCalledTimes(1)
+
+    progress.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mouseup', 100, { buttons: 0 }))
+    const nextClick = mouse('click', 100)
+    Object.defineProperty(nextClick, 'offsetX', { value: 56 })
+    progress.dispatchEvent(nextClick)
+    expect(video.currentTime).toBe(25)
+    expect(setTime).toHaveBeenCalledTimes(2)
+
+    await vue.nextTick()
+    video.dispatchEvent(new dom.window.Event('timeupdate'))
+    await vue.nextTick()
+    progress.dispatchEvent(mouse('mousedown', 130))
+    window.dispatchEvent(mouse('mousemove', 180))
+    await vue.nextTick()
+    window.dispatchEvent(new dom.window.Event('blur'))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('25%')
+    expect(video.currentTime).toBe(25)
+    expect(setTime).toHaveBeenCalledTimes(2)
+  })
+
+  test('视频画面支持鼠标左右拖动，纵向拖动和按钮不会触发快进', async () => {
+    const { element, video, container } = mount()
+    const { ball } = mockProgress(element, video)
+    const measure = jest
+      .spyOn(container, 'getBoundingClientRect')
+      .mockReturnValue({ width: 400 } as DOMRect)
+    video.currentTime = 20
+    video.dispatchEvent(new dom.window.Event('timeupdate'))
+    await vue.nextTick()
+
+    video.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('45%')
+    expect(video.currentTime).toBe(20)
+    window.dispatchEvent(mouse('mouseup', 220, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(50)
+    expect(measure).toHaveBeenCalledTimes(1)
+    const click = jest.fn()
+    element.addEventListener('click', click)
+    video.dispatchEvent(mouse('click', 220))
+    expect(click).not.toHaveBeenCalled()
+
+    video.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 110, { clientY: 100 }))
+    window.dispatchEvent(mouse('mouseup', 110, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(50)
+    expect(ball.style.left).toBe('50%')
+
+    element
+      .querySelector('.uni-video-control-button')
+      .dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(50)
+    expect(measure).toHaveBeenCalledTimes(2)
+  })
+
+  test('关闭进度手势后不能拖动画面，但仍可拖动圆点', async () => {
+    const { element, video, container } = mount({
+      enableProgressGesture: () => false,
+    })
+    const { ball } = mockProgress(element, video)
+    const measure = jest.spyOn(container, 'getBoundingClientRect')
+    await vue.nextTick()
+    video.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(0)
+    expect(measure).not.toHaveBeenCalled()
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(50)
+  })
+
+  test.each(['mouseup', 'blur'])(
+    '鼠标拖动显示控制栏，%s 后延迟三秒隐藏',
+    async (end) => {
+      const { element, video, container } = mount({
+        showCenterPlayBtn: () => false,
+      })
+      mockProgress(element, video)
+      jest
+        .spyOn(container, 'getBoundingClientRect')
+        .mockReturnValue({ width: 400 } as DOMRect)
+      const bar = element.querySelector('.uni-video-bar') as HTMLElement
+      video.dispatchEvent(new dom.window.Event('play'))
+      await vue.nextTick()
+      jest.advanceTimersByTime(3000)
+      await vue.nextTick()
+      expect(bar.style.display).toBe('none')
+
+      video.dispatchEvent(mouse('mousedown', 100))
+      window.dispatchEvent(mouse('mousemove', 200))
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      jest.advanceTimersByTime(4000)
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      window.dispatchEvent(
+        end === 'mouseup'
+          ? mouse('mouseup', 200, { buttons: 0 })
+          : new dom.window.Event('blur')
+      )
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      expect(element.querySelector('.uni-video-toast-progress')).toBeNull()
+      video.dispatchEvent(mouse('click', 200))
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      jest.advanceTimersByTime(2999)
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      jest.advanceTimersByTime(1)
+      await vue.nextTick()
+      expect(bar.style.display).toBe('none')
+    }
+  )
+
+  test('再次拖动会取消上一次隐藏计时，并在结束后重新计时', async () => {
+    const { element, video, container } = mount({
+      showCenterPlayBtn: () => false,
+    })
+    mockProgress(element, video)
+    jest
+      .spyOn(container, 'getBoundingClientRect')
+      .mockReturnValue({ width: 400 } as DOMRect)
+    const bar = element.querySelector('.uni-video-bar') as HTMLElement
+    video.dispatchEvent(new dom.window.Event('play'))
+    await vue.nextTick()
+    for (let i = 0; i < 2; i++) {
+      video.dispatchEvent(mouse('mousedown', 100))
+      window.dispatchEvent(mouse('mousemove', 150))
+      await vue.nextTick()
+      jest.advanceTimersByTime(4000)
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+      window.dispatchEvent(mouse('mouseup', 150, { buttons: 0 }))
+      await vue.nextTick()
+      jest.advanceTimersByTime(2000)
+      await vue.nextTick()
+      expect(bar.style.display).not.toBe('none')
+    }
+    jest.advanceTimersByTime(1000)
+    await vue.nextTick()
+    expect(bar.style.display).toBe('none')
+  })
+
+  test('鼠标拖动保留原本可见的控制栏，且不覆盖 controls=false', async () => {
+    for (const controls of [true, false]) {
+      const { element, video, container } = mount({
+        controls: () => controls,
+        showCenterPlayBtn: () => false,
+      })
+      mockProgress(element, video)
+      jest
+        .spyOn(container, 'getBoundingClientRect')
+        .mockReturnValue({ width: 400 } as DOMRect)
+      const bar = element.querySelector('.uni-video-bar') as HTMLElement
+      await vue.nextTick()
+      video.dispatchEvent(mouse('mousedown', 100))
+      window.dispatchEvent(mouse('mousemove', 200))
+      await vue.nextTick()
+      expect(bar.style.display === 'none').toBe(!controls)
+      window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+      await vue.nextTick()
+      expect(bar.style.display === 'none').toBe(!controls)
+    }
+  })
+
+  test.each(['封面', '弹幕'])(
+    '%s覆盖画面时仍可使用鼠标拖动进度',
+    async (overlay) => {
+      const { element, video, container } = mount({
+        enableDanmu: () => true,
+      })
+      const { ball } = mockProgress(element, video)
+      jest
+        .spyOn(container, 'getBoundingClientRect')
+        .mockReturnValue({ width: 400 } as DOMRect)
+      video.currentTime = 20
+      video.dispatchEvent(new dom.window.Event('timeupdate'))
+      if (overlay === '弹幕') {
+        video.dispatchEvent(new dom.window.Event('play'))
+      }
+      await vue.nextTick()
+      const layer = element.querySelector(
+        overlay === '封面' ? '.uni-video-cover' : '.uni-video-danmu'
+      ) as HTMLElement
+      expect(layer.style.display).not.toBe('none')
+      const target = overlay === '封面' ? layer : document.createElement('p')
+      if (target !== layer) layer.appendChild(target)
+      target.dispatchEvent(mouse('mousedown', 100))
+      window.dispatchEvent(mouse('mousemove', 200))
+      await vue.nextTick()
+      expect(ball.style.left).toBe('45%')
+      expect(video.currentTime).toBe(20)
+      window.dispatchEvent(mouse('mouseup', 220, { buttons: 0 }))
+      await vue.nextTick()
+      expect(video.currentTime).toBe(50)
+    }
+  )
+
+  test('封面播放按钮仍响应点击，不启动鼠标拖动', async () => {
+    const { element, video } = mount()
+    mockProgress(element, video)
+    await vue.nextTick()
+    const button = element.querySelector('.uni-video-cover-play-button')!
+    button.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(0)
+    button.dispatchEvent(mouse('click', 200))
+    expect(play).toHaveBeenCalledTimes(1)
+  })
+
+  test('拖动期间只读取一次轨道宽度，下次拖动重新测量', async () => {
+    const { element, video } = mount()
+    const { ball, measure } = mockProgress(element, video)
+    await vue.nextTick()
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 120))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('10%')
+    measure.mockReturnValue({ width: 400 } as DOMRect)
+    window.dispatchEvent(mouse('mousemove', 140))
+    await vue.nextTick()
+    expect(ball.style.left).toBe('20%')
+    window.dispatchEvent(mouse('mouseup', 140, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(20)
+    expect(measure).toHaveBeenCalledTimes(1)
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mouseup', 140, { buttons: 0 }))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(30)
+    expect(measure).toHaveBeenCalledTimes(2)
+  })
+
+  test('轨道宽度为零时不开始拖动，恢复尺寸后仍可拖动', async () => {
+    const { element, video } = mount()
+    const { ball, measure } = mockProgress(element, video)
+    await vue.nextTick()
+    measure.mockReturnValueOnce({ width: 0 } as DOMRect)
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(0)
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(50)
+  })
+
+  test('拖动时失焦或卸载会清理窗口监听', async () => {
+    const { element, video, app } = mount()
+    const { ball } = mockProgress(element, video)
+    await vue.nextTick()
+    ball.dispatchEvent(mouse('mousedown', 100))
+    window.dispatchEvent(mouse('mousemove', 200))
+    window.dispatchEvent(new dom.window.Event('blur'))
+    await vue.nextTick()
+    expect(video.currentTime).toBe(0)
+    expect(ball.style.left).toBe('0%')
+
+    ball.dispatchEvent(mouse('mousedown', 100))
+    app.unmount()
+    apps.splice(apps.indexOf(app), 1)
+    window.dispatchEvent(mouse('mousemove', 200))
+    window.dispatchEvent(mouse('mouseup', 200, { buttons: 0 }))
+    expect(video.currentTime).toBe(0)
+  })
+
+  test('触摸拖动只测量一次且不会被重复触摸重置，进度条点击仍可跳转', async () => {
+    const { element, video } = mount()
+    const { progress, ball, measure } = mockProgress(element, video)
+    await vue.nextTick()
+    for (const [type, x] of [
+      ['touchstart', 100],
+      ['touchmove', 150],
+      ['touchstart', 175],
+      ['touchmove', 200],
+      ['touchend', 200],
+    ] as const) {
+      ball.dispatchEvent(touch(type, x))
+    }
+    expect(video.currentTime).toBe(50)
+    expect(measure).toHaveBeenCalledTimes(1)
+    const click = new dom.window.MouseEvent('click', { bubbles: true })
+    Object.defineProperty(click, 'offsetX', { value: 56 })
+    progress.dispatchEvent(click)
+    expect(video.currentTime).toBe(25)
+  })
 
   test('根节点、Element 类型与 dataset 正常，公开方法直接使用已有 ref', async () => {
     const payload = vue.ref({ value: 1 })
@@ -624,5 +1237,6 @@ describe('Web Vapor Video 原生宿主', () => {
     element.seek(4)
     expect(video.currentTime).toBe(4)
     expect(element.__uniContextInfo.type).toBe('video')
+    await checkMouseSeeking(element, video)
   })
 })
