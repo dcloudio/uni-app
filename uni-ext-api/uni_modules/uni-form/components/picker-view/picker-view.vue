@@ -157,23 +157,15 @@
     value: () => []
   })
 
-  // #ifdef WEB
-  class UniCustomEvent<T> {
-    detail : T
-    constructor(type : string, detail : T) {
-      // this.type = type
-      this.detail = detail
-    }
-  }
-  // #endif
-
   type UniPickerViewChangeEventDetail = {
     value : number[]
   }
 
   class UniPickerViewChangeEvent extends UniCustomEvent<UniPickerViewChangeEventDetail> {
     constructor(value : number[]) {
-      super('change', { value } as UniPickerViewChangeEventDetail)
+      super('change', {
+        detail: { value } as UniPickerViewChangeEventDetail
+      } as UniCustomEventOptions<UniPickerViewChangeEventDetail>)
     }
   }
 

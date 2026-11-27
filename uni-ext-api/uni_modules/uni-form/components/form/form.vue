@@ -1,9 +1,5 @@
 <template>
-  <view class="uni-form"
-    <!-- #ifdef WEB -->
-    ref="rootRef"
-    <!-- #endif -->
-  >
+  <view class="uni-form">
     <slot></slot>
   </view>
 </template>
@@ -52,35 +48,19 @@
     disabled: false
   })
 
-  // #ifdef WEB
-  const rootRef = ref<UniElement | null>(null)
-
-  class UniCustomEvent<T> {
-    type : string
-    timeStamp : number = 0
-    target : UniElement | null
-    currentTarget : UniElement | null
-    detail : T
-
-    constructor(type : string, detail : T) {
-      const target = rootRef.value
-      this.type = type
-      this.target = target
-      this.currentTarget = target
-      this.detail = detail
-    }
-  }
-  // #endif
-
   class UniFormSubmitEvent extends UniCustomEvent<UniFormSubmitEventDetail> {
     constructor(value : UTSJSONObject) {
-      super('submit', { value } as UniFormSubmitEventDetail)
+      super('submit', {
+        detail: { value } as UniFormSubmitEventDetail
+      } as UniCustomEventOptions<UniFormSubmitEventDetail>)
     }
   }
 
   class UniFormResetEvent extends UniCustomEvent<UniFormResetEventDetail> {
     constructor() {
-      super('reset', {} as UniFormResetEventDetail)
+      super('reset', {
+        detail: {} as UniFormResetEventDetail
+      } as UniCustomEventOptions<UniFormResetEventDetail>)
     }
   }
 
@@ -115,11 +95,7 @@
     fields.forEach((field, name) => {
       data[name] = field.getValue()
     })
-    const submitEvent = new UniFormSubmitEvent(data)
-    // #ifdef WEB
-    submitEvent.timeStamp = event?.timeStamp ?? performance.now()
-    // #endif
-    emit('submit', submitEvent)
+    emit('submit', new UniFormSubmitEvent(data))
   }
 
   function reset(event?: UniPointerEvent) {
@@ -130,11 +106,7 @@
     fields.forEach((field) => {
       field.reset && field.reset()
     })
-    const resetEvent = new UniFormResetEvent()
-    // #ifdef WEB
-    resetEvent.timeStamp = event?.timeStamp ?? performance.now()
-    // #endif
-    emit('reset', resetEvent)
+    emit('reset', new UniFormResetEvent())
   }
 
   const ctx : FormContext = { registerField, unregisterField, submit, reset }

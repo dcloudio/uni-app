@@ -15,7 +15,7 @@ export class RecycleListItemDataStore {
   list: ItemInfo[] = []
   keyItemMap = new Map<string, ItemInfo>()
   itemInstanceMap = new Map<string, ItemInstance>()
-  defaultItemSize = 150
+  defaultItemSize = 100
 
   realItemSize(item: ItemInfo): number {
     return item.size < 0 ? this.defaultItemSize : item.size
@@ -60,17 +60,23 @@ export class RecycleListItemDataStore {
     })
   }
 
-  getRenderRange(min: number, max: number): [number, number] {
+  firstItemIndexAt(offset: number, includeEnd: boolean): number {
     let low = 0
     let high = this.list.length
     while (low < high) {
       const mid = (low + high) >>> 1
       const item = this.list[mid]
-      if (item.offset + this.realItemSize(item) < min) low = mid + 1
+      const end = item.offset + this.realItemSize(item)
+      if (includeEnd ? end < offset : end <= offset) low = mid + 1
       else high = mid
     }
-    const start = low
-    high = this.list.length
+    return low
+  }
+
+  getRenderRange(min: number, max: number): [number, number] {
+    const start = this.firstItemIndexAt(min, true)
+    let low = start
+    let high = this.list.length
     while (low < high) {
       const mid = (low + high) >>> 1
       if (this.list[mid].offset <= max) low = mid + 1

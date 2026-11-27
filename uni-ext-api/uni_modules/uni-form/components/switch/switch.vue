@@ -240,19 +240,11 @@
     value : boolean
   }
 
-  // #ifdef WEB
-  class UniCustomEvent<T> {
-    detail : T
-    constructor(type : string, detail : T) {
-      // this.type = type
-      this.detail = detail
-    }
-  }
-  // #endif
-
   class UniSwitchChangeEvent extends UniCustomEvent<UniSwitchChangeEventDetail> {
     constructor(value : boolean) {
-      super('change', { value } as UniSwitchChangeEventDetail)
+      super('change', {
+        detail: { value } as UniSwitchChangeEventDetail
+      } as UniCustomEventOptions<UniSwitchChangeEventDetail>)
     }
   }
 

@@ -315,7 +315,8 @@ defineExpose({
     let layoutCrossAxisCount = 2
     let placeholderSize = 0
     let scrollOffset = 0
-    let cachedSizeStart = 200
+    const defaultItemSize = 100
+    let maxItemSize = defaultItemSize
     let queued = false
     let destroyed = false
     let pendingScrollId = props.scrollIntoView
@@ -376,7 +377,7 @@ defineExpose({
     }
 
     function realItemSize(item : ItemInfo) {
-        return item.size < 0 ? 150 : item.size
+        return item.size < 0 ? defaultItemSize : item.size
     }
 
     function rebuildItemOffsetsFrom(start : number) {
@@ -440,6 +441,7 @@ defineExpose({
     function updateItemSize(key : string, height : number) {
         const item = keyItemMap.get(key)
         if (!item || item.size === height) return
+        maxItemSize = Math.max(maxItemSize, height)
         item.size = height
         rebuildItemOffsetsFrom(item.index)
         queueLayout()
@@ -469,7 +471,6 @@ defineExpose({
                 scrollingToItemKey = key
                 scrollingToItemOffset = -1
                 scrollingToItemTimestamp = Date.now()
-                cachedSizeStart = 0
             }
         }
         if (scrollingToItemKey !== undefined) {
@@ -491,8 +492,10 @@ defineExpose({
             const item = keyItemMap.get(key)
             if (item) instance.updateItemOffset(item.offsetX, item.offsetY)
         })
+        const cachedSize = maxItemSize * 2
+        const cachedSizeStart = scrollingToItemKey === undefined ? cachedSize : 0
         const min = Math.max(0, scrollOffset - cachedSizeStart + 0.2)
-        const max = scrollOffset + size + 200 - 0.2
+        const max = scrollOffset + size + cachedSize - 0.2
         let low = 0
         let high = list.length
         // 使用前缀最大底边二分，保留前面仍覆盖可视区域的高条目。
@@ -522,7 +525,6 @@ defineExpose({
         clearTimeout(scrollEndTimer)
         updateRenderList()
         scrollingToItemKey = undefined
-        cachedSizeStart = 200
     }
 
     const observer = new ResizeObserver(entries => {

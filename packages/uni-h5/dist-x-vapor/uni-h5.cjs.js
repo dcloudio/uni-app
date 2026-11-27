@@ -8000,14 +8000,11 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent$1 {
       constructor(value) {
-        super("change", { value });
+        super("change", {
+          detail: { value }
+        });
       }
     }
     const emit2 = __emit;
@@ -8198,25 +8195,18 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["submit", "reset"],
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    const rootRef = Vue.ref(null);
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.timeStamp = 0;
-        const target = rootRef.value;
-        this.type = type;
-        this.target = target;
-        this.currentTarget = target;
-        this.detail = detail;
-      }
-    }
-    class UniFormSubmitEvent extends UniCustomEvent3 {
+    class UniFormSubmitEvent extends UniCustomEvent$1 {
       constructor(value) {
-        super("submit", { value });
+        super("submit", {
+          detail: { value }
+        });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent3 {
+    class UniFormResetEvent extends UniCustomEvent$1 {
       constructor() {
-        super("reset", {});
+        super("reset", {
+          detail: {}
+        });
       }
     }
     const emit2 = __emit;
@@ -8241,9 +8231,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       fields.forEach((field, name) => {
         data[name] = field.getValue();
       });
-      const submitEvent = new UniFormSubmitEvent(data);
-      submitEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
-      emit2("submit", submitEvent);
+      emit2("submit", new UniFormSubmitEvent(data));
     }
     function reset(event) {
       if (props2.disabled) {
@@ -8252,9 +8240,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       fields.forEach((field) => {
         field.reset && field.reset();
       });
-      const resetEvent = new UniFormResetEvent();
-      resetEvent.timeStamp = (event == null ? void 0 : event.timeStamp) ?? performance.now();
-      emit2("reset", resetEvent);
+      emit2("reset", new UniFormResetEvent());
     }
     const ctx = { registerField, unregisterField, submit, reset };
     Vue.provide(FORM_KEY, ctx);
@@ -8263,7 +8249,6 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.initUniElement(n0, _uniFormElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
-    Vue.setStaticTemplateRef(n0, rootRef, null, "rootRef");
     return n0;
   }
 });
@@ -8499,7 +8484,7 @@ class RecycleListItemDataStore {
     this.list = [];
     this.keyItemMap = /* @__PURE__ */ new Map();
     this.itemInstanceMap = /* @__PURE__ */ new Map();
-    this.defaultItemSize = 150;
+    this.defaultItemSize = 100;
   }
   realItemSize(item) {
     return item.size < 0 ? this.defaultItemSize : item.size;
@@ -8538,19 +8523,24 @@ class RecycleListItemDataStore {
         instance.updateItemOffset(item.offset + baseOffset);
     });
   }
-  getRenderRange(min, max) {
+  firstItemIndexAt(offset, includeEnd) {
     let low = 0;
     let high = this.list.length;
     while (low < high) {
       const mid = low + high >>> 1;
       const item = this.list[mid];
-      if (item.offset + this.realItemSize(item) < min)
+      const end = item.offset + this.realItemSize(item);
+      if (includeEnd ? end < offset : end <= offset)
         low = mid + 1;
       else
         high = mid;
     }
-    const start = low;
-    high = this.list.length;
+    return low;
+  }
+  getRenderRange(min, max) {
+    const start = this.firstItemIndexAt(min, true);
+    let low = start;
+    let high = this.list.length;
     while (low < high) {
       const mid = low + high >>> 1;
       if (this.list[mid].offset <= max)
@@ -8597,7 +8587,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     let fastScrollOffset = 0;
     let lastScrollTimestamp = 0;
     let lastScrollOffset = 0;
-    let maxItemSize = 100;
+    let maxItemSize = store.defaultItemSize;
     let cachedSize = maxItemSize * cachedSizeMultiplier;
     let scrolling = false;
     let scrollEndTimer;
@@ -8611,8 +8601,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     let pendingScrollId = props2.scrollIntoView;
     let targetOffset = -1;
     let itemSizeChangedCompensation = 0;
-    let sizeChangeAnchorKey;
-    let sizeChangeAnchorOffset = 0;
+    let sizeChangeAnchor;
     Vue.provide("__uni_recycle_view_instance", Vue.getCurrentInstance());
     Vue.provide("__uni_recycle_state_map", /* @__PURE__ */ new Map());
     Vue.provide("__uni_recycle_list", {
@@ -8635,6 +8624,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       });
     }
     function updateList(newList) {
+      resetItemSizeChangeCompensation();
       if (listDataStatus === 0 && newList.length)
         listDataStatus = 1;
       else if (listDataStatus === 1)
@@ -8668,16 +8658,26 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       item.size = height;
       store.rebuildItemOffsetsFrom(item.index + 1);
-      if (scrolling && !scrollTarget && sizeChangeAnchorKey) {
-        const anchor = store.keyItemMap.get(sizeChangeAnchorKey);
+      if (sizeChangeAnchor && !scrollTarget && (scrolling || shouldAnchorToBottom())) {
+        const anchor = store.keyItemMap.get(sizeChangeAnchor.key);
         if (anchor)
-          itemSizeChangedCompensation = anchor.offset - sizeChangeAnchorOffset;
+          itemSizeChangedCompensation = anchor.offset - sizeChangeAnchor.offset;
       }
       queueLayout();
     }
     function syncDefaultItemSize(height) {
       if (height > 0)
         sectionMap.forEach((section) => section.applyDefaultItemSize(height));
+    }
+    function shouldAnchorToBottom() {
+      return props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1 && !sectionMap.size && !scrolling;
+    }
+    function resetItemSizeChangeCompensation() {
+      sizeChangeAnchor = void 0;
+      itemSizeChangedCompensation = 0;
+      if (scrollElement.value)
+        realScrollOffset = scrollOffset = Math.max(0, scrollElement.value.scrollTop);
+      fastScrollOffset = 0;
     }
     function queueLayout() {
       if (queued || destroyed)
@@ -8723,6 +8723,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       }
       if (scrollTarget) {
+        resetItemSizeChangeCompensation();
         pendingScrollId = "";
         maintainInitialScrollBottom = false;
         targetOffset = -1;
@@ -8740,9 +8741,24 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     function updateRenderList() {
       const element = scrollElement.value;
       const sections = linkSection();
-      if (placeholderElement.value)
-        placeholderElement.value.style.height = `${sections.length ? 0 : store.contentSize}px`;
       resolveScrollTarget(sections);
+      const anchorToBottom = shouldAnchorToBottom();
+      let compensatedScrollTop;
+      if (anchorToBottom && headerSize + store.contentSize > size) {
+        const last = store.list[store.list.length - 1];
+        if ((sizeChangeAnchor == null ? void 0 : sizeChangeAnchor.key) !== last.key) {
+          sizeChangeAnchor = { key: last.key, offset: last.offset - itemSizeChangedCompensation };
+        }
+      } else if (!scrolling && sizeChangeAnchor) {
+        if (itemSizeChangedCompensation !== 0)
+          compensatedScrollTop = Math.max(0, realScrollOffset + itemSizeChangedCompensation);
+        sizeChangeAnchor = void 0;
+        itemSizeChangedCompensation = 0;
+      }
+      const placeholderSize = sections.length ? 0 : store.contentSize - itemSizeChangedCompensation;
+      if (placeholderElement.value)
+        placeholderElement.value.style.height = `${placeholderSize}px`;
+      store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation);
       if (scrollTarget) {
         const { key, section } = scrollTarget;
         const item = store.keyItemMap.get(key);
@@ -8751,26 +8767,25 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
           targetOffset = offset + headerSize;
           scrollToOffset(targetOffset, true);
         }
-      } else if (!sections.length && !scrolling) {
-        if (props2.initialScrollBottom && maintainInitialScrollBottom && listDataStatus === 1) {
-          scrollToOffset(
-            Math.max(element.scrollHeight, headerSize + store.contentSize) - size
-          );
-        } else if (props2.scrollAnchoring && anchorKey) {
-          const anchor = store.keyItemMap.get(anchorKey);
-          if (anchor) {
-            scrollToOffset(realScrollOffset + anchor.offset - anchorOffset);
-            anchorOffset = anchor.offset;
-          } else
-            anchorKey = void 0;
-        }
+      } else if (anchorToBottom) {
+        scrollToOffset(Math.max(0, element.scrollHeight - element.clientHeight));
+      } else if (compensatedScrollTop !== void 0) {
+        scrollToOffset(compensatedScrollTop);
+      } else if (!sections.length && !scrolling && props2.scrollAnchoring && anchorKey) {
+        const anchor = store.keyItemMap.get(anchorKey);
+        if (anchor) {
+          const delta = anchor.offset - anchorOffset;
+          if (delta !== 0)
+            scrollToOffset(realScrollOffset + delta);
+          anchorOffset = anchor.offset;
+        } else
+          anchorKey = void 0;
       }
       const min = Math.max(
         0,
         scrollOffset - headerSize - cachedSize + itemSizeChangedCompensation + 0.2
       );
       const max = scrollOffset - headerSize + size + cachedSize + itemSizeChangedCompensation - 0.2;
-      store.updateItemOffset(fastScrollOffset - itemSizeChangedCompensation);
       updateRenderInfo(...store.getRenderRange(min, max));
       for (const section of sections) {
         section.onScrollContextUpdate({
@@ -8787,32 +8802,35 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       anchorKey = void 0;
       if (!props2.scrollAnchoring || realScrollOffset <= 0 || sectionMap.size)
         return;
-      const offset = realScrollOffset - headerSize;
-      const [index2] = store.getRenderRange(offset, offset);
-      const item = store.list[index2];
+      const offset = realScrollOffset - headerSize + itemSizeChangedCompensation;
+      const item = store.list[store.firstItemIndexAt(offset, true)];
       if (item) {
         anchorKey = item.key;
-        anchorOffset = item.offset;
+        anchorOffset = item.offset - itemSizeChangedCompensation;
       }
     }
-    function onScroll(e2) {
+    function onScroll() {
       const element = scrollElement.value;
-      const offset = Math.max(0, e2.detail.scrollTop);
+      let offset = Math.max(0, element.scrollTop);
       if (offset < element.scrollHeight - size - 0.2 && Math.abs(offset - realScrollOffset) > 0.2)
         maintainInitialScrollBottom = false;
       if (!scrolling) {
         scrolling = true;
         anchorKey = void 0;
-        const item = store.list[renderRange.value[0] + renderRange.value[1] - 1];
-        sizeChangeAnchorKey = item && item.key;
-        sizeChangeAnchorOffset = item ? item.offset : 0;
+        if (!sizeChangeAnchor && itemSizeChangedCompensation === 0) {
+          const start = Math.max(0, offset - headerSize - fastScrollOffset);
+          const item = store.list[store.firstItemIndexAt(start, false)];
+          if (item)
+            sizeChangeAnchor = { key: item.key, offset: item.offset };
+        }
       }
-      if (offset === 0 || offset >= store.contentSize - size)
-        itemSizeChangedCompensation = 0;
-      if (offset + itemSizeChangedCompensation < 0) {
-        itemSizeChangedCompensation = 0;
+      if (offset > 0 && offset + itemSizeChangedCompensation < 0) {
         scrollToOffset(0);
-        return;
+        offset = 0;
+      }
+      if (offset === 0) {
+        sizeChangeAnchor = void 0;
+        itemSizeChangedCompensation = 0;
       }
       const timestamp = Date.now();
       const elapsed = timestamp - lastScrollTimestamp;
@@ -8837,10 +8855,6 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       if (!scrolling)
         return;
       scrolling = false;
-      if (itemSizeChangedCompensation)
-        scrollToOffset(realScrollOffset + itemSizeChangedCompensation);
-      itemSizeChangedCompensation = 0;
-      sizeChangeAnchorKey = void 0;
       scrollOffset = realScrollOffset;
       fastScrollOffset = 0;
       lastScrollTimestamp = 0;
@@ -8850,9 +8864,14 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     }
     new ResizeObserver((entries2) => {
       for (const entry of entries2) {
-        if (entry.target === scrollElement.value)
-          size = entry.contentRect.height;
-        else if (entry.target === headerElement.value)
+        if (entry.target === scrollElement.value) {
+          const height = entry.target.clientHeight;
+          if (size > 0 && height !== size) {
+            maintainInitialScrollBottom = false;
+            resetItemSizeChangeCompensation();
+          }
+          size = height;
+        } else if (entry.target === headerElement.value)
           headerSize = entry.borderBoxSize[0].blockSize;
       }
       queueLayout();
@@ -10582,14 +10601,11 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+    class UniPickerViewChangeEvent extends UniCustomEvent$1 {
       constructor(value) {
-        super("change", { value });
+        super("change", {
+          detail: { value }
+        });
       }
     }
     const emit2 = __emit;
@@ -11210,14 +11226,11 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   emits: ["change"],
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent$1 {
       constructor(value) {
-        super("change", { value });
+        super("change", {
+          detail: { value }
+        });
       }
     }
     const emit2 = __emit;
@@ -12617,14 +12630,11 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniSwitchChangeEvent extends UniCustomEvent3 {
+    class UniSwitchChangeEvent extends UniCustomEvent$1 {
       constructor(value) {
-        super("change", { value });
+        super("change", {
+          detail: { value }
+        });
       }
     }
     const emit2 = __emit;
@@ -12693,6 +12703,7 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 const t0 = Vue.template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniWaterflowElement = { value: "WATERFLOW" };
+const defaultItemSize = 100;
 const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "waterflow",
@@ -12733,7 +12744,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     let layoutCrossAxisCount = 2;
     let placeholderSize = 0;
     let scrollOffset = 0;
-    let cachedSizeStart = 200;
+    let maxItemSize = defaultItemSize;
     let queued = false;
     let destroyed = false;
     let pendingScrollId = props2.scrollIntoView;
@@ -12790,7 +12801,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     function realItemSize(item) {
-      return item.size < 0 ? 150 : item.size;
+      return item.size < 0 ? defaultItemSize : item.size;
     }
     function rebuildItemOffsetsFrom(start) {
       const columns = new Array(layoutCrossAxisCount).fill(0);
@@ -12845,6 +12856,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       const item = keyItemMap.get(key);
       if (!item || item.size === height)
         return;
+      maxItemSize = Math.max(maxItemSize, height);
       item.size = height;
       rebuildItemOffsetsFrom(item.index);
       queueLayout();
@@ -12873,7 +12885,6 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
           scrollingToItemKey = key;
           scrollingToItemOffset = -1;
           scrollingToItemTimestamp = Date.now();
-          cachedSizeStart = 0;
         }
       }
       if (scrollingToItemKey !== void 0) {
@@ -12895,8 +12906,10 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
         if (item)
           instance.updateItemOffset(item.offsetX, item.offsetY);
       });
+      const cachedSize = maxItemSize * 2;
+      const cachedSizeStart = scrollingToItemKey === void 0 ? cachedSize : 0;
       const min = Math.max(0, scrollOffset - cachedSizeStart + 0.2);
-      const max = scrollOffset + size + 200 - 0.2;
+      const max = scrollOffset + size + cachedSize - 0.2;
       let low = 0;
       let high = list.length;
       while (low < high) {
@@ -12927,7 +12940,6 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       clearTimeout(scrollEndTimer);
       updateRenderList();
       scrollingToItemKey = void 0;
-      cachedSizeStart = 200;
     }
     new ResizeObserver((entries2) => {
       const entry = entries2[entries2.length - 1];
