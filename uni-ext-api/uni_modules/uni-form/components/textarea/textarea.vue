@@ -510,6 +510,9 @@
 	// #endif
 
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+	// #ifdef APP-ANDROID
+	const isDarkTheme = useFormThemeIsDark()
+	// #endif
 	const selectionStyle = useComputedStyle({
 		pseudoElement: '::selection',
 		properties: ['background-color']
@@ -518,9 +521,26 @@
 		const value = selectionStyle.get('background-color')
 		return typeof value == 'string' ? value : ''
 	})
+	// #ifdef APP-ANDROID
+	const resolvedSelectionColor = computed(() : string => {
+		return selectionColor.value || (isDarkTheme.value ? '#14324e' : '#c9d8ea')
+	})
+	watch(resolvedSelectionColor, (value : string) => {
+		textareaView?.updateSelectionColor(value)
+	})
+	// #else
 	watch(selectionColor, (value: string) => {
 		textareaView?.updateSelectionColor(value)
 	})
+	// #endif
+	// #ifdef APP-ANDROID
+	const selectionHandleColor = computed(() : string => {
+		return isDarkTheme.value ? '#146ee0' : '#156fdf'
+	})
+	watch(selectionHandleColor, (value : string) => {
+		textareaView?.updateSelectionHandleColor(value)
+	})
+	// #endif
 	// #endif
 
 	const emit = defineEmits<{
@@ -540,7 +560,8 @@
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
 		textareaView?.updateColor(valueColor.value)
 		textareaView?.updateCursorColor(resolvedCursorColor.value)
-		textareaView?.updateSelectionColor(selectionColor.value)
+		textareaView?.updateSelectionColor(resolvedSelectionColor.value)
+		textareaView?.updateSelectionHandleColor(selectionHandleColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))
@@ -641,7 +662,6 @@
 		textareaView?.updateCursorSpacing(newValue)
 	})
 	// 光标色：优先 cursor-color 属性，其次 CSS caret-color，都未设置时使用主题默认色
-	const isDarkTheme = useFormThemeIsDark()
 	const resolvedCursorColor = computed(() : string => {
 		if (props.cursorColor != '') {
 			return props.cursorColor
