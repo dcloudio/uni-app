@@ -1,6 +1,40 @@
+import {
+  addMiniProgramPageJson,
+  resetMiniProgramJsonFiles,
+} from '@dcloudio/uni-cli-shared'
+import { createIsCustomElement } from '@dcloudio/uni-shared'
 import { assert } from './testUtils'
 
-describe('compiler: root', () => {
+const originalPlatform = process.env.UNI_PLATFORM
+const originalInputDir = process.env.UNI_INPUT_DIR
+
+afterEach(() => {
+  resetMiniProgramJsonFiles()
+  if (originalPlatform === undefined) {
+    Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
+  } else {
+    process.env.UNI_PLATFORM = originalPlatform
+  }
+  if (originalInputDir === undefined) {
+    Reflect.deleteProperty(process.env, 'UNI_INPUT_DIR')
+  } else {
+    process.env.UNI_INPUT_DIR = originalInputDir
+  }
+})
+
+const otherPlatforms = ['mp-toutiao', 'mp-baidu', 'mp-qq', undefined] as const
+
+describe.each(otherPlatforms)('compiler: root (%s)', (platform) => {
+  beforeEach(() => {
+    if (platform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_PLATFORM')
+    } else {
+      process.env.UNI_PLATFORM = platform
+    }
+    // 注册为页面，确认其他平台不会切换到 page-meta 注入。
+    addMiniProgramPageJson('foo', {})
+  })
+
   test('root styles', () => {
     assert(
       `<view/>`,
@@ -335,3 +369,277 @@ describe('compiler: root', () => {
     )
   })
 })
+
+describe.each(['mp-weixin', 'mp-alipay'] as const)(
+  'compiler: root page-meta (%s)',
+  (platform) => {
+    const options = {
+      isX: true,
+      root: '/src',
+      filename: '/src/pages/index.uvue',
+      hashId: 'test',
+      comments: true,
+      isCustomElement: createIsCustomElement(['page-meta', 'navigation-bar']),
+    }
+
+    beforeEach(() => {
+      process.env.UNI_PLATFORM = platform
+      process.env.UNI_INPUT_DIR = '/src'
+      addMiniProgramPageJson('pages/index', {})
+    })
+
+    test.each(['<view/>', '<view/><text>test</text>'])(
+      'prepend page-meta: %s',
+      (template) => {
+        assert(
+          template,
+          `<page-meta page-style="{{a}}"/>${template}`,
+          `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+          options
+        )
+      }
+    )
+
+    test('page with a user component root', () => {
+      assert(
+        '<custom/>',
+        '<page-meta page-style="{{a}}"/><custom u-i="test-0"/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('reuse page-meta and preserve its attributes and children', () => {
+      assert(
+        '<page-meta background-color="#fff"><navigation-bar title="test"/></page-meta><view/>',
+        '<page-meta background-color="#fff" page-style="{{a}}"><navigation-bar title="test"/></page-meta><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('reuse page-meta after a leading comment', () => {
+      assert(
+        '<!-- header --><page-meta page-style="color:red"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('reuse page-meta after leading comments and blank text', () => {
+      const preserveWhitespaceOptions = { ...options, whitespace: 'preserve' }
+      assert(
+        '<!-- header --> <!-- settings --><page-meta page-style="color:red"/><view/>',
+        ' <page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        preserveWhitespaceOptions
+      )
+    })
+
+    test('prepend page-meta to a comments-only template', () => {
+      assert(
+        '<!-- header --><!-- settings -->',
+        '<page-meta page-style="{{a}}"/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge static page-style', () => {
+      assert(
+        '<page-meta page-style="color:red"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge empty page-style', () => {
+      assert(
+        '<page-meta page-style=""/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge bare page-style', () => {
+      assert(
+        '<page-meta page-style/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge dynamic string page-style', () => {
+      assert(
+        '<page-meta :page-style="foo"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s([_ctx.foo, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge dynamic object page-style', () => {
+      assert(
+        '<page-meta :page-style="{ color: color }"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s([{ color: _ctx.color }, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge dynamic array page-style', () => {
+      assert(
+        '<page-meta :page-style="[foo, { fontSize: fontSize }]"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s([_ctx.foo, { fontSize: _ctx.fontSize }, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge null page-style', () => {
+      assert(
+        '<page-meta :page-style="null"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s([null, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge static page-style before dynamic page-style', () => {
+      assert(
+        '<page-meta page-style="color:red" :page-style="foo"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['color:red', [_ctx.foo, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('merge dynamic page-style before static page-style', () => {
+      assert(
+        '<page-meta :page-style="foo" page-style="color:red"/><view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s([[_ctx.foo, { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }], 'color:red']) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('page-style does not merge the page-meta element style', () => {
+      assert(
+        '<page-meta style="color:red" page-style="background:white"/><view/>',
+        '<page-meta style="color:red" page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s(['background:white', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }]) }
+  return __returned__
+}`,
+        options
+      )
+    })
+
+    test('preserve root style and component CSS bindings', () => {
+      for (const prefix of ['', '<page-meta/>']) {
+        assert(
+          `${prefix}<view :style="foo"/>`,
+          `<page-meta page-style="{{a}}"/><view style="{{b + ';' + c}}"/>`,
+          `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _s(_ctx.foo), c: _s(_ctx.__cssVars()) }
+  return __returned__
+}`,
+          { ...options, bindingCssVars: ['color'] }
+        )
+      }
+    })
+
+    test('component files do not inject page-meta or system CSS vars', () => {
+      assert(
+        '<view style="color:red"/><text/>',
+        '<view style="color:red"/><text/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = {}
+  return __returned__
+}`,
+        { ...options, filename: '/src/components/test.uvue' }
+      )
+    })
+
+    test('subpackage pages inject page-meta', () => {
+      addMiniProgramPageJson('package/pages/detail', {})
+      assert(
+        '<view/>',
+        '<page-meta page-style="{{a}}"/><view/>',
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
+  return __returned__
+}`,
+        { ...options, filename: '/src/package/pages/detail.uvue' }
+      )
+    })
+
+    test('non-x pages retain their existing behavior', () => {
+      assert(
+        '<view/>',
+        '<view/>',
+        `(_ctx, _cache) => {
+  return {}
+}`,
+        { ...options, isX: false }
+      )
+      assert(
+        '<page-meta page-style="color:red"/><view/>',
+        '<page-meta page-style="color:red"/><view/>',
+        `(_ctx, _cache) => {
+  return {}
+}`,
+        { ...options, isX: false }
+      )
+    })
+  }
+)

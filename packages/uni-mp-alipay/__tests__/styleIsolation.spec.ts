@@ -1,5 +1,7 @@
 import {
+  addMiniProgramPageJson,
   clearMiniProgramComponentStyleIsolation,
+  resetMiniProgramJsonFiles,
   updateMiniProgramComponentStyleIsolation,
 } from '@dcloudio/uni-cli-shared'
 
@@ -48,10 +50,12 @@ describe('mp-alipay: styleIsolation 2.0', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_INPUT_DIR = '/src'
+    addMiniProgramPageJson('pages/index/index', {})
     updateMiniProgramComponentStyleIsolation(filename, 'app', true)
   })
 
   afterEach(() => {
+    resetMiniProgramJsonFiles()
     restoreEnv('UNI_PLATFORM', originalPlatform)
     restoreEnv('UNI_APP_X', originalAppX)
     restoreEnv('UNI_APP_X_DOM2', originalDom2)
@@ -63,9 +67,9 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   test('展开页面静态 class', () => {
     assert(
       '<view class="foo bar"/>',
-      "<view class=\"foo -a-foo -p-foo bar -a-bar -p-bar\" style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view class="foo -a-foo -p-foo bar -a-bar -p-bar"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }) }
   return __returned__
 }`,
       { filename, isX: true }
@@ -75,9 +79,9 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   test('动态 class 通过现有 uniView SJS 展开', () => {
     assert(
       '<view :class="klass"/>',
-      "<view class=\"{{uV.c(a,3)}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view class="{{uV.c(b,3)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.klass), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _n(_ctx.klass) }
   return __returned__
 }`,
       { filename, isX: true }
@@ -87,9 +91,9 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   test('动态 class 自动引入 uniView SJS', () => {
     assert(
       '<view :class="klass"/>',
-      '<import-sjs name="uV" from="/common/uniView.sjs"/>\n<view class="{{uV.c(a,3)}}" style="{{\'--status-bar-height:\' + b + \';\' + (\'--uni-safe-area-inset-bottom:\' + c)}}"/>',
+      '<import-sjs name="uV" from="/common/uniView.sjs"/>\n<page-meta page-style="{{a}}"/><view class="{{uV.c(b,3)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.klass), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _n(_ctx.klass) }
   return __returned__
 }`,
       { filename, isX: true, miniProgram: miniProgramWithFilterImport }
@@ -99,9 +103,9 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   test('静态和动态 class 只在合并后展开一次', () => {
     assert(
       '<view class="foo" :class="klass"/>',
-      "<view class=\"{{uV.c(('foo') + ' ' + a,3)}}\" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"/>",
+      '<page-meta page-style="{{a}}"/><view class="{{uV.c((\'foo\') + \' \' + b,3)}}"/>',
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _n(_ctx.klass), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  const __returned__ = { a: _s({ '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` }), b: _n(_ctx.klass) }
   return __returned__
 }`,
       { filename, isX: true }
