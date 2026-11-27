@@ -107,8 +107,8 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.33
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| autoBack | boolean | false | Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.33; iOS(Vapor): 5.33; HarmonyOS(Vapor): 5.33 | 点击后是否自动调用 uni.navigateBack({}) 返回上一页 |
-| iosGlass | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): x; iOS(Vapor): 5.33; HarmonyOS(Vapor): x | 仅 iOS 使用 glass-effect-view 液态玻璃背景，并启用按下交互效果 |
+| auto-back | boolean | false | Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.33; iOS(Vapor): 5.33; HarmonyOS(Vapor): 5.33 | 点击后是否自动调用 uni.navigateBack({}) 返回上一页 |
+| ios-glass | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): x; iOS(Vapor): 5.33; HarmonyOS(Vapor): x | 仅 iOS 使用 glass-effect-view 液态玻璃背景，并启用按下交互效果 |
 | @click | Function |   |   | 点击时触发，无参数；当 autoBack 为 true 时随后返回上一页 |
 
 <!-- UTSCOMJSON.uni-backarrow-circle.fileFormates -->

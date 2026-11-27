@@ -373,38 +373,38 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.33
 | mode | string |  |
 | multiple | boolean |  |
 | value | Array \| string \| number |   |
-| modelValue | Array \| string \| number |   |
+| model-value | Array \| string \| number |   |
 | localdata | Array |   |
 | min | string \| number |   |
 | max | string \| number |   |
 | icon | string |  |
-| emptyText | string |   |
+| empty-text | string |   |
 | map | object |   |
 | disabled | boolean |   |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| labelSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| emptyTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| label-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| checkbox-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| label-selected-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| text-selected-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| checkbox-selected-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
+| empty-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
 | collection | string |   |
 | options | object \| Array |   |
 | action | string |   |
 | field | string |   |
 | where | string \| object |   |
 | orderby | string |   |
-| pageData | string |  |
-| pageCurrent | number |   |
-| pageSize | number |   |
+| page-data | string |  |
+| page-current | number |   |
+| page-size | number |   |
 | getcount | boolean \| string |   |
 | gettree | boolean \| string |   |
 | gettreepath | boolean \| string |   |
 | startwith | string |   |
 | limitlevel | number |   |
 | groupby | string |   |
-| groupField | string |   |
+| group-field | string |   |
 | distinct | boolean \| string |   |
 | manual | boolean |   |
 | @change | Function | 用户选择变化时触发 |
@@ -433,7 +433,7 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.33
 | left | 在选项左侧显示原生选择控件 |
 | right | 隐藏左侧选择控件，在选项右侧显示选中标记 |
 
-#### pageData 的属性描述
+#### page-data 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |

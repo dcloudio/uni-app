@@ -28,7 +28,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | border-radius | number | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(Vapor): 5.0 | 进度条圆角 |
 | font-size | number | 12 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(Vapor): 5.0 | 进度条字体大小 |
 | stroke-width | number | 3 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 进度条宽度 |
-| activeColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 已选择的进度条的颜色 |
+| active-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 已选择的进度条的颜色 |
 | background-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ebebeb" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 未选择的进度条的颜色 |
 | active | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否启用动画 |
 | active-mode | string | "backwards" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画模式 |

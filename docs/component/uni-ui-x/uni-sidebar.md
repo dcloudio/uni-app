@@ -129,7 +129,7 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | list | string\[\] | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 导航数据，数组每一项与目标列表中的分段按索引一一对应 |
-| currentIndex | number | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前高亮索引。传入时为受控模式（推荐搭配 v-model:current-index），<br>点击只抛出变更请求，高亮由绑定值决定；不传时为非受控模式，点击后组件内部维护高亮。 |
+| current-index | number | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 当前高亮索引。传入时为受控模式（推荐搭配 v-model:current-index），<br>点击只抛出变更请求，高亮由绑定值决定；不传时为非受控模式，点击后组件内部维护高亮。 |
 | @select | Event |   | 点击导航项时触发，页面据此滚动目标列表 |
 | @update:currentIndex | Event |   | 高亮索引更新事件，用于 v-model:current-index |
 

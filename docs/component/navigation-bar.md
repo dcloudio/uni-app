@@ -19,7 +19,7 @@
 | :- | :- |  :-: | :- |
 | title | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x | 导航条标题 |
 | title-icon | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 标题icon |
-| titleIcon-radius | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 标题icon圆角 |
+| title-icon-radius | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 标题icon圆角 |
 | subtitle-text | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 副标题文字内容，显示在主标题下方 |
 | subtitle-size | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 副标题文字字体大小，如 14px |
 | subtitle-color | string | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 副标题文字颜色，支持 #RRGGBB 或 rgba 格式 |

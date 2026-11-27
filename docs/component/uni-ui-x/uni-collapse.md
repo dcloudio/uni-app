@@ -646,14 +646,14 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 | title | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 折叠项标题文字 |
 | open | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 是否默认展开 |
 | disabled | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 是否禁用，禁用后点击标题不会展开或收起 |
-| titleWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 标题行（整行容器）的样式类 |
-| titleClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 标题文字的基础样式类 |
-| titleOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 展开状态下叠加到标题文字的样式类 |
-| titleDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 禁用状态下叠加到标题文字的样式类 |
-| contentWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 内容外层容器的样式类 |
-| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 箭头图标的基础样式类 |
-| arrowOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 展开状态下叠加到箭头图标的样式类 |
-| arrowDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 禁用状态下叠加到箭头图标的样式类 |
+| title-wrap-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 标题行（整行容器）的样式类 |
+| title-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 标题文字的基础样式类 |
+| title-open-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 展开状态下叠加到标题文字的样式类 |
+| title-disabled-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 禁用状态下叠加到标题文字的样式类 |
+| content-wrap-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 内容外层容器的样式类 |
+| arrow-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 箭头图标的基础样式类 |
+| arrow-open-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 展开状态下叠加到箭头图标的样式类 |
+| arrow-disabled-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07 | 禁用状态下叠加到箭头图标的样式类 |
 | @change | Event |   |   |   |
 
 <!-- UTSCOMJSON.uni-collapse-item.fileFormates -->

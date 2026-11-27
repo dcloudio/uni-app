@@ -195,7 +195,7 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| modelValue | string \| number \| null | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue |
+| model-value | string \| number \| null | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 输入内容，支持 v-model；同时传入 value 时优先使用 modelValue |
 | value | string \| number \| null | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 不使用 v-model 时传入的输入内容；同时传入 modelValue 时不生效，内容更新时不触发 update:value |
 | name | string | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 原生表单控件名称，透传给 input / textarea |
 | type | string | "text" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 输入类型。textarea 渲染多行输入框，password 渲染密码输入框，其余透传给原生单行输入 |
@@ -203,15 +203,15 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21
 | disabled | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否禁用 |
 | maxlength | number | -1 | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 最大输入长度，透传给 input / textarea |
 | focus | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否聚焦 |
-| confirmType | string | "done" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return |
-| cursorSpacing | number | 0 | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 光标与键盘的距离，单位 px，透传给 input / textarea |
-| adjustPosition | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘弹起时是否自动上推页面，透传给 input / textarea |
-| autoHeight | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否自动增高，仅当 type 为 textarea 时生效 |
+| confirm-type | string | "done" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘右下角按钮类型；单行输入默认 done，多行输入在未设置或设置为 done 时使用 return |
+| cursor-spacing | number | 0 | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 光标与键盘的距离，单位 px，透传给 input / textarea |
+| adjust-position | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 键盘弹起时是否自动上推页面，透传给 input / textarea |
+| auto-height | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否自动增高，仅当 type 为 textarea 时生效 |
 | clearable | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 是否显示清空图标，仅对单行 input 生效 |
-| passwordIcon | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | type 为 password 时是否显示密码显隐图标 |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | input / textarea 的自定义样式类 |
-| placeholderClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 占位文字的自定义样式类 |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 清空和密码显隐图标的自定义样式类 |
+| password-icon | boolean | false | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | type 为 password 时是否显示密码显隐图标 |
+| input-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | input / textarea 的自定义样式类 |
+| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 占位文字的自定义样式类 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.07 | 清空和密码显隐图标的自定义样式类 |
 | @input | Function |   |   | 输入时触发，参数为当前字符串值 |
 | @focus | Function |   |   | 聚焦时触发，参数为原生 input 或 textarea 聚焦事件 |
 | @blur | Function |   |   | 失焦时触发，参数为原生 input 或 textarea 失焦事件 |
