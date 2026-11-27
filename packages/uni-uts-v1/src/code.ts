@@ -371,6 +371,265 @@ const moduleName = '${utsBridgeName}'\n`
   return code
 }
 
+export async function genProxyCodeV3(
+  bridge: UTSBridge,
+  module: string,
+  options: GenProxyCodeOptions
+) {
+  const { classes, interfaces, functions, variables = [] } = bridge
+  const interceptor = await parseInterceptor(options.platform, module, options)
+  const exports = [...classes, ...functions, ...variables]
+  let prefix = '$uts'
+  while (
+    exports.some(({ name }) => name.startsWith(prefix)) ||
+    interceptor.code.includes(prefix)
+  ) {
+    prefix += '$'
+  }
+
+  const load = prefix + 'Load'
+  const prototypes = prefix + 'Prototypes'
+  const bindings = prefix + 'Bindings'
+  const elementRef = prefix + 'Element'
+  const bind = prefix + 'Bind'
+  const key = JSON.stringify(bridge.uts_bridge_name)
+  const lines: string[] = []
+  const isCJS = options.format === FORMATS.CJS
+  if (isCJS) lines.push('const exports = { __esModule: true }')
+  if (classes.length || interfaces.length || functions.length) {
+    lines.push(
+      `let ${bindings}`,
+      `const ${prototypes} = Object.create(null)`,
+      `const ${load} = () => ${bindings} || (${bindings} = globalThis.__utsRequireModule(${key}, ${prototypes}))`
+    )
+  }
+
+  function invoke(method: UTSBridgeMethod, args: string[]) {
+    const call = `${load}()[${method.method_id}]`
+    if (!method.async) return `${call}(${args.join(', ')})`
+    // 原生 Promise 结算后通过最后一个回调参数传回结果或异常。
+    return `new Promise((resolve, reject) => ${call}(${[
+      ...args,
+      '(value, error) => error == null ? resolve(value) : reject(error)',
+    ].join(', ')}))`
+  }
+
+  function member(method: UTSBridgeMethod, element = false) {
+    const isStatic = method.type.startsWith('static')
+    const getter = method.type === 'getter' || method.type === 'staticGetter'
+    const setter = method.type === 'setter' || method.type === 'staticSetter'
+    const args: string[] = []
+    if (!isStatic)
+      args.push(element ? `${elementRef}.get(this) || this` : 'this')
+    if (!getter) args.push(setter ? 'value' : '...args')
+    const name = JSON.stringify(method.name)
+    const priority =
+      element &&
+      !isStatic &&
+      !getter &&
+      !setter &&
+      ['hasAttribute', 'getAttribute', 'getAnyAttribute'].includes(method.name)
+        ? `if (typeof super[${name}] === "function") return super[${name}](...args); `
+        : ''
+    return `${isStatic ? 'static ' : ''}${
+      getter ? 'get ' : setter ? 'set ' : ''
+    }[${name}](${
+      getter ? '' : setter ? 'value' : '...args'
+    }) { ${priority}return ${invoke(method, args)} }`
+  }
+
+  function isMethod(m: UTSBridgeMethod) {
+    return m.type === 'method' || m.type === 'staticMethod'
+  }
+  // 函数属性同时有 method/getter/setter。读取时应得到可调用方法，赋值时走 setter。
+  function members(
+    methods: UTSBridgeMethod[],
+    target: string,
+    element = false
+  ) {
+    const callable = methods.filter(isMethod)
+    const names = new Set(callable.map((m) => m.name))
+    const declarations = methods
+      .filter((m) => isMethod(m) || !names.has(m.name))
+      .map((m) => member(m, element))
+    const bindings: string[] = []
+    for (const m of callable) {
+      const setter = methods.find(
+        (s) =>
+          s.name === m.name &&
+          (s.type === 'setter' || s.type === 'staticSetter')
+      )
+      if (m.type === 'staticMethod' && !setter) continue
+      const args = [target, JSON.stringify(m.name)]
+      if (setter) {
+        const receiver =
+          m.type === 'staticMethod'
+            ? []
+            : [element ? `${elementRef}.get(this) || this` : 'this']
+        args.push(
+          `function(value) { ${invoke(setter, [...receiver, 'value'])} }`
+        )
+      }
+      bindings.push(`${bind}(${args.join(', ')})`)
+    }
+    return { declarations, bindings }
+  }
+
+  const bindHelper = `function ${bind}(proto, name, set) {
+  const method = proto[name]
+  Object.defineProperty(proto, name, { configurable: true, set, get() {
+    if (this === proto) return method
+    const bound = method.bind(this)
+    Object.defineProperty(this, name, set
+      ? { configurable: true, get() { return bound }, set }
+      : { configurable: true, writable: true, value: bound })
+    return bound
+  } })
+}`
+  let needsBind = false
+  if (classes.some((c) => isUTSElementProxyClass(c.name))) {
+    lines.push(`const ${elementRef} = new WeakMap()`)
+  }
+  const exportLines: string[] = []
+  function isBridgeClass(
+    type: UTSBridge['interfaces'][number]
+  ): type is UTSBridge['classes'][number] {
+    return 'static_methods' in type
+  }
+  const parents = new Map(classes.map((type) => [type.name, type.base_class]))
+  const descendants = new Map<string, string[]>()
+  for (const type of classes) {
+    if (!type.base_class) continue
+    const ancestors = new Set([type.name])
+    for (
+      let base: string | undefined = type.base_class;
+      base;
+      base = parents.get(base)
+    ) {
+      if (ancestors.has(base) || !parents.has(base)) {
+        const reason = ancestors.has(base) ? 'cyclic' : 'unknown base'
+        throw new Error(
+          `Invalid UTS class hierarchy in ${
+            bridge.uts_bridge_name
+          } (${reason}): ${[...ancestors, base].join(' -> ')}`
+        )
+      }
+      ancestors.add(base)
+      const names = descendants.get(base)
+      if (names) names.push(type.name)
+      else descendants.set(base, [type.name])
+    }
+  }
+  for (const [i, type] of [...interfaces, ...classes].entries()) {
+    const cls = `${prefix}Class${i}`
+    const name = JSON.stringify(type.name)
+    const isClass = isBridgeClass(type)
+    const element = isClass && isUTSElementProxyClass(type.name)
+    lines.push(
+      `const ${cls} = class${element ? ' extends UniViewElementImpl' : ''} {`
+    )
+    const instanceMembers = members(type.methods, cls + '.prototype', element)
+    const staticMembers = isClass
+      ? members(type.static_methods, cls)
+      : undefined
+    if (isClass) {
+      const classId = (name: string) =>
+        JSON.stringify(bridge.uts_bridge_name + '#' + name)
+      const subclasses = descendants.get(type.name)
+      const checkInstance = subclasses
+        ? `const id = instance && instance.__classId; return ${[
+            type.name,
+            ...subclasses,
+          ]
+            .map((name) => `id === ${classId(name)}`)
+            .join(' || ')}`
+        : `return !!instance && instance.__classId === ${classId(type.name)}`
+      lines.push(
+        `get __classId() { return ${classId(type.name)} }`,
+        `static [Symbol.hasInstance](instance) { ${checkInstance} }`,
+        element
+          ? `constructor(nodeId, page, tagName) { super(nodeId, page, tagName); ${elementRef}.set(this, { __type__: 'UniElement', pageId: page.pageId, nodeId }) }`
+          : hasOwn(type, 'constructor')
+          ? `constructor(...args) { return ${invoke(type.constructor, [
+              '...args',
+            ])} }`
+          : `constructor() { throw new TypeError(${JSON.stringify(
+              type.name + ' has no public constructor'
+            )}) }`,
+        ...staticMembers!.declarations
+      )
+      if (!type.prototype_only) {
+        exportLines.push(
+          `${genExportModifier(
+            options.format,
+            type.name,
+            type.is_default
+          )}${cls}`
+        )
+      }
+    }
+    lines.push(
+      'get __v_skip() { return true }',
+      ...instanceMembers.declarations,
+      '}',
+      `${prototypes}[${name}] = ${cls}.prototype`
+    )
+    const boundMethods = [
+      ...instanceMembers.bindings,
+      ...(staticMembers?.bindings || []),
+    ]
+    if (boundMethods.length) {
+      needsBind = true
+      lines.push(...boundMethods)
+    }
+  }
+  for (const type of classes) {
+    if (type.base_class) {
+      lines.push(
+        `Object.setPrototypeOf(${prototypes}[${JSON.stringify(
+          type.name
+        )}], ${prototypes}[${JSON.stringify(type.base_class)}])`
+      )
+    }
+  }
+  if (needsBind) lines.unshift(bindHelper)
+  if (
+    functions.some(
+      (f) =>
+        !f.is_default &&
+        interceptor.initMethods.includes(`init${capitalize(f.name)}`)
+    )
+  ) {
+    lines.push(interceptor.code)
+  }
+  for (const f of functions) {
+    const fn = `(...args) => ${invoke(f, ['...args'])}`
+    const init = `init${capitalize(f.name)}`
+    const value =
+      !f.is_default && interceptor.initMethods.includes(init)
+        ? `${init}(${fn})`
+        : fn
+    exportLines.push(
+      `${genExportModifier(options.format, f.name, f.is_default)}${value}`
+    )
+  }
+  for (const { name, value } of variables) {
+    exportLines.push(
+      `${genExportModifier(options.format, name, false)}${JSON.stringify(
+        value
+      )}`
+    )
+  }
+  if (isCJS) {
+    exportLines.push(
+      `uni.registerUTSPlugin(${JSON.stringify(
+        normalizePath(options.pluginRelativeDir!)
+      )}, exports)`
+    )
+  }
+  return [...lines, ...exportLines, ''].join('\n')
+}
+
 export async function genProxyCode(
   module: string,
   decls: ProxyDecl[],

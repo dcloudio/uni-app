@@ -9,6 +9,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  genProxyCodeV3,
   prepareProxyCodeAndFillOptions,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -25,6 +26,7 @@ import {
   resolveCustomElements,
   resolveIOSComponents,
   resolvePackage,
+  useAndroidUTSBridgeV3,
 } from './utils'
 import { parseUTSSwiftPluginStacktrace } from './stacktrace'
 import { resolveUTSPluginSourceMapFile } from './sourceMap'
@@ -317,12 +319,15 @@ export async function compile(
     pkg
   )
 
-  // 为确保methodId完全一致，proxy code v2依赖uts编译返回的信息生成
-  const useProxyCodeV2 =
+  // Android DOM2 代理依赖 UTS 编译返回的 methodId。
+  const useBridgeMetadata =
     process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_UTS_PLATFORM === 'app-android'
+  const useV3 = useAndroidUTSBridgeV3(isPlugin, isX, transform)
+  const genBridgeProxy = useV3 ? genProxyCodeV3 : genProxyCodeV2
+  if (useV3) env.utsBridgeVersion = 3
   const isWgtProxyCode =
-    process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && useProxyCodeV2
+    process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && useBridgeMetadata
 
   const decls = await prepareProxyCodeAndFillOptions(
     pluginDir,
@@ -330,7 +335,7 @@ export async function compile(
   )
   const needProxyCode = !isCompileUniModules || !!compilerOptions.module
   let code =
-    !needProxyCode || useProxyCodeV2
+    !needProxyCode || useBridgeMetadata
       ? ''
       : await genProxyCode(pluginDir, decls, proxyCodeOptions)
 
@@ -347,13 +352,13 @@ export async function compile(
     // WGT 的 Android 蒸汽模式仍需转译 UTS，以获取生成代理代码所需的桥接信息。
     // 其他 WGT 模式及已前置编译的 ext-api 无需再次编译。
     if (
-      (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && !useProxyCodeV2) ||
+      (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' && !useBridgeMetadata) ||
       // 当编译 ext-api 中的 pages/components 时，不需要编译 utssdk 插件
       (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
         (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
           process.env.UNI_COMPILE_EXT_API_TYPE === 'components'))
     ) {
-      if (useProxyCodeV2 && process.env.UNI_COMPILE_EXT_API_PROXY_CODE) {
+      if (useBridgeMetadata && process.env.UNI_COMPILE_EXT_API_PROXY_CODE) {
         code = process.env.UNI_COMPILE_EXT_API_PROXY_CODE
       }
       const result = createResult(
@@ -438,9 +443,9 @@ export async function compile(
           if (!isWgtProxyCode) {
             Object.assign(custom_elements, result.custom_elements)
           }
-          if (needProxyCode && useProxyCodeV2 && result.uts_bridge) {
+          if (needProxyCode && useBridgeMetadata && result.uts_bridge) {
             code =
-              (await genProxyCodeV2(
+              (await genBridgeProxy(
                 result.uts_bridge,
                 pluginDir,
                 proxyCodeOptions
@@ -599,7 +604,19 @@ export async function compile(
         }
         // console.log('uts插件[' + pkg.id + ']end', Date.now())
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
-        if (!res.expired) {
+        // V3 的 C++ 源码随当前构建输出，输出目录被清理后需重新生成。
+        const hasNativeOutput =
+          !useV3 ||
+          existsSync(
+            join(
+              outputPluginDir,
+              pkg.is_uni_modules ? 'utssdk' : '',
+              'app-android',
+              'cpp',
+              'UniUTSBridgeV3.cpp'
+            )
+          )
+        if (!res.expired && hasNativeOutput) {
           let dexFile: string | undefined
           if (utsPlatform === 'app-android') {
             // debugger 专用
@@ -643,7 +660,7 @@ export async function compile(
             )
           }
 
-          if (useProxyCodeV2) {
+          if (useBridgeMetadata) {
             code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
           }
 
@@ -739,7 +756,7 @@ export async function compile(
             outputDir,
             '', // 配置先写入输出目录，编译成功后再更新缓存。
             resolveConfigProvider(utsPlatform, pkg.id, transform),
-            !!(res && hasUTSBridgeCode(res.uts_bridge))
+            !!(res && hasUTSBridgeCode(res.uts_bridge)) && (useV3 ? 'v3' : true)
           )
         }
         if (res) {
@@ -772,9 +789,9 @@ export async function compile(
             }
           }
           if (isSuccess) {
-            if (useProxyCodeV2 && res.uts_bridge) {
+            if (useBridgeMetadata && res.uts_bridge) {
               code =
-                (await genProxyCodeV2(
+                (await genBridgeProxy(
                   res.uts_bridge,
                   pluginDir,
                   proxyCodeOptions
@@ -798,6 +815,15 @@ export async function compile(
                     cacheDir,
                     utsPlatform
                   )
+                )
+              } else if (useV3) {
+                rmSync(
+                  resolveConfigJsonCacheFile(
+                    pluginRelativeDir,
+                    cacheDir,
+                    utsPlatform
+                  ),
+                  { force: true }
                 )
               }
               // 存储 sourcemap

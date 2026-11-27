@@ -5,6 +5,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  genProxyCodeV3,
   parseInterfaceTypes,
   prepareProxyCodeAndFillOptions,
 } from '../src/code'
@@ -347,6 +348,254 @@ function defineGenProxyCodeV2Tests() {
     })
   })
 }
+
+describe('genProxyCodeV3', () => {
+  test('首次调用安装整个模块，返回值和回调参数共用原型', async () => {
+    const method = (name: string, id: number, type: UTSBridgeMethod['type']) =>
+      createBridgeMethod(name, { method_id: id, type })
+    const bridge = createUTSBridge({
+      uts_bridge_name: '_test',
+      functions: [
+        method('request', 1, 'function'),
+        { ...method('fetch', 2, 'function'), async: true },
+      ],
+      classes: [
+        {
+          name: 'Task',
+          constructor: method('Task', 3, 'constructor'),
+          methods: [
+            method('abort', 4, 'method'),
+            method('abort', 8, 'getter'),
+            method('abort', 9, 'setter'),
+          ],
+          static_methods: [method('active', 5, 'staticGetter')],
+        },
+      ],
+      interfaces: [
+        {
+          name: 'Result',
+          methods: [
+            method('status', 6, 'getter'),
+            method('status', 7, 'setter'),
+          ],
+        },
+      ],
+      variables: [{ name: 'READY', value: 1 }],
+    })
+    const code = await genProxyCodeV3(
+      bridge,
+      pluginInterceptorDir,
+      createGenProxyCodeOptions({
+        format: FORMATS.CJS,
+        pluginRelativeDir: 'uni_modules/test',
+      })
+    )
+    const load = jest.fn((key, prototypes) => {
+      expect(key).toBe('_test')
+      const task = Object.create(prototypes.Task)
+      const result = Object.create(prototypes.Result)
+      let status = 100
+      return {
+        1: (cb: (value: unknown) => void) => {
+          cb(result)
+          return task
+        },
+        2: (error: unknown, cb: Function) => cb(task, error),
+        3: () => task,
+        4: (receiver: unknown) => receiver === task,
+        5: () => true,
+        8: () => {
+          throw Error('duplicate getter')
+        },
+        9: (_receiver: unknown, value: Function) => value(),
+        6: (receiver: unknown) => (receiver === result ? status : -1),
+        7: (_receiver: unknown, value: number) => {
+          status = value
+        },
+      }
+    })
+    const registerUTSPlugin = jest.fn()
+    new Function('uni', 'globalThis', code)(
+      { registerUTSPlugin },
+      { __utsRequireModule: load }
+    )
+    const [path, api] = registerUTSPlugin.mock.calls[0]
+    expect(path).toBe('uni_modules/test')
+    expect(api.READY).toBe(1)
+    expect(load).not.toHaveBeenCalled()
+    const request = api.request((result: { status: number }) => {
+      expect(result.status).toBe(100)
+      result.status = 200
+      expect(result.status).toBe(200)
+    })
+    const abort = request.abort
+    expect(abort()).toBe(true)
+    expect(request.abort).toBe(abort)
+    const set = jest.fn()
+    request.abort = set
+    expect(set).toHaveBeenCalledWith()
+    expect(request.abort).toBe(abort)
+    expect(request).toBeInstanceOf(api.Task)
+    expect(new api.Task()).toBe(request)
+    expect(api.Task.active).toBe(true)
+    await expect(api.fetch(null)).resolves.toBe(request)
+    await expect(api.fetch('error')).rejects.toBe('error')
+    expect(load).toHaveBeenCalledTimes(1)
+    expect(code).toContain('initRequest(')
+  })
+
+  test('跨多层本地 UTS 基类继承方法、属性和 instanceof', async () => {
+    const method = (name: string, id: number, type: UTSBridgeMethod['type']) =>
+      createBridgeMethod(name, { method_id: id, type })
+    const bridge = createUTSBridge({
+      uts_bridge_name: '_inheritance',
+      functions: [method('create', 0, 'function')],
+      classes: [
+        {
+          name: 'Child',
+          base_class: 'Middle',
+          constructor: method('Child', 1, 'constructor'),
+          methods: [method('label', 2, 'method')],
+          static_methods: [],
+        },
+        {
+          name: 'Base',
+          constructor: method('Base', 3, 'constructor'),
+          methods: [
+            method('label', 4, 'method'),
+            method('read', 5, 'method'),
+            method('value', 6, 'getter'),
+            method('value', 7, 'setter'),
+          ],
+          static_methods: [],
+        },
+        {
+          name: 'Middle',
+          base_class: 'Base',
+          prototype_only: true,
+          constructor: method('Middle', 8, 'constructor'),
+          methods: [],
+          static_methods: [],
+        },
+      ],
+    })
+    const code = await genProxyCodeV3(
+      bridge,
+      pluginElementProxyDir,
+      createGenProxyCodeOptions({
+        format: FORMATS.CJS,
+        pluginRelativeDir: 'uni_modules/example',
+      })
+    )
+    const registerUTSPlugin = jest.fn()
+    const load = jest.fn((_key, prototypes) => {
+      const child = Object.create(prototypes.Child)
+      const base = Object.create(prototypes.Base)
+      let value = 'base'
+      return {
+        0: (cb: Function) => {
+          cb(child)
+          return child
+        },
+        1: () => child,
+        2: () => 'child',
+        3: () => base,
+        4: () => 'base',
+        5: (receiver: unknown) => receiver === child,
+        6: () => value,
+        7: (_receiver: unknown, input: string) => {
+          value = input
+        },
+      }
+    })
+    new Function('uni', 'globalThis', code)(
+      { registerUTSPlugin },
+      { __utsRequireModule: load }
+    )
+    const api = registerUTSPlugin.mock.calls[0][1]
+    expect(load).not.toHaveBeenCalled()
+    expect(api.Middle).toBeUndefined()
+    const child = api.create((obj: any) => {
+      const read = obj.read
+      expect(read()).toBe(true)
+      expect(obj.value).toBe('base')
+      obj.value = 'changed'
+    })
+    expect(child.value).toBe('changed')
+    expect(child.label()).toBe('child')
+    expect(new api.Child()).toBe(child)
+    expect(child).toBeInstanceOf(api.Child)
+    expect(child).toBeInstanceOf(api.Base)
+    expect(new api.Base()).not.toBeInstanceOf(api.Child)
+    expect(new api.Base().label()).toBe('base')
+    expect(load).toHaveBeenCalledTimes(1)
+  })
+
+  test('报告循环继承和缺失基类的元数据路径', async () => {
+    const classMeta = (name: string, base_class: string) => ({
+      name,
+      base_class,
+      constructor: createBridgeMethod(name, { type: 'constructor' }),
+      static_methods: [],
+      methods: [],
+    })
+    const generate = (classes: UTSBridge['classes']) =>
+      genProxyCodeV3(
+        createUTSBridge({ uts_bridge_name: '_bad', classes }),
+        pluginElementProxyDir,
+        createGenProxyCodeOptions()
+      )
+    await expect(
+      generate([classMeta('A', 'B'), classMeta('B', 'A')])
+    ).rejects.toThrow(
+      'Invalid UTS class hierarchy in _bad (cyclic): A -> B -> A'
+    )
+    await expect(generate([classMeta('A', 'Missing')])).rejects.toThrow(
+      'Invalid UTS class hierarchy in _bad (unknown base): A -> Missing'
+    )
+  })
+
+  test('模块安装失败后可重试，并保留默认导出和模块键', async () => {
+    const bridge = createUTSBridge({
+      uts_bridge_name: 'test',
+      functions: [
+        {
+          ...createBridgeMethod('hello', { method_id: 8, type: 'function' }),
+          is_default: true,
+        },
+      ],
+    })
+    const es = await genProxyCodeV3(
+      bridge,
+      pluginElementProxyDir,
+      createGenProxyCodeOptions()
+    )
+    expect(es).toContain('export default ')
+    const code = await genProxyCodeV3(
+      bridge,
+      pluginElementProxyDir,
+      createGenProxyCodeOptions({
+        format: FORMATS.CJS,
+        pluginRelativeDir: 'uni_modules/test',
+      })
+    )
+    const registerUTSPlugin = jest.fn()
+    const load = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        throw Error('install')
+      })
+      .mockReturnValue({ 8: (n: number) => n + 1 })
+    new Function('uni', 'globalThis', code)(
+      { registerUTSPlugin },
+      { __utsRequireModule: load }
+    )
+    const api = registerUTSPlugin.mock.calls[0][1]
+    expect(() => api.default(1)).toThrow('install')
+    expect(api.default(1)).toBe(2)
+    expect(load.mock.calls[0][0]).toBe('test')
+  })
+})
 
 describe('code', () => {
   test('genProxyCode', async () => {

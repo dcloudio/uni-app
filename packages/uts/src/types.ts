@@ -49,6 +49,7 @@ export type UTSOutputOptions = {
   outFilename?: string
   package: string
   utsBridgeName?: string
+  utsBridgeV3?: boolean
   banner?: string
   footer?: string
   imports?: string[]
@@ -165,6 +166,8 @@ export interface UTSBridgeVariable {
 }
 export interface UTSBridgeClass {
   name: string
+  base_class?: string
+  prototype_only?: boolean
   is_default?: boolean
   constructor: UTSBridgeMethod
   static_methods: UTSBridgeMethod[]
@@ -176,9 +179,32 @@ export interface UTSBridgeInterface {
   methods: UTSBridgeMethod[]
 }
 
+type UTSBridgeWireType = 'double' | 'boolean' | 'string' | 'object' | 'void'
+interface UTSBridgeNativeMethod {
+  method_id: number
+  receiver: boolean
+  completion: boolean
+  required: number
+  params: (
+    | Exclude<UTSBridgeWireType, 'void'>
+    | {
+        fields: {
+          name: string
+          wire: Exclude<UTSBridgeWireType, 'object' | 'void'>
+        }[]
+      }
+  )[]
+  result: UTSBridgeWireType
+  result_record?: {
+    name: string
+    fields: { name: string; descriptor: string }[]
+  }
+}
+
 export interface UTSBridge {
   uts_bridge_name: string
   functions: UTSBridgeFunction[]
+  native?: { version: 3; methods: UTSBridgeNativeMethod[] }
   classes: UTSBridgeClass[]
   interfaces: UTSBridgeInterface[]
   variables?: UTSBridgeVariable[]

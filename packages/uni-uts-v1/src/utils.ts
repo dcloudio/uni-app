@@ -231,7 +231,7 @@ export interface UTSPlatformResourceOptions {
   result: UTSResult
   provider?: { name: string; service: string; class: string }
   uniModules: string[]
-  utsBridge?: boolean
+  utsBridge?: boolean | 'v3'
 }
 
 export function genUTSPlatformResource(
@@ -671,7 +671,7 @@ export function genConfigJson(
   outputDir: string,
   cacheDir: string,
   provider?: { name: string; service: string; class: string },
-  utsBridge?: boolean
+  utsBridge?: boolean | 'v3'
 ) {
   // 不过滤了，只要有，就copy
   // if (!Object.keys(components).length && !hookClass && !provider) {
@@ -727,7 +727,7 @@ function copyConfigJson(
   customElementsObj: Record<string, string> | undefined,
   namespace: string,
   provider?: { name: string; service: string; class: string },
-  utsBridge?: boolean
+  utsBridge?: boolean | 'v3'
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
@@ -751,7 +751,8 @@ function copyConfigJson(
     hasHookClass ||
     hasProvider ||
     delegateClassList.length ||
-    utsBridge
+    utsBridge === true ||
+    (utsBridge === 'v3' && fs.existsSync(configJsonFilename))
   ) {
     //存在组件
     if (hasComponents) {
@@ -808,7 +809,7 @@ function copyConfigJson(
       }
     }
 
-    if (utsBridge) {
+    if (utsBridge === true) {
       configJson.utsMethodRegister = `${namespace}UniUTSMethodRegister`
     }
 
@@ -819,6 +820,18 @@ function copyConfigJson(
   } else if (fs.existsSync(configJsonFilename)) {
     fs.copySync(configJsonFilename, outputConfigJsonFilename)
   } else {
+    if (
+      platform === 'app-android' &&
+      (utsBridge === false || utsBridge === 'v3') &&
+      fs.existsSync(outputConfigJsonFilename)
+    ) {
+      const previous = fs.readJsonSync(outputConfigJsonFilename, {
+        throws: false,
+      })
+      if (previous?.utsMethodRegister === `${namespace}UniUTSMethodRegister`) {
+        fs.unlinkSync(outputConfigJsonFilename)
+      }
+    }
     return
   }
   return outputConfigJsonFilename
@@ -1570,6 +1583,21 @@ export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
   //   return `export default uni`
   // }
   return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
+}
+
+export function useAndroidUTSBridgeV3(
+  isPlugin: boolean,
+  isX: boolean,
+  transform?: UTSOutputOptions['transform']
+) {
+  return (
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_MODULE_TYPE === 'built-in' &&
+    isPlugin &&
+    (!isX || process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') &&
+    !transform?.uniExtApiProviderName
+  )
 }
 
 export function hasUTSBridgeCode(
