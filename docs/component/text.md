@@ -1341,9 +1341,9 @@ App平台未支持`-webkit-` css，取而代之的方案是 text 组件上新增
 
 *App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。*
 
-web和小程序的text组件暂未支持max-lines组件属性。
+Web VDOM 和小程序的 text 组件暂未支持 `max-lines` 属性。
 - 在web vdom模式和小程序中，由于text组件的外层有组件包装，所以在外层设置 `-webkit-line-clamp` 并不会生效。需要选择器向下再取。
-- 后续蒸汽模式的web平台将去除外层包装，让`-webkit-line-clamp` 直接生效。
+- Web 蒸汽模式（Vapor）从 HBuilder 5.41 起支持 `max-lines`。超出行数时，Web 默认显示省略号，App 默认直接裁切。
 
 uni-ui x 提供了 [可折叠文本组件 uni-expandable-text](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-expandable-text.html)，支持`全文`、`收起`等操作。
 
