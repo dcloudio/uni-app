@@ -1,6 +1,7 @@
 slider {
   width: 100%;
   flex-direction: row;
+  padding: 4px;
   overflow: visible;
 }
 
@@ -54,8 +55,8 @@ slider {
 }
 
 .slider-handle:focus-visible {
-  outline: 2px solid #007aff;
-  outline-offset: 2px;
+  outline: 1px solid #007aff;
+  outline-offset: 1px;
 }
 
 @media (prefers-color-scheme: dark) {

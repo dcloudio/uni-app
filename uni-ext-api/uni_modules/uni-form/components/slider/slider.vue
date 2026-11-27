@@ -196,7 +196,7 @@
      }
      */
     showValue ?: boolean
-    /** 
+    /**
      * 滑块左侧已选择部分的线条颜色
      * @defaultValue #007aff
      */
@@ -252,7 +252,7 @@
      }
     */
     blockSize ?: number | null
-    /** 
+    /**
      * 滑块的颜色 (使用foreColor替代)
      * @defaultValue #ffffff
      */
@@ -1047,6 +1047,7 @@
   {
     width: 100%;
     flex-direction: row;
+    padding: 4px;
     overflow: visible;
   }
 
@@ -1106,8 +1107,8 @@
 
   /* #ifdef WEB */
   .slider-handle:focus-visible {
-    outline: 2px solid #007aff;
-    outline-offset: 2px;
+    outline: 1px solid #007aff;
+    outline-offset: 1px;
   }
   /* #endif */
 

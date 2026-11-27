@@ -10901,14 +10901,11 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["activeend"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniProgressActiveendEvent extends UniCustomEvent3 {
+    class UniProgressActiveendEvent extends UniCustomEvent$1 {
       constructor(type, curPercent) {
-        super(type, { curPercent });
+        super(type, {
+          detail: { curPercent }
+        });
       }
     }
     const emit2 = __emit;
