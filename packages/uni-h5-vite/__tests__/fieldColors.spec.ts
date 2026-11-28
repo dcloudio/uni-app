@@ -19,6 +19,18 @@ jest.mock('@dcloudio/uni-cli-shared', () => ({
   minifyCSS: jest.fn(async (code: string) => code),
 }))
 
+function expectTransparentFieldBackground(css: string, name: string) {
+  const host = String.raw`(?:uni-${name}|div:where\(\[uni-${name}\]\))`
+  expect(css).not.toMatch(
+    new RegExp(
+      String.raw`(?:^|[{},])\s*${host}\s*(?:,[^{}]*)?\{[^}]*\bbackground(?:-color)?\s*:`
+    )
+  )
+  expect(css).toMatch(
+    new RegExp(String.raw`\.uni-${name}-${name}\s*\{[^}]*\bbackground: none;`)
+  )
+}
+
 describe('Web input and textarea default colors', () => {
   const originalEnv = {
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
@@ -61,8 +73,9 @@ describe('Web input and textarea default colors', () => {
         const addWatchFile = jest.fn()
         const result = plugin.transform.call({ addWatchFile }, base, id + query)
         expect(result?.code).toContain('color: #757575')
-        expect(result.code).toContain('background-color: #3b3b3b')
+        expect(result.code).toContain('color: #ffffff;')
         expect(result.code).toContain('prefers-color-scheme: dark')
+        expectTransparentFieldBackground(result.code, name)
         expect(result.code).not.toContain('uni-field-selection')
         expect(result.code.startsWith(base)).toBe(true)
         expect(addWatchFile).toHaveBeenCalledWith(
@@ -117,9 +130,9 @@ describe('Web input and textarea default colors', () => {
       for (const name of ['input', 'textarea']) {
         expect(css).toContain(`.uni-${name}-placeholder {\n  color: #757575;`)
         expect(css).toContain(`div:where([uni-${name}])`)
+        expectTransparentFieldBackground(css, name)
       }
       expect(css).not.toContain('uni-field-selection')
-      expect(css.match(/background-color: #3b3b3b/g)).toHaveLength(4)
       expect(css).not.toContain('@import')
     }
   )
