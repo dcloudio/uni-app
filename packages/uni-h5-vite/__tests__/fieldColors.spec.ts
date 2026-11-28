@@ -31,6 +31,20 @@ function expectTransparentFieldBackground(css: string, name: string) {
   )
 }
 
+function expectFieldPlaceholderColors(css: string, name: string) {
+  const selector = String.raw`\.uni-${name}-placeholder\s*\{[^}]*`
+  expect(css).toMatch(
+    new RegExp(selector + String.raw`\bcolor:\s*rgba\(60, 60, 67, 0\.3\);`)
+  )
+  expect(css).toMatch(
+    new RegExp(
+      String.raw`@media\s*\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?` +
+        selector +
+        String.raw`\bcolor:\s*rgba\(255, 255, 255, 0\.35\);`
+    )
+  )
+}
+
 describe('Web input and textarea default colors', () => {
   const originalEnv = {
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
@@ -72,7 +86,7 @@ describe('Web input and textarea default colors', () => {
       ]) {
         const addWatchFile = jest.fn()
         const result = plugin.transform.call({ addWatchFile }, base, id + query)
-        expect(result?.code).toContain('color: #757575')
+        expectFieldPlaceholderColors(result?.code, name)
         expect(result.code).toContain('color: #ffffff;')
         expect(result.code).toContain('prefers-color-scheme: dark')
         expectTransparentFieldBackground(result.code, name)
@@ -128,7 +142,7 @@ describe('Web input and textarea default colors', () => {
       await plugin.generateBundle.call({ emitFile })
       const css = emitFile.mock.calls[0][0].source as string
       for (const name of ['input', 'textarea']) {
-        expect(css).toContain(`.uni-${name}-placeholder {\n  color: #757575;`)
+        expectFieldPlaceholderColors(css, name)
         expect(css).toContain(`div:where([uni-${name}])`)
         expectTransparentFieldBackground(css, name)
       }
