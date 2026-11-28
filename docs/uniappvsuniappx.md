@@ -142,11 +142,19 @@ uni-app x的原生组件，可以通过Element的getAndroidView、getIOSView、g
 
 ### uni-ui x的高性能和完全自定义
 
-uni-app对应的uni ui，存在封装和抽象不合理的问题，组件属性封了太多，影响了性能、拉长了文档，也仍然无法满足开发者的所有自定义需求。
+全新设计的 uni-ui x ，是高性能且为AI设计的组件库。详见 [uni-ui x](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/)
+
+uni-app对应的uni ui，存在封装和抽象不合理的问题，组件属性封了太多，影响了性能，也仍然无法满足开发者的所有自定义需求。
 
 uni-ui x 的逻辑抽象和设计代表了业内最先进的水平。它借鉴了Headless UI的充分自定义性，同时兼顾了易用性与高性能。
 
-这种高性能不仅源于 uni-app x 蒸汽模式的底层支持，也得益于组件自身的代码优化，多重因素共同打造了一流的高性能组件库。[详见](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/)
+这种高性能不仅源于 uni-app x 蒸汽模式的底层支持，也得益于组件自身的代码优化，多重因素共同打造了一流的高性能组件库。
+
+uni-ui x 组件库的丰富度，超过了 uni ui。新增了 sidebar侧边导航、expandable-text可折叠文本等新组件。
+
+老的uni ui组件，部分被放弃了，比如uni-title、uni-group，使用这些组件远不如AI写个class来的方便。
+
+uni ui 组件升级到 uni-ui x 的升级对照表，[详见](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/#uniuiupgrade)
 
 
 ## App权限和隐私管理
@@ -340,7 +348,7 @@ uni-app x 的热更新，内置sha256验签功能，防止网络劫持，更安�
 
 uni-app x 的热更新，从联网、下载、验签、安装升级包，全平台都是在子线程统一进行，不影响用户前台操作体验。
 
-总结下，uni-app x 的热更新，更快、更省钱、更安全。
+总结下，uni-app x 的热更新，更快、更省钱、更安全、性能更好。
 
 ## 离线SDK
 
@@ -368,7 +376,7 @@ uni-app x 有数万个自动化测试例。涉及断言、截图、崩溃、性�
 
 # uni-app x相比uni-app的不足
 
-虽然 uni-app x 比 uni-app 多了很多能力和规范。但当前的状态，也并非拉齐了 uni-app 的所有功能。
+虽然 uni-app x 比 uni-app 多了很多能力和规范。但当前的状态，也并非实现了 uni-app 的100%功能。
 
 1. uni-app x 的css是web的子集。
 
@@ -389,15 +397,14 @@ uni-app x 还不支持安心打包和js加密。js加密，开发者可以使用
 
 4. 组件和API方面
 
-- image组件不支持svg动画
-- 蓝牙已内置：HBuilderX 5.36+ 在 app-android / app-ios 平台内置支持，微信小程序（4.41 起）、支付宝小程序（5.31 起）也已支持，App 端仅 HarmonyOS 暂不支持；5.36 以下版本需下载 [uni-bluetooth](https://ext.dcloud.net.cn/plugin?id=30539) 插件。[详见](./api/bluetooth-general.md)
+- image组件不支持svg动画（支持svg静态图，仅不支持svg动画）
 - 登录支付海外sdk未集成。目前需要在插件市场寻找相关插件。
 - canvas的API，没有web的丰富。不影响图表等常见功能。[详见](./api/canvasrenderingcontext2d.md)
 - webview的内置API，没有uni-app的plus.webview丰富。[详见](./api/create-webview-context.md)
 
-5. uniCloud schema2code
+5. 小程序sdk还未支持
 
-datacom 组件已适配，schema2code 及相关周边现可在 uni-app x 下运行（HBuilderX 5.33+ 支持组合式定义 datacom，5.32+ 提供 `uniCloud.datacomProps`/`uniCloud.useDatacom`）。[详见](./component/datacom.md)
+目前可以用[uni-app x 原生SDK](./native/README.md)集成到原生app中，但不支持多应用隔离。
 
 开发者可以在需求墙投票，影响这些TODO的优先级。[需求墙](https://vote.dcloud.net.cn/#/?name=uni-app%20x)
 
